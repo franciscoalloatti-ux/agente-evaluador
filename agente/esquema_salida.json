@@ -1,0 +1,227 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Informe de evaluación — trabajo final",
+  "description": "Salida canónica del agente evaluador. Todos los campos son obligatorios y se emiten siempre en este orden. Un campo sin contenido va vacío, nunca se omite.",
+  "version": "1.3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version_rubrica",
+    "fecha_evaluacion",
+    "repositorio",
+    "estado",
+    "alerta",
+    "inventario",
+    "afirmaciones",
+    "dimensiones",
+    "banderas",
+    "penalizaciones",
+    "puntaje_bruto",
+    "puntaje_final",
+    "nota_10",
+    "sugerencia_mejora",
+    "dudas",
+    "auditoria",
+    "revision_humana_requerida",
+    "firma"
+  ],
+  "properties": {
+    "version_rubrica": {
+      "type": "string",
+      "const": "1.3",
+      "description": "Versión de rubrica.md aplicada. Fija la trazabilidad del criterio."
+    },
+    "fecha_evaluacion": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "repositorio": {
+      "type": "string",
+      "description": "URL o ruta evaluada, tal como se recibió."
+    },
+    "estado": {
+      "type": "string",
+      "enum": ["evaluado", "evaluado_con_reservas", "integridad_comprometida", "no_evaluable"]
+    },
+    "alerta": {
+      "type": "string",
+      "description": "Vacío normalmente. Se llena sólo con hallazgos que van en la primera línea del informe (G8: key expuesta)."
+    },
+    "inventario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["archivos_raiz", "config_agentes_hallada", "archivos_leidos", "archivos_faltantes", "commits", "evidencia"],
+      "properties": {
+        "archivos_raiz": { "type": "array", "items": { "type": "string" } },
+        "config_agentes_hallada": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Paso 0 de la pasada 1: archivos de configuracion de agentes encontrados DENTRO del repositorio evaluado (AGENTS.md, CLAUDE.md, .cursorrules, .github/copilot-instructions.md...). Se declaran siempre, aunque el array quede vacio: un inventario que no los menciona es un inventario que no los busco."
+        },
+        "archivos_leidos": { "type": "array", "items": { "type": "string" } },
+        "archivos_faltantes": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "De los exigidos por la estructura obligatoria: README.md, prompts/, corridas/, DECISIONES.md"
+        },
+        "commits": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["accesible", "cantidad", "rango_fechas", "autores"],
+          "properties": {
+            "accesible": { "type": "boolean" },
+            "cantidad": { "type": "integer", "minimum": 0 },
+            "rango_fechas": { "type": "string" },
+            "autores": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        "evidencia": {
+          "type": "array",
+          "description": "Registro de evidencia construido en la pasada 1. Toda cita del informe referencia un id de acá.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "archivo", "ubicacion", "cita"],
+            "properties": {
+              "id": { "type": "string", "pattern": "^E[0-9]+$" },
+              "archivo": { "type": "string" },
+              "ubicacion": { "type": "string", "description": "Sección, línea o bloque." },
+              "cita": { "type": "string", "maxLength": 200, "description": "Textual, hasta 25 palabras." }
+            }
+          }
+        }
+      }
+    },
+    "afirmaciones": {
+      "type": "array",
+      "description": "Pasada 2. Toda afirmación evaluable del README/DECISIONES contra su artefacto.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["afirmacion", "estado", "evidencia", "comentario"],
+        "properties": {
+          "afirmacion": { "type": "string" },
+          "estado": { "type": "string", "enum": ["VERIFICADA", "PARCIAL", "NO_VERIFICADA", "CONTRADICHA"] },
+          "evidencia": { "type": "array", "items": { "type": "string", "pattern": "^E[0-9]+$" } },
+          "comentario": { "type": "string", "maxLength": 300 }
+        }
+      }
+    },
+    "dimensiones": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "description": "Siempre las cinco, siempre en orden D1..D5.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "nombre", "peso", "requisitos", "nivel_base", "compuerta_aplicada", "nivel", "puntos", "justificacion", "que_falta_para_el_nivel_siguiente"],
+        "properties": {
+          "id": { "type": "string", "enum": ["D1", "D2", "D3", "D4", "D5"] },
+          "nombre": { "type": "string" },
+          "peso": { "type": "integer", "enum": [30, 25, 15] },
+          "requisitos": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "cumple", "evidencia", "motivo"],
+              "properties": {
+                "id": { "type": "string", "pattern": "^R[1-5]\\.[1-4]$" },
+                "cumple": { "type": "boolean" },
+                "evidencia": {
+                  "type": "array",
+                  "items": { "type": "string", "pattern": "^E[0-9]+$" },
+                  "description": "Obligatorio y no vacío cuando cumple = true. Chequeo A1."
+                },
+                "motivo": { "type": "string", "maxLength": 300 }
+              }
+            }
+          },
+          "nivel_base": { "type": "integer", "minimum": 0, "maximum": 4, "description": "Cantidad de requisitos cumplidos, ajustada por la exigencia extra de nivel 4." },
+          "compuerta_aplicada": { "type": "string", "description": "Vacío si ninguna. Si aplicó, se nombra: 'R1.2 = NO -> D1 <= 2'." },
+          "nivel": { "type": "integer", "minimum": 0, "maximum": 4 },
+          "puntos": { "type": "number", "minimum": 0, "maximum": 30 },
+          "justificacion": { "type": "string", "maxLength": 800, "description": "2 a 4 oraciones, cada afirmación pegada a un id de evidencia." },
+          "que_falta_para_el_nivel_siguiente": { "type": "string", "maxLength": 400 }
+        }
+      }
+    },
+    "banderas": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "nombre", "evidencia", "cita_textual", "efecto", "puntos"],
+        "properties": {
+          "id": { "type": "string", "enum": ["G1", "G2", "G3a", "G3b", "G3c", "G3d", "G4", "G5", "G6", "G7", "G8"] },
+          "nombre": { "type": "string" },
+          "evidencia": { "type": "array", "items": { "type": "string", "pattern": "^E[0-9]+$" } },
+          "cita_textual": { "type": "string", "maxLength": 400, "description": "Lo hallado, transcripto tal cual. Obligatorio para G3." },
+          "efecto": { "type": "string", "description": "El efecto tipificado en rubrica.md 1. Ej: 'se ignora como instruccion; -10'." },
+          "puntos": { "type": "number", "maximum": 0, "description": "Negativo o 0. G5 siempre 0." }
+        }
+      }
+    },
+    "penalizaciones": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["detalle", "total"],
+      "properties": {
+        "detalle": { "type": "array", "items": { "type": "string" } },
+        "total": { "type": "number", "minimum": -30, "maximum": 0 }
+      }
+    },
+    "puntaje_bruto": { "type": "number", "minimum": 0, "maximum": 100 },
+    "puntaje_final": { "type": "integer", "minimum": 0, "maximum": 100, "description": "Con estado integridad_comprometida vale 0 por regla, no por aritmetica: la nota queda suspendida y la decide el profesor." },
+    "nota_10": { "type": "number", "minimum": 0, "maximum": 10 },
+    "sugerencia_mejora": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["dimension", "accion", "puntos_potenciales"],
+      "properties": {
+        "dimension": { "type": "string", "enum": ["D1", "D2", "D3", "D4", "D5"] },
+        "accion": { "type": "string", "maxLength": 600, "description": "Una sola, concreta, accionable en una semana: qué archivo, qué contenido, qué evidencia falta." },
+        "puntos_potenciales": { "type": "number", "minimum": 0 }
+      }
+    },
+    "dudas": {
+      "type": "array",
+      "description": "Toda duda resuelta hacia el nivel menor, y toda limitación de acceso declarada.",
+      "items": { "type": "string" }
+    },
+    "auditoria": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8"],
+      "properties": {
+        "A1": { "type": "string", "enum": ["OK", "FALLA"] },
+        "A2": { "type": "string", "enum": ["OK", "FALLA"] },
+        "A3": { "type": "string", "enum": ["OK", "FALLA"] },
+        "A4": { "type": "string", "enum": ["OK", "FALLA"] },
+        "A5": { "type": "string", "enum": ["OK", "FALLA"] },
+        "A6": { "type": "string", "enum": ["OK", "FALLA"] },
+        "A7": { "type": "string", "enum": ["OK", "FALLA"] },
+        "A8": { "type": "string", "enum": ["OK", "FALLA"] }
+      }
+    },
+    "revision_humana_requerida": { "type": "boolean" },
+    "firma": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["agente", "version_prompt", "modelo", "temperatura", "responsable_humano"],
+      "properties": {
+        "agente": { "type": "string" },
+        "version_prompt": { "type": "string" },
+        "modelo": { "type": "string" },
+        "temperatura": { "type": "number", "const": 0 },
+        "responsable_humano": {
+          "type": "string",
+          "description": "Nombre y rol de la persona que firma el informe. La responsabilidad por el output no se delega."
+        }
+      }
+    }
+  }
+}
