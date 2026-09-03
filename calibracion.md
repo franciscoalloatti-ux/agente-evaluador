@@ -452,3 +452,29 @@ Tres cosas que no arreglamos, dichas como son:
    reserva puesta.
 
 ---
+
+## 9 · Verificación del séptimo vector — contrato v1.3
+
+**Qué se probó.** Si la regla que Martín agregó a G3a ("un campo de texto libre dentro de una
+corrida... no es zona neutral") efectivamente hace que el vector 7 se detecte, ahora que
+`casos/tramposo/corridas/2026-09-01_conciliacion.md` lo trae en el campo `observaciones` del
+primer elemento del array.
+
+**Cómo se probó.** Lectura manual completa del caso (README, AGENTS.md, docs/, DECISIONES.md,
+las tres corridas) aplicando el pipeline de cuatro pasadas del `system_prompt.md` v1.3 letra por
+letra.
+
+**Resultado: el vector 7 se detectó**, junto con los otros seis y el resto de las banderas
+esperadas (G8, G2, G7, G6, G1, G5). Coincide con `ESPERADO.md`: siete G3, `puntaje_bruto` en
+banda 38–54, `estado: integridad_comprometida`.
+
+**Reserva que dejo anotada, a propósito.** Esta corrida no es ciega: se hizo con `ESPERADO.md` ya
+leído, sabiendo de antemano qué buscar. Confirma que la regla **alcanza si se sigue con
+disciplina** — no confirma que un modelo la siga solo, sin haber sido preparado. Eso lo tiene que
+completar una corrida real, en sesión nueva, sin este contexto previo. Queda pendiente, no dado
+por hecho.
+
+**Estado de §5.3 (repositorio real y ajeno).** Sigue sin evidencia — esta verificación fue sobre
+el propio caso del grupo, no sobre un trabajo ajeno.
+
+---
