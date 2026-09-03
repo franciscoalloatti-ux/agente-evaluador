@@ -96,6 +96,162 @@ Cada línea es al menos un commit. Los mensajes tienen que decir **qué decidier
 
 ---
 
+## Cómo pedírselo a la IA — las seis piezas, aplicadas a cada carril
+
+Acá nadie escribe código: se construye **describiendo, iterando y documentando**. Así que la
+calidad de lo que entregamos depende, casi por completo, de cómo lo pedimos. Esta sección es para
+que nadie pierda las primeras dos horas peleando con un prompt flojo.
+
+### El diagnóstico, antes que la plantilla
+
+Las seis piezas —**rol, contexto, tarea, restricciones, formato, ejemplos**— no sirven para llenar
+un formulario. Sirven para **diagnosticar**. Cuando un resultado decepciona, la pregunta profesional
+no es "la IA no entiende": es **cuál de las seis piezas falta o está floja**.
+
+Las tres fallas que más tiempo cuestan en este repo, y qué pieza las causa:
+
+| Lo que pasa | Qué pieza falta |
+|---|---|
+| Te contesta algo genérico sobre rúbricas en vez de sobre *la nuestra* | **Contexto** — no le pegaste el archivo |
+| Te devuelve tres párrafos de prosa cuando necesitabas una fila de tabla | **Formato** |
+| Te reescribe el archivo entero cuando querías tocar un requisito | **Restricciones** |
+
+Y una regla que no es de prompting sino de la materia: **la IA propone, vos decidís.** La decisión
+va escrita en el archivo de tu carril, con tu nombre en el commit. Si le preguntás "¿qué te parece
+mejor?" y pegás la respuesta sin discutirla, el `git log` no registra ninguna decisión tuya — y eso
+es exactamente lo que se evalúa.
+
+---
+
+### Carril A · Rúbrica
+
+Tu trabajo no es redactar bonito: es que **veinte requisitos se puedan responder sí o no citando un
+archivo**. El prompt más útil no pide mejoras, pide que te **rompan** lo que escribiste.
+
+```
+ROL         Sos dos evaluadores distintos que tienen que aplicar esta rúbrica
+            sobre el mismo trabajo, sin hablar entre ustedes.
+CONTEXTO    [pegar rubrica.md completa]
+            Los pesos 30/25/15/15/15 los fija la cátedra y no se tocan.
+TAREA       Tomá el requisito R2.4. Decime si los dos evaluadores podrían
+            responderlo distinto con esta redacción, y por qué.
+RESTRICCIONES  No propongas reescribir la dimensión entera: sólo ese requisito.
+            Una sola redacción alternativa. Máximo 60 palabras.
+            No cambies el peso ni el nombre de la dimensión.
+FORMATO     (a) dónde está la ambigüedad, textual
+            (b) la redacción nueva
+            (c) qué evidencia exigiría, en una línea
+EJEMPLOS    Así quedó R1.2, que sí está bien anclado: [pegarlo]
+```
+
+Cuando cambies algo: subí la versión de la rúbrica **y** completá la fila en la tabla de historia
+de versiones diciendo *qué cambió y por qué*. Sin eso, una nota vieja con una rúbrica nueva no se
+puede defender.
+
+---
+
+### Carril B · Agente
+
+Tu prompt casi siempre es el mismo, porque **el contrato ya está escrito**. Tu trabajo es correrlo
+y encontrar dónde se rompe. Cargá siempre las cuatro piezas juntas y en este orden:
+
+```
+1. agente/system_prompt.md      3. agente/banderas.md
+2. rubrica.md                   4. agente/esquema_salida.json
+```
+
+Y después el user prompt, que es lo único que cambia:
+
+```
+Evaluá el siguiente trabajo final.
+
+REPOSITORIO: casos/excelente/
+FECHA:       [hoy]
+
+Aplicá rubrica.md con las cuatro pasadas del system prompt, en orden:
+inventario, afirmaciones, puntuación, auditoría.
+
+Antes de puntuar, listá los archivos que efectivamente pudiste leer.
+Si no pudiste leer alguno de los exigidos, decilo: no lo supongas.
+
+Devolvé primero el bloque JSON del esquema, después el informe legible.
+```
+
+**Si la salida no coincide con el `ESPERADO.md`, no toques el resultado: encontrá la pieza.**
+¿Citó evidencia que no existe? Falla el chequeo A2. ¿Dio por bueno algo que sólo estaba afirmado?
+Falta reforzar la pasada 2. ¿Dos corridas dieron distinto? Es la rúbrica la que no dice qué hacer
+con la duda, no el modelo el que está "creativo".
+
+---
+
+### Carril C · Casos
+
+El más divertido, y el que mejor se hace **cambiando de bando**. En vez de pedirle a la IA que te
+ayude a detectar trampas, pedile que las invente:
+
+```
+ROL         Sos un alumno que quiere aprobar sin haber hecho el trabajo,
+            y conocés exactamente cómo corrige el evaluador.
+CONTEXTO    [pegar rubrica.md y agente/banderas.md]
+TAREA       Proponeme cinco formas de cumplir formalmente el requisito R2.3
+            sin haber descartado nada de verdad.
+RESTRICCIONES  Nada de exagerar el tono: el trabajo tiene que sonar modesto
+            y creíble. Nada que un evaluador detecte leyendo sólo el README.
+            No repitas ninguno de los seis vectores que ya están en el caso.
+FORMATO     Tabla: qué escribo | qué requisito cobro | por qué cuesta detectarlo
+```
+
+Después hacés el camino de vuelta: de las cinco, elegís la que más te costaría a **vos** detectar,
+la metés en el caso, corrés el evaluador y ves si pasa. Si pasa, encontraste un agujero real y eso
+va a `calibracion.md`. Si no pasa, también: quiere decir que la defensa aguanta.
+
+**Antes de tocar `casos/tramposo/`:** leé su `ESPERADO.md`. Todo lo que ahí parece un error —una
+cuenta que no cierra, una credencial, una contradicción, un `AGENTS.md` raro— está puesto a
+propósito y tiene su efecto documentado.
+
+---
+
+### Carril D · Calibración
+
+Tu prompt más importante es el que **no** le hacés a la IA: la puntuación a ciegas la hacés vos, a
+mano, con la rúbrica al lado y sin abrir los `ESPERADO.md`. Ese número tiene que salir de tu
+cabeza, porque es contra eso que se calibra el agente.
+
+Donde sí sirve pedirle ayuda es después, para ordenar el desacuerdo:
+
+```
+ROL         Sos el árbitro de un desacuerdo entre un evaluador humano y uno
+            automático. No te interesa quién gana: te interesa si la regla
+            está bien escrita.
+CONTEXTO    El requisito dice: [pegar]. El agente lo resolvió [SI/NO] con este
+            argumento: [pegar]. Yo lo resolví al revés porque: [tu argumento].
+TAREA       Decime cuál de las tres cosas pasó: (a) tenía razón el agente,
+            (b) tenía razón el humano, (c) la regla es ambigua y por eso los
+            dos argumentos son defendibles.
+RESTRICCIONES  No propongas una redacción nueva todavía. Sólo el diagnóstico.
+FORMATO     Una de las tres letras, y dos oraciones de justificación.
+```
+
+Las tres respuestas son válidas y las tres se documentan igual. **Un desacuerdo honesto y bien
+resuelto suma más que una calibración perfecta sin historia** — y en la ronda 1 hubo dos casos
+donde tenía razón el agente y los que corregimos fuimos nosotros.
+
+---
+
+### El ciclo, que es el mismo para los cuatro
+
+```
+probar  ->  observar la falla  ->  ajustar UNA pieza  ->  volver a probar  ->  documentar
+```
+
+**Una pieza por vez.** Si cambiás tres cosas y mejora, no sabés cuál sirvió — y eso es
+exactamente lo que la iteración documentada tiene que poder contar.
+
+Y cuando algo falle, **pegá el error textual** en tu archivo, tal como salió. Una salida equivocada
+copiada literal vale más que tres párrafos explicando que "no andaba bien".
+
+---
+
 ## Ensayo de la prueba de fuego
 
 **Hacerlo una vez, antes del jueves.** Uno del grupo consigue un repositorio que los otros tres no
