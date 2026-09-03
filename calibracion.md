@@ -206,11 +206,11 @@ ver las corridas del agente y sin hablar con los demás. Se carga acá dimensió
 
 | Caso | Dim | Integrante 1 | Integrante 2 | Integrante 3 | Integrante 4 | Agente | Desacuerdo |
 |------|-----|:---:|:---:|:---:|:---:|:------:|:----------:|
-| excelente | D1 | | | | | 4 | |
-| excelente | D2 | | | | | 4 | |
-| excelente | D3 | | | | | 4 | |
-| excelente | D4 | | | | | 2 | |
-| excelente | D5 | | | | | 3 | |
+| excelente | D1 | | | | 1 | 4 | |
+| excelente | D2 | | | | 3 | 4 | |
+| excelente | D3 | | | | 3 | 4 | |
+| excelente | D4 | | | | 2 | 2 | |
+| excelente | D5 | | | | 1 | 3 | |
 | flojo | D1 | | | | | 1 | |
 | flojo | D2 | | | | | 1 | |
 | flojo | D3 | | | | | 1 | |
