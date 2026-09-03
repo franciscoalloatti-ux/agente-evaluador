@@ -9,7 +9,7 @@
 | *(completar)* | *(usuario)* | Rúbrica ejecutable: dimensiones, requisitos y compuertas |
 | Martín Bellagamba | Martin99-png | Agente corrector: system prompt, esquema de salida, auditoría |
 | *(Federico Böfer)* | *(federicobofer)* | Casos de prueba: excelente, flojo y tramposo |
-| *(completar)* | *(usuario)* | Calibración: puntuación a ciegas, estabilidad, arbitraje |
+| Verónica Pugliese | Veropugliese | Calibración: puntuación a ciegas, estabilidad, arbitraje |
 
 ---
 
