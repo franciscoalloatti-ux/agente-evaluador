@@ -252,9 +252,15 @@ correrlo sobre **al menos un repositorio de trabajo final real y ajeno** —de l
 alguien que preste el suyo— y anotar qué se rompió. La prueba de fuego va a ser exactamente eso, y
 es la única parte de la calibración que todavía no tiene evidencia.
 
+> **Nota de procedencia.** Los tres repositorios de abajo son entregas reales previas de Verónica
+> Pugliese (Calibración) para otra instancia de esta materia — no de un tercero desconocido. No son
+> "ajenos" en sentido estricto, pero sí son reales, con estructura no adaptada para esta prueba y
+> nunca vistos antes por el agente, que es lo que este punto necesita medir. Se documenta así, sin
+> disimularlo. Detalle completo de cada corrida en `corridas/2026-09-04_entrega-*.md`.
+
 | Repositorio | Fecha | Puntaje | Qué se rompió |
 |-------------|-------|--------:|---------------|
-| | | | |
+| `Veropugliese/entrega-3` | 2026-09-04 | 18/100 (bruto 17,50) | Compuerta de D1 literal sobre el nombre de carpeta (`contrato/` en vez de `prompts/`) capeó 7,5 puntos pese a las 6 piezas y herramienta real verificadas. Sin `DECISIONES.md`, compuerta de D2. R2.4 con git log real chocó con un caso no anticipado: la iteración central está commiteada en *otro* repositorio de la misma serie (`entrega-2`), fuera del alcance verificable. Sólo 2 de 3 corridas guardadas (la tercera, declarada honestamente como no descargable, no fabricada). |
 
 ---
 
