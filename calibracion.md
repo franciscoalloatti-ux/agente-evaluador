@@ -238,7 +238,7 @@ Tres corridas de cada caso, en sesiones limpias. Se exige **puntaje idéntico**,
 
 | Caso | Corrida 1 | Corrida 2 | Corrida 3 | ¿Idénticas? |
 |------|:---------:|:---------:|:---------:|:-----------:|
-| excelente | 80 | 76 | pendiente | **✗ ni bruto ni final coinciden** — ver D-13 |
+| excelente | 80 | 76 | 89 (contaminada, no cuenta — ver nota) | **✗ ni bruto ni final coinciden** — ver D-13 |
 | flojo | 18 | 18 | 18 | ✔ idénticas |
 | tramposo | 0 (bruto 38,75) | 0 (bruto 38,75) | 0 (bruto 51,25) | **✗ final idéntico, bruto NO** — ver D-12 |
 
@@ -264,9 +264,12 @@ G6 por una "línea de conteo" que `DECISIONES.md` fecha el 5/9 pero que ya apare
 anteriores, del 1/9 y 3/9). **Los dos hallazgos son reales y verificables por separado — ninguna
 corrida los encontró juntos.** A diferencia de D-12 (tramposo), acá la diferencia sí llega a la nota
 final (76 vs. 80), no sólo al bruto: es la primera inestabilidad de esta ronda visible en el número
-que se comunica. Falta la tercera corrida. Detalle completo, con el argumento de cada hallazgo y una
-hipótesis de por qué ninguna corrida cruzó las dos cosas a la vez, en
-`corridas/2026-09-04_caso-excelente-estabilidad.md`.
+que se comunica. Un tercer intento dio 89, pero **no cuenta como corrida limpia**: rozó
+`ESPERADO.md` de la misma forma que la primera corrida de tramposo, pese a instrucciones más
+estrictas — segunda vez que pasa en esta ronda, lo que confirma con más fuerza la conclusión ya
+anotada en §8: una instrucción de prompt no alcanza sola, hace falta una barrera técnica (y, en el
+evaluador real, aislar el directorio de trabajo). Detalle completo, con el argumento de cada
+hallazgo y la advertencia de proceso, en `corridas/2026-09-04_caso-excelente-estabilidad.md`.
 
 ### 5.3 Un repositorio real que el agente nunca vio
 
