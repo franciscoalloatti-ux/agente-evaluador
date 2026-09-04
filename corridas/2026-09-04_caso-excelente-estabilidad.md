@@ -1,14 +1,38 @@
 # Prueba de estabilidad — caso excelente (§5.2), contrato v1.3
 
-Tres corridas en sesiones limpias, independientes entre sí. Corrida 1 pendiente.
+Tres corridas intentadas en sesiones limpias, independientes entre sí. **Ninguna de las tres queda
+como evidencia "limpia" simultánea** — ver advertencia de proceso más abajo.
 
-| Corrida | D1 | D2 | D3 | D4 | D5 | Bruto | Final | Bandera clave |
-|---------|:--:|:--:|:--:|:--:|:--:|------:|------:|----------------|
-| 1 | — | — | — | — | — | — | — | pendiente |
-| 2 | 4 | **4** | 4 | **1** | 3 | **85,00** | **80** | G7 (proyección anual "unos 3 dólares" no reconcilia con la cadencia semanal declarada) |
-| 3 | 4 | **2** | 4 | **2** | 3 | **76,25** | **76** | G6 ("línea de conteo" fechada 5/9 en el registro de cambios, ya presente en corridas del 1/9 y 3/9) |
+| Corrida | D1 | D2 | D3 | D4 | D5 | Bruto | Final | Bandera clave | ¿Limpia? |
+|---------|:--:|:--:|:--:|:--:|:--:|------:|------:|----------------|:--------:|
+| 2 | 4 | **4** | 4 | **1** | 3 | **85,00** | **80** | G7 (proyección anual "unos 3 dólares" no reconcilia con la cadencia semanal declarada) | ✔ |
+| 3 | 4 | **2** | 4 | **2** | 3 | **76,25** | **76** | G6 ("línea de conteo" fechada 5/9 en el registro de cambios, ya presente en corridas del 1/9 y 3/9) | ✔ |
+| 1 | 4 | **4** | 4 | **2** | 3 | **88,75** | **89** | Ninguna — no detectó ni el Hallazgo A ni el B | ✗ contaminada |
 
 *(Numeración de corrida = orden de finalización, no de lanzamiento.)*
+
+## Advertencia de proceso — corrida 1 también rozó ESPERADO.md, pese a instrucciones más estrictas
+
+Después de que la corrida 1 de tramposo tuviera el mismo problema, relancé esta corrida de excelente
+con instrucciones explícitas de listar archivos y leerlos uno por uno, evitando `grep` recursivo. Aun
+así, el propio agente reportó que una primera búsqueda con `grep` no excluyó correctamente
+`casos/excelente/ESPERADO.md` y expuso fragmentos (incluido un puntaje de referencia numérico) antes
+de que descartara ese contenido y rehiciera la búsqueda acotada. Declaró el incidente sin que se le
+preguntara y marcó la corrida como potencialmente inválida por su cuenta.
+
+**Esto ya pasó dos veces en esta ronda** (tramposo corrida 1, y ahora esta) **pese a instrucciones
+explícitas en el prompt las dos veces** — la segunda vez con una instrucción todavía más específica
+que la primera. Confirma con más fuerza la conclusión operativa que ya estaba en `calibracion.md` §8
+punto 2 (ronda 5): **una instrucción de prompt no es una defensa suficiente y confiable por sí sola.**
+Para el evaluador real, la mitigación que ya se adoptó (clonar el repositorio evaluado fuera del
+directorio de trabajo) sigue siendo la primera línea de defensa, no el contrato. Para nuestro propio
+ejercicio de calibración, la lección técnica es la misma: `ESPERADO.md` debería vivir fuera del árbol
+que un agente evaluador recorre, no dentro de `casos/*/` junto con el resto.
+
+Se conserva el resultado de la corrida 1 como referencia (coincide con la banda esperada, 82–92, algo
+esperable dado que tuvo contacto — aunque descartado — con el propio puntaje de referencia), pero
+**no cuenta como una tercera corrida ciega válida.** La prueba de estabilidad del caso excelente
+queda con sólo 2 corridas limpias, que ya alcanzan para documentar D-13 con evidencia sólida.
 
 ## D-13 · Inestabilidad real en el caso excelente — cada corrida encontró un problema real distinto, y ninguna encontró los dos
 
