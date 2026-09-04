@@ -238,12 +238,22 @@ Tres corridas de cada caso, en sesiones limpias. Se exige **puntaje idéntico**,
 
 | Caso | Corrida 1 | Corrida 2 | Corrida 3 | ¿Idénticas? |
 |------|:---------:|:---------:|:---------:|:-----------:|
-| excelente | | | | |
-| flojo | | | | |
-| tramposo | | | | |
+| excelente | 80 (corrida 3, ver nota) | pendiente | pendiente | pendiente — faltan 2 corridas |
+| flojo | 18 | 18 | 18 | ✔ idénticas |
+| tramposo | 0 (bruto 38,75) | 0 (bruto 38,75) | pendiente | parcial — 2/3 idénticas, falta la 3ª |
 
 *(En la ronda 1 esta prueba falló: el caso flojo dio 21 y 17. Fue lo que produjo D-4. Volver a
-correrla es la verificación de que el arreglo funcionó.)*
+correrla es la verificación de que el arreglo funcionó — con el contrato v1.3, las tres corridas de
+flojo dieron exactamente 18, mismos niveles.)*
+
+**Tramposo.** Dos corridas completas dieron resultado idéntico (D1-D5: 2·2·2·1·0, bruto 38,75, final
+0, las mismas 7 banderas G3). Detalle completo, incluida una advertencia de proceso sobre la primera
+corrida (un `grep` amplio rozó accidentalmente `ESPERADO.md`), en
+`corridas/2026-09-04_caso-tramposo-estabilidad.md`. Tercera corrida pendiente.
+
+**Excelente.** Sólo una corrida completa por ahora (D1-D5: 4·4·4·1·3, bruto 85, final 80, con G7 por
+la proyección anual que no cierra — ver ronda anterior). Las otras dos se interrumpieron por el
+límite de uso de la sesión antes de poder completarse; pendientes de reintentar.
 
 ### 5.3 Un repositorio real que el agente nunca vio
 
@@ -262,6 +272,13 @@ es la única parte de la calibración que todavía no tiene evidencia.
 |-------------|-------|--------:|---------------|
 | `Veropugliese/entrega-3` | 2026-09-04 | 18/100 (bruto 17,50) | Compuerta de D1 literal sobre el nombre de carpeta (`contrato/` en vez de `prompts/`) capeó 7,5 puntos pese a las 6 piezas y herramienta real verificadas. Sin `DECISIONES.md`, compuerta de D2. R2.4 con git log real chocó con un caso no anticipado: la iteración central está commiteada en *otro* repositorio de la misma serie (`entrega-2`), fuera del alcance verificable. Sólo 2 de 3 corridas guardadas (la tercera, declarada honestamente como no descargable, no fabricada). |
 | `Veropugliese/entrega-1` | 2026-09-04 | 21/100 (bruto 21,25) | Nunca existió `prompts/`, `corridas/` ni `DECISIONES.md` (confirmado con `git log --all --name-only`, no inferido) — activa 3 compuertas de techo a la vez. D2 por conteo de requisitos daría nivel 3 (dos iteraciones corroboradas por commits reales) y termina en nivel 1 sólo por el nombre del archivo faltante. R1.2 fue la decisión más frágil de la corrida: sin `corridas/`, tuvo que resolver si la evidencia de herramienta real "vive en el concepto" (que sí) en vez de en la ubicación literal — con la lectura más estricta el final baja de 21 a 14. Detectó que un autor de `git log` coincide con el email de la sesión y lo dejó anotado sin usarlo para nada. |
+| `Veropugliese/entrega-2` | 2026-09-04 | 21/100 (bruto 21,25) | Mismo patrón: sin `prompts/`, `corridas/` ni `DECISIONES.md` (usa `ejemplos/`, `iteraciones/`), 3 compuertas de techo. D5 fue la dimensión mejor lograda de los tres repos reales (nivel 2/4: permisos de sólo lectura y credenciales acotadas en un workflow real de GitHub Actions, 3 modos de falla con manejo real). El agente no pudo resolver solo si el código de automatización pertenecía a "esta entrega" o a una entrega anterior reintegrada (los mensajes de commit lo sugieren) y lo dejó en `dudas[]` en vez de decidir — exactamente el comportamiento que se busca ante una zona gris genuina. |
+
+**Patrón a través de los tres repositorios reales.** Los tres (`entrega-1`, `entrega-2`, `entrega-3`)
+tropiezan con la misma clase de falla: nunca usan los nombres exactos `prompts/`, `corridas/` y
+`DECISIONES.md`, lo que dispara compuertas de techo simultáneas en D1, D2 y D3 sin importar cuánta
+sustancia real haya debajo — algo que los tres casos construidos por el grupo (`casos/`) nunca podían
+mostrar, porque los tres siguen la estructura al pie de la letra. Ver también §8.
 
 ---
 
@@ -457,6 +474,23 @@ Tres cosas que no arreglamos, dichas como son:
    encontrara, y eso infla cualquier medición de acierto. Es exactamente el sesgo que la ronda 3.3
    existe para corregir, y hasta que no esté hecha, los números de la §4 hay que leerlos con esa
    reserva puesta.
+
+   *(Actualización 4/9: §5.3 ya tiene evidencia — tres repositorios reales, aunque propios de una
+   integrante del grupo, no de un tercero desconocido. El sesgo de "los casos son nuestros" queda
+   mitigado para D1-D5 en general, pero sigue intacto para las banderas G1-G8: ningún repositorio
+   real corrido hasta ahora tiene inyecciones, corridas fabricadas ni credenciales expuestas para
+   probar si el agente las detecta fuera del laboratorio del grupo.)*
+
+6. **Las compuertas duras de D1-D3 son literales sobre nombres de carpeta, y eso castiga con dureza
+   a un trabajo real con estructura equivalente pero distinta.** Los tres repositorios de §5.3 —
+   ninguno construido para esta prueba — nunca usan exactamente `prompts/`, `corridas/` y
+   `DECISIONES.md`, y los tres terminan con tres compuertas de techo activadas a la vez (D1≤1,
+   D2≤1, D3≤1) pese a tener seis piezas de contrato completas, herramientas reales verificables e
+   iteraciones genuinas corroboradas por commits. En `entrega-1`, D2 pasa de nivel 3 (18,75 pts) a
+   nivel 1 (6,25 pts) sólo porque el archivo se llama distinto. Ningún caso construido por el grupo
+   podía mostrar esto, porque los tres siguen la estructura obligatoria al pie de la letra. No lo
+   cambiamos todavía: es una decisión de rúbrica (Carril A), no algo que Calibración pueda resolver
+   sola — lo dejamos señalado con la evidencia de las tres corridas en `corridas/2026-09-04_entrega-*.md`.
 
 ---
 
