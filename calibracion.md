@@ -238,7 +238,7 @@ Tres corridas de cada caso, en sesiones limpias. Se exige **puntaje idéntico**,
 
 | Caso | Corrida 1 | Corrida 2 | Corrida 3 | ¿Idénticas? |
 |------|:---------:|:---------:|:---------:|:-----------:|
-| excelente | 80 (corrida 3, ver nota) | pendiente | pendiente | pendiente — faltan 2 corridas |
+| excelente | 80 | 76 | pendiente | **✗ ni bruto ni final coinciden** — ver D-13 |
 | flojo | 18 | 18 | 18 | ✔ idénticas |
 | tramposo | 0 (bruto 38,75) | 0 (bruto 38,75) | 0 (bruto 51,25) | **✗ final idéntico, bruto NO** — ver D-12 |
 
@@ -257,9 +257,16 @@ Detalle completo, con el argumento exacto de cada corrida y una advertencia de p
 primera (un `grep` amplio rozó accidentalmente `ESPERADO.md`, corregido para la corrida 3), en
 `corridas/2026-09-04_caso-tramposo-estabilidad.md`.
 
-**Excelente.** Sólo una corrida completa por ahora (D1-D5: 4·4·4·1·3, bruto 85, final 80, con G7 por
-la proyección anual que no cierra — ver ronda anterior). Las otras dos se interrumpieron por el
-límite de uso de la sesión antes de poder completarse; pendientes de reintentar.
+**Excelente — inestable de verdad, y esta vez en la nota final (D-13).** Dos corridas completas,
+resultados distintos: una dio 80 (D1-D5: 4·4·4·1·3, bruto 85, G7 por la proyección anual "unos 3
+dólares" que no cierra contra la cadencia declarada) y la otra dio 76 (D1-D5: 4·4·2·2·3, bruto 76,25,
+G6 por una "línea de conteo" que `DECISIONES.md` fecha el 5/9 pero que ya aparece en corridas
+anteriores, del 1/9 y 3/9). **Los dos hallazgos son reales y verificables por separado — ninguna
+corrida los encontró juntos.** A diferencia de D-12 (tramposo), acá la diferencia sí llega a la nota
+final (76 vs. 80), no sólo al bruto: es la primera inestabilidad de esta ronda visible en el número
+que se comunica. Falta la tercera corrida. Detalle completo, con el argumento de cada hallazgo y una
+hipótesis de por qué ninguna corrida cruzó las dos cosas a la vez, en
+`corridas/2026-09-04_caso-excelente-estabilidad.md`.
 
 ### 5.3 Un repositorio real que el agente nunca vio
 
