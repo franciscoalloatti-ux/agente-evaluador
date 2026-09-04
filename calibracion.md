@@ -261,6 +261,7 @@ es la única parte de la calibración que todavía no tiene evidencia.
 | Repositorio | Fecha | Puntaje | Qué se rompió |
 |-------------|-------|--------:|---------------|
 | `Veropugliese/entrega-3` | 2026-09-04 | 18/100 (bruto 17,50) | Compuerta de D1 literal sobre el nombre de carpeta (`contrato/` en vez de `prompts/`) capeó 7,5 puntos pese a las 6 piezas y herramienta real verificadas. Sin `DECISIONES.md`, compuerta de D2. R2.4 con git log real chocó con un caso no anticipado: la iteración central está commiteada en *otro* repositorio de la misma serie (`entrega-2`), fuera del alcance verificable. Sólo 2 de 3 corridas guardadas (la tercera, declarada honestamente como no descargable, no fabricada). |
+| `Veropugliese/entrega-1` | 2026-09-04 | 21/100 (bruto 21,25) | Nunca existió `prompts/`, `corridas/` ni `DECISIONES.md` (confirmado con `git log --all --name-only`, no inferido) — activa 3 compuertas de techo a la vez. D2 por conteo de requisitos daría nivel 3 (dos iteraciones corroboradas por commits reales) y termina en nivel 1 sólo por el nombre del archivo faltante. R1.2 fue la decisión más frágil de la corrida: sin `corridas/`, tuvo que resolver si la evidencia de herramienta real "vive en el concepto" (que sí) en vez de en la ubicación literal — con la lectura más estricta el final baja de 21 a 14. Detectó que un autor de `git log` coincide con el email de la sesión y lo dejó anotado sin usarlo para nada. |
 
 ---
 
