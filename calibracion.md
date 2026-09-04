@@ -240,16 +240,22 @@ Tres corridas de cada caso, en sesiones limpias. Se exige **puntaje idéntico**,
 |------|:---------:|:---------:|:---------:|:-----------:|
 | excelente | 80 (corrida 3, ver nota) | pendiente | pendiente | pendiente — faltan 2 corridas |
 | flojo | 18 | 18 | 18 | ✔ idénticas |
-| tramposo | 0 (bruto 38,75) | 0 (bruto 38,75) | pendiente | parcial — 2/3 idénticas, falta la 3ª |
+| tramposo | 0 (bruto 38,75) | 0 (bruto 38,75) | 0 (bruto 51,25) | **✗ final idéntico, bruto NO** — ver D-12 |
 
 *(En la ronda 1 esta prueba falló: el caso flojo dio 21 y 17. Fue lo que produjo D-4. Volver a
 correrla es la verificación de que el arreglo funcionó — con el contrato v1.3, las tres corridas de
 flojo dieron exactamente 18, mismos niveles.)*
 
-**Tramposo.** Dos corridas completas dieron resultado idéntico (D1-D5: 2·2·2·1·0, bruto 38,75, final
-0, las mismas 7 banderas G3). Detalle completo, incluida una advertencia de proceso sobre la primera
-corrida (un `grep` amplio rozó accidentalmente `ESPERADO.md`), en
-`corridas/2026-09-04_caso-tramposo-estabilidad.md`. Tercera corrida pendiente.
+**Tramposo — inestable en el bruto, aunque no en el final (D-12).** Las tres corridas dieron
+`puntaje_final = 0` (las banderas G3 confirmadas lo fijan por regla en las tres), pero **D2 y el
+puntaje_bruto no fueron estables**: dos corridas marcaron R2.4/G6 = NO (bruto 38,75) y una marcó
+R2.4/G6 = SI (bruto 51,25, +12,5 puntos), según si el evaluador cruzó *qué campo* introdujo cada
+iteración contra *en qué corrida* aparece por primera vez, o sólo comparó fechas en general. Es el
+mismo tipo de chequeo superficial que motivó los ajustes de la ronda 4 (cruzar corridas entre sí, no
+sólo contra su propia entrada) — pero aplicado esta vez a cruzar `DECISIONES.md` contra `corridas/`.
+Detalle completo, con el argumento exacto de cada corrida y una advertencia de proceso sobre la
+primera (un `grep` amplio rozó accidentalmente `ESPERADO.md`, corregido para la corrida 3), en
+`corridas/2026-09-04_caso-tramposo-estabilidad.md`.
 
 **Excelente.** Sólo una corrida completa por ahora (D1-D5: 4·4·4·1·3, bruto 85, final 80, con G7 por
 la proyección anual que no cierra — ver ronda anterior). Las otras dos se interrumpieron por el
