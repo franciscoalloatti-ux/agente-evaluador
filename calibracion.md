@@ -207,9 +207,13 @@ ver las corridas del agente y sin hablar con los demás. Se carga acá dimensió
 **El procedimiento, paso por paso.** Toma unos 20 minutos por persona:
 
 1. Abrir `rubrica.md` y tenerla al lado. Se puntúa con ella, no de memoria.
-2. Leer **sólo el trabajo**: `casos/excelente/`, `casos/flojo/` y `casos/tramposo/`.
-3. **No abrir `ESPERADO.md`, ni `corridas/`, ni el `README.md` de la raíz.** Los tres publican el
-   resultado —el README trae la tabla con los puntajes de los tres casos—. Quien los vea queda contaminado
+2. Leer **sólo el trabajo**. Cada caso es el **trabajo final de un alumno inventado**, con su
+   `README.md`, sus `prompts/`, sus `corridas/` y su `DECISIONES.md`. Se lee **todo eso**: son la
+   evidencia. La del caso excelente la firma "Ana Beltrán", que no existe — la escribimos nosotros.
+3. **No abrir tres cosas, todas de la raíz del repositorio:** el `ESPERADO.md` de cada caso, la
+   carpeta `corridas/` **de la raíz** (la de nuestro agente, no la del alumno) y el `README.md`
+   **de la raíz** (trae la tabla con los puntajes de los tres casos). Los tres publican el
+   resultado. Quien los vea queda contaminado
    y su columna no sirve — y esto ya pasó: dos corridas de esta misma ronda rozaron `ESPERADO.md` y
    hubo que descartarlas (ver §5.2 y el commit `3aa5c5d`).
 4. Un nivel de **0 a 4 por dimensión**, quince números en total, en la tabla de acá abajo. Cada uno
