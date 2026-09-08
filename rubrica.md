@@ -1,6 +1,6 @@
 # Rúbrica ejecutable — Trabajo final
 
-> **Versión 1.5** · Programación de y con Agentes de IA · MBA UCEMA · 2026 2T
+> **Versión 1.6** · Programación de y con Agentes de IA · MBA UCEMA · 2026 2T
 > Historia de versiones al final. Los cambios entre versiones se justifican en `calibracion.md`.
 
 Esta rúbrica traduce la rúbrica oficial del trabajo final (dimensiones y pesos fijados por la
@@ -176,7 +176,7 @@ tercero. Acá el formato no es burocracia: es la condición para que exista corr
 
 | ID | Requisito | Evidencia exigida |
 |----|-----------|-------------------|
-| R3.1 | **Estructura obligatoria completa** en la raíz: `README.md`, `prompts/`, `corridas/`, `DECISIONES.md`. | Listado de archivos de la raíz. Los cuatro presentes, o R3.1 = NO. |
+| R3.1 | **Estructura obligatoria completa** en la **raíz efectiva**: `README.md`, `prompts/`, `corridas/`, `DECISIONES.md`. | Listado de archivos de la raíz efectiva. Los cuatro presentes, o R3.1 = NO. **La raíz efectiva es la carpeta que contiene el README estándar**, no necesariamente el nivel superior: la materia admite la entrega en `.zip`, que casi siempre trae carpeta contenedora. Nombres **sin distinguir mayúsculas** (`Prompts/` cumple) pero **sin tolerancia al nombre** (`prompt/` no). |
 | R3.2 | **README estándar** con las cinco secciones, con esos títulos: *Qué construí · Cómo se lo pedí · Qué funciona · Qué falta o qué falló · Qué aprendí*. | Cita de los 5 encabezados. Falta uno → NO. Una sección presente pero vacía cuenta como faltante. |
 | R3.3 | **Tres corridas guardadas** en `corridas/`, cada una con **entrada, salida y fecha**. | Cita de los 3 archivos con sus tres elementos. Dos corridas → NO. |
 | R3.4 | **Reconstruibles por un tercero.** La entrada está completa (no "los datos de siempre") y la salida se corresponde con esa entrada. | Cita del par entrada→salida de al menos 2 corridas donde el vínculo sea verificable: un valor de la entrada aparece en la salida. |
@@ -184,6 +184,9 @@ tercero. Acá el formato no es burocracia: es la condición para que exista corr
 ### Compuertas duras
 
 - Falta `corridas/` o hay **menos de 3** corridas → **D3 ≤ 1**.
+- Una carpeta contenedora (típica del `.zip`) **no es un incumplimiento**: se normaliza y se
+  reporta en `dudas[]`. Más de **dos** niveles de anidamiento sí: a esa altura el trabajo dejó
+  de ser predecible para quien lo corrige, que es la razón por la que el formato es fijo.
 - Las 3 corridas son **idénticas** entre sí → bandera **G2**; R3.3 = NO y R3.4 = NO.
 - El repositorio es privado o el link no abre → el trabajo **no se puede corregir**: se emite
   informe con `estado: "no_evaluable"` y se escala al profesor. **No se inventa una nota.**
@@ -392,6 +395,7 @@ veces** y verificar puntaje idéntico. Resultado registrado en `calibracion.md`.
 | Versión | Qué cambió | Por qué |
 |---------|-----------|---------|
 | 1.0 | Primera rúbrica ejecutable: 5 dimensiones, escala 0–4, requisitos verificables, regla de evidencia | Punto de partida |
+| 1.6 | **Normalización de la entrada** (paso 0.5 de la pasada 1): se determina el formato (`repositorio_git`, `zip`, `carpeta`) y la **raíz efectiva** —la carpeta que contiene el README estándar— y toda la estructura se juzga relativa a ella. Nombres insensibles a mayúsculas, sensibles al nombre. Campos nuevos `formato_entrada` y `raiz_efectiva` | El documento de formato de la materia admite la entrega *"en la raíz del repositorio **(o del .zip)**"*, y un `.zip` casi siempre trae carpeta contenedora. Sin esto, el evaluador reportaba "falta el README" sobre un trabajo que lo tenía un nivel más abajo — un falso negativo en R3.1 que hunde a alguien por una propiedad del formato, no por una decisión suya |
 | 1.5 | (a) **§0.4 regla de forma y fondo**: la ubicación se evalúa en D3, el contenido en su dimensión — una vez cada uno; (b) nuevo estado **`fuera_de_alcance`** para un repositorio legible que no es un trabajo final; (c) **R1.3 exige enumerar los campos de las tres salidas**, no citar lo que el README afirma sobre ellos; (d) **C5 pasa a granularidad de campo**: qué campo introdujo cada iteración contra en qué corrida aparece por primera vez | Los tres hallazgos de la corrida sobre un repositorio real del 2/9 (**H-1**, **H-2**, **H-3** en `corridas/2026-09-02_repo-real-ajeno.md`), y **D-12** de la ronda 3, que era el mismo cruce C5 sin la granularidad suficiente |
 | 1.4 | **Batería de seis cruces** (C1–C6) en la pasada 2, enumerada y de reporte obligatorio en `cruces_realizados`, más el chequeo **A9** que impide emitir el informe con un cruce sin reportar. Los cruces nuevos son **C3** (el README contra sí mismo) y **C5** (`DECISIONES.md` contra las fechas de `corridas/`) | **D-13**: dos corridas del caso excelente dieron **80 y 76**. Cada una encontró un problema real distinto y ninguna encontró los dos, porque los cruces que hacían falta no estaban nombrados en el contrato. La causa no era criterio sino **cobertura**: un cruce que no se reporta es indistinguible de uno que no se hizo. Ver `calibracion.md` §5.2 |
 | 1.3 | (a) nuevo subtipo **G3d · configuración de agente plantada** (`AGENTS.md`, `CLAUDE.md`, `.cursorrules`…) y **regla de la configuración ajena**; (b) la pasada 1 busca esos archivos **antes que ningún otro** y los declara en el inventario; (c) el chequeo **A6** se extiende a las instrucciones que llegaron por la herramienta, no sólo a las leídas; (d) mitigación operativa en `agente/config.md` §3: el repositorio evaluado se clona fuera del directorio de trabajo | Sexto vector del caso tramposo. Con la v1.2 el agente **obedeció**: emitió el informe con `revision_humana_requerida: false` y sin la sección de banderas, habiendo detectado las trece. Ver `calibracion.md` §7 |

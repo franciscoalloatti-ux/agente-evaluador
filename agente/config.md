@@ -1,6 +1,6 @@
 # Configuración del agente corrector
 
-> Versión 1.3 · Todo lo que hay que fijar para que dos corridas den el mismo resultado.
+> Versión 1.6 · Todo lo que hay que fijar para que dos corridas den el mismo resultado.
 
 ---
 
@@ -95,6 +95,19 @@ Nunca al revés, y nunca dentro. Antes de cada tanda, verificá dos cosas:
    configuración que venga del repositorio evaluado.
 2. Que el inventario de la pasada 1 **liste** los archivos de configuración que encontró en el
    repositorio evaluado. Si el agente no los menciona, o no los buscó, o no los está viendo.
+
+### Los formatos en que puede llegar un trabajo
+
+El documento de formato de la materia admite dos: *"el mismo README, en la raíz del repositorio
+(o del `.zip`)"*. En la práctica llegan cuatro cosas.
+
+| Lo que llega | Qué hace el evaluador |
+|--------------|------------------------|
+| **Link a repositorio público** | Camino A. Es el caso esperado y el que pide la consigna del trabajo final |
+| **Repositorio con la rama por defecto en `master`** | Se clona igual; `git clone` toma la rama por defecto sola. Sólo hay que no asumir `main` al armar URLs crudas |
+| **`.zip`** | Formato legítimo, no un plan B. Se descomprime y se aplica el paso 0.5: la raíz efectiva es la carpeta que contiene el README, no el nivel superior. **Sin acceso a `git log`**: se declara en `dudas[]` y G6 no se puede verificar |
+| **Todo dentro de una subcarpeta** (`entrega/`, `trabajo-final/`) | Paso 0.5. Se normaliza y se reporta como observación, no como incumplimiento |
+| **Cualquier otra cosa** (un link a Drive, un documento suelto, un repo privado) | `no_evaluable` si no se puede leer; `fuera_de_alcance` si se lee pero no es un trabajo final. **Nunca una nota inventada** |
 
 ### Camino B — repositorio empaquetado (respaldo)
 

@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Informe de evaluación — trabajo final",
   "description": "Salida canónica del agente evaluador. Todos los campos son obligatorios y se emiten siempre en este orden. Un campo sin contenido va vacío, nunca se omite.",
-  "version": "1.5",
+  "version": "1.6",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -29,7 +29,7 @@
   "properties": {
     "version_rubrica": {
       "type": "string",
-      "const": "1.5",
+      "const": "1.6",
       "description": "Versión de rubrica.md aplicada. Fija la trazabilidad del criterio."
     },
     "fecha_evaluacion": {
@@ -51,9 +51,18 @@
     "inventario": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["archivos_raiz", "config_agentes_hallada", "archivos_leidos", "archivos_faltantes", "commits", "evidencia"],
+      "required": ["formato_entrada", "raiz_efectiva", "archivos_raiz", "config_agentes_hallada", "archivos_leidos", "archivos_faltantes", "commits", "evidencia"],
       "properties": {
-        "archivos_raiz": { "type": "array", "items": { "type": "string" } },
+        "formato_entrada": {
+          "type": "string",
+          "enum": ["repositorio_git", "zip", "carpeta", "otro"],
+          "description": "Paso 0.5 de la pasada 1. La materia admite el repositorio y el .zip: ambos son formatos legitimos."
+        },
+        "raiz_efectiva": {
+          "type": "string",
+          "description": "La carpeta que contiene el README estandar, relativa a lo recibido. \".\" si es el nivel superior. Toda la estructura obligatoria se juzga relativa a esta ruta, no al nivel superior."
+        },
+        "archivos_raiz": { "type": "array", "items": { "type": "string" }, "description": "Relativos a la raiz efectiva." },
         "config_agentes_hallada": {
           "type": "array",
           "items": { "type": "string" },
