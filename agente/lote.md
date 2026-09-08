@@ -1,6 +1,6 @@
 # Corrección en lote — de la exportación de Moodle a la devolución
 
-> **Versión 1.0** · Se aplica sobre el contrato completo (`system_prompt.md` + `rubrica.md` +
+> **Versión 1.1** · Se aplica sobre el contrato completo (`system_prompt.md` + `rubrica.md` +
 > `banderas.md` + `esquema_salida.json`). No lo reemplaza: lo envuelve.
 
 El agente que gane el jueves no corrige un trabajo: corrige **cincuenta o más**, una sola vez, y su
@@ -11,6 +11,43 @@ Sale de lo que el profesor planteó en la clase del 3/9: que lo interesante es *
 trabajo por trabajo sino poder cargar todos juntos"*, que Moodle le exporta las entregas, que el
 corrector toma los datos de ahí, ata el nombre al GitHub, corrige en lote y devuelve un archivo en
 el formato de Moodle para volver a subirlo.
+
+---
+
+## 0 · Tres formas de cargar, dos de devolver
+
+No hay un único escenario. El corrector tiene que aceptar lo que haya, y devolver en la forma que
+sirva en cada momento.
+
+### Cómo entra
+
+| Modo | Cuándo se usa | Qué recibe |
+|------|---------------|------------|
+| **Individual** | La prueba de fuego, o revisar un trabajo puntual | Una URL de repositorio, o un `.zip` suelto |
+| **Grupal / carpeta** | Corregir un subconjunto: una comisión, los que faltan, los que hay que rehacer | Una carpeta con varios repositorios o `.zip`, sin índice |
+| **Formato Moodle** | La corrección real de la cursada | El árbol de "Descargar todas las entregas", con el índice nombre → URL adentro |
+
+Los tres terminan en el mismo procedimiento (§2). Lo único que cambia es **de dónde sale el índice**:
+en el modo Moodle se lee de los `Texto en línea.html`; en el grupal se deduce del nombre de cada
+carpeta o `.zip`; en el individual no hace falta.
+
+> En el modo grupal, **el nombre del archivo es el único vínculo con el alumno**. Si un `.zip` se
+> llama `entrega_final.zip` y nada más, el trabajo se corrige igual pero la fila sale sin nombre y
+> se lista aparte para que una persona la ate a mano. **No se adivina de quién es.**
+
+### Cómo sale
+
+| Salida | Para qué | Qué es |
+|--------|----------|--------|
+| **Para Moodle** | Subir la corrección de una vez | La hoja con `Calificación` y `Comentarios de retroalimentación` por alumno, lista para importar |
+| **Vista rápida** | Mirar el lote antes de subir nada | Una fila por trabajo: nombre · estado · puntaje · banderas · una línea. Ordenable, para barrer cincuenta de un vistazo |
+
+**La nota y la devolución van por separado**, porque así las toma Moodle: el puntaje entra en
+`Calificación` sobre 100 y el texto en el cuadro de retroalimentación. Nunca se mete el número
+adentro del texto: quedaría duplicado en la pantalla del alumno.
+
+Y el expediente completo (§4a) se emite **siempre**, en las dos salidas. Es la trazabilidad, y no
+depende de qué vista se haya pedido.
 
 ---
 
@@ -92,6 +129,24 @@ repositorios distintos en el medio.
 
 Los tres testigos se informan en el resumen del lote, siempre, aunque coincidan.
 
+
+### Las anclas del lote y las notas extremas
+
+El caso testigo mantiene la vara **entre** trabajos. Falta el control sobre **cada** trabajo, y es
+una práctica que ya existe: en su propio taller de corrección, el profesor marca las notas extremas
+con una nota al margen — *"nota extrema: releerlo en frío al día siguiente, contra las anclas del
+lote"*.
+
+Nuestra versión, que ya estaba en `config.md` §5 y acá se nombra:
+
+- **Todo informe con puntaje final < 40 o > 90 se revisa antes de publicarse.** No porque esté mal,
+  sino porque son los dos extremos donde un error se nota más y donde el alumno va a reclamar.
+- La revisión se hace **contra el caso testigo**, no contra la impresión: si el testigo dio 89 y
+  este trabajo da 92, la pregunta concreta es qué tiene de más que el testigo.
+
+Es la diferencia entre revisar "porque el número me llamó la atención" y revisar **contra una
+referencia fija**. Lo segundo se puede discutir; lo primero es una corazonada.
+
 ### Paso 4 · La salida — dos artefactos
 
 **a. El expediente completo**, un archivo por trabajo, con el JSON canónico del esquema. Es la
@@ -103,7 +158,7 @@ trazabilidad: sin esto no se puede defender una nota ni atender un reclamo.
 |---------|-----------|
 | `Nombre` | tal como vino en la carpeta, sin normalizar |
 | `Calificación` | `puntaje_final`. **Vacío** si el estado es `integridad_comprometida`, `fuera_de_alcance` o `no_evaluable` |
-| `Comentarios de retroalimentación` | La **variante corta** de `plantilla_informe.md`: máximo 180 palabras |
+| `Comentarios de retroalimentación` | La **variante corta** de `plantilla_informe.md`: máximo 180 palabras. **Sin el número adentro**: la nota ya va en su columna y repetirla la duplica en la pantalla del alumno |
 
 Los tres estados sin nota van con su texto explicando por qué, y **se listan aparte en el resumen
 del lote** para que el profesor los mire uno por uno antes de importar nada.
