@@ -68,8 +68,8 @@ USD 1,00 por millón de tokens de entrada y USD 5,00 de salida.
                      total  = USD 0,0168 por corrida
 ```
 
-Redondeando, menos de dos centavos por corrida. En un año son unos 3 dólares. Usé el modelo
-liviano porque para leer un CSV y llenar 9 campos alcanza y sobra.
+Redondeando, menos de dos centavos por corrida. Usé el modelo liviano porque para leer un CSV y
+llenar 9 campos alcanza y sobra.
 
 ## Gobierno y riesgo
 

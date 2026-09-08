@@ -84,7 +84,7 @@ decidido distinto. Es lo primero que haría si esto siguiera.
 |-------|---------|-----------|--------|
 | 27/8 | — | Prompt único, en el chat | Punto de partida |
 | 28/8 | `prompts/system_prompt.md`, `prompts/user_prompt.md` | Contrato separado, rubro explícito, 9 campos fijos | Iteración 1 |
+| 31/8 | `user_prompt.md` | Línea de conteo ("N avisos leídos, M del rubro") | Para saber si leyó el archivo entero sin abrirlo |
 | 3/9 | `system_prompt.md` restricción 1 | Regla del `null` | Iteración 2 |
 | 3/9 | `system_prompt.md` restricción 2 | Mapeo de columnas por nombre | Salió del mismo análisis: si cambia el CSV, cruza los campos |
 | 4/9 | `system_prompt.md` restricción 3 | Prohibición de buscar monto en `descripcion` | Iteración 3 |
-| 5/9 | `user_prompt.md` | Línea de conteo ("N avisos leídos, M del rubro") | Para saber si leyó el archivo entero sin abrirlo |

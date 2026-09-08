@@ -271,6 +271,35 @@ anotada en §8: una instrucción de prompt no alcanza sola, hace falta una barre
 evaluador real, aislar el directorio de trabajo). Detalle completo, con el argumento de cada
 hallazgo y la advertencia de proceso, en `corridas/2026-09-04_caso-excelente-estabilidad.md`.
 
+#### RESUELTO el 8/9 — contrato v1.4
+
+El diagnóstico de arriba era correcto y se aplicó tal cual: el problema **no era de criterio sino de
+cobertura**. La pasada 2 nombraba dos cruces, y los dos hallazgos necesitaban otros dos que no
+estaban nombrados — el README contra sí mismo (hallazgo A) y `DECISIONES.md` contra las fechas de
+`corridas/` (hallazgo B).
+
+1. **Batería de seis cruces (C1–C6)** en la pasada 2, enumerada y en orden fijo. **C3** y **C5** son
+   exactamente los dos que faltaban.
+2. **Reporte obligatorio** de los seis en el campo nuevo `cruces_realizados`, **también cuando no
+   encuentran nada**. Acá está la clave del arreglo: hasta ahora *un cruce que no se reportaba era
+   indistinguible de un cruce que no se había hecho*, y por eso la falta de cobertura era invisible
+   en el informe. Ahora se ve.
+3. **Chequeo A9** en la pasada 4: no se emite el informe con un cruce sin reportar.
+
+**Y se corrigió el caso.** Las dos inconsistencias eran **accidentales, no plantadas** — es la
+pregunta que esta sección dejaba abierta para el carril C, y la respondió quien escribió
+`casos/excelente/` el 2/9. Se quitó la proyección anual que no reconciliaba (hallazgo A) y se
+corrigió la fecha de la línea de conteo, que ahora es anterior a las corridas que ya la usan
+(hallazgo B). Con eso el caso vuelve a valer **89**, como fija su `ESPERADO.md`.
+
+> Las dos clases de inconsistencia siguen cubiertas por el caso **tramposo**, donde sí están
+> plantadas a propósito: G6 por la fecha de `estado_conciliacion` y G7 por la aritmética al doble.
+> El caso excelente no tenía que ser el que las probara — su trabajo es que un trabajo sólido
+> puntúe alto sin que le regalen el 100.
+
+**Pendiente de verificar:** volver a correr las tres corridas de estabilidad del caso excelente con
+el contrato v1.4 y confirmar que las tres dan el mismo número.
+
 ### 5.3 Un repositorio real que el agente nunca vio
 
 Los tres casos los construimos nosotros, así que el agente juega de local. Antes del 9/9 hay que
