@@ -103,7 +103,7 @@ Ese índice es el primer entregable del lote, y se entrega aunque la corrección
 
 Cada trabajo se corrige con el contrato completo, empezando de cero. Entre uno y otro:
 
-> *"Contexto liberado. Próximo trabajo evaluado desde cero con `rubrica.md` v1.10."*
+> *"Contexto liberado. Próximo trabajo evaluado desde cero con la versión vigente de `rubrica.md`."*
 
 **Ningún informe menciona a otro trabajo.** Ni para comparar, ni para decir "mejor que el
 anterior", ni para justificar un nivel. Cada informe tiene que sostenerse solo, porque así es como

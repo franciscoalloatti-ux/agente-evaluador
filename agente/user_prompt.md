@@ -14,8 +14,8 @@ REPOSITORIO: << URL del repositorio o ruta local de la carpeta >>
 ALUMNO:      << nombre, o "anónimo" >>
 FECHA:       << AAAA-MM-DD >>
 
-Aplicá rubrica.md v1.1 con las cuatro pasadas del system prompt, en orden:
-inventario, afirmaciones, puntuación, auditoría.
+Aplicá la versión vigente de rubrica.md con las cuatro pasadas del system
+prompt, en orden: inventario, afirmaciones, puntuación, auditoría.
 
 Antes de puntuar, listá los archivos que efectivamente pudiste leer.
 Si no pudiste leer alguno de los exigidos, decilo: no lo supongas.
@@ -64,7 +64,8 @@ Reglas de la tanda:
    porque el anterior fue bueno o malo.
 2. Terminá el informe completo de un repositorio antes de abrir el siguiente.
 3. Después de cada informe, escribí una línea de cierre:
-   "Contexto liberado. Próximo trabajo evaluado desde cero con rubrica.md v1.1."
+   "Contexto liberado. Próximo trabajo evaluado desde cero con la versión
+   vigente de rubrica.md."
 
 Trabajo 1 de << N >>
 REPOSITORIO: << ... >>

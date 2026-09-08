@@ -122,7 +122,7 @@
       "type": "array",
       "minItems": 7,
       "maxItems": 7,
-      "description": "La bateria de cruces de la pasada 2. Los seis se reportan SIEMPRE, tambien cuando no encuentran nada: un cruce sin reportar es indistinguible de un cruce no hecho, y esa es la causa documentada de la inestabilidad D-13.",
+      "description": "La bateria de cruces de la pasada 2. Los siete se reportan SIEMPRE, tambien cuando no encuentran nada: un cruce sin reportar es indistinguible de un cruce no hecho, y esa es la causa documentada de la inestabilidad D-13.",
       "items": {
         "type": "object",
         "additionalProperties": false,
