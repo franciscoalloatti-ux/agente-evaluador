@@ -208,14 +208,16 @@ ver las corridas del agente y sin hablar con los demás. Se carga acá dimensió
 
 1. Abrir `rubrica.md` y tenerla al lado. Se puntúa con ella, no de memoria.
 2. Leer **sólo el trabajo**: `casos/excelente/`, `casos/flojo/` y `casos/tramposo/`.
-3. **No abrir `ESPERADO.md` ni `corridas/`.** Ahí está la respuesta. Quien los vea queda contaminado
+3. **No abrir `ESPERADO.md`, ni `corridas/`, ni el `README.md` de la raíz.** Los tres publican el
+   resultado —el README trae la tabla con los puntajes de los tres casos—. Quien los vea queda contaminado
    y su columna no sirve — y esto ya pasó: dos corridas de esta misma ronda rozaron `ESPERADO.md` y
    hubo que descartarlas (ver §5.2 y el commit `3aa5c5d`).
 4. Un nivel de **0 a 4 por dimensión**, quince números en total, en la tabla de acá abajo. Cada uno
    tiene su columna con su nombre.
 5. **No hablarlo entre nosotros hasta que estén las cuatro columnas.** Una conversación previa
    convierte cuatro mediciones independientes en una sola repetida.
-6. En el tramposo, anotar además **cuántos de los ocho vectores encontró cada uno leyendo a mano**.
+6. En el tramposo, anotar además **cuántos de los ocho vectores encontró cada uno leyendo a mano**,
+   en la línea que está debajo de la hoja.
 
 > **Por qué a ciegas, y por qué en paralelo.** El valor de esta ronda no es que coincidamos: es
 > encontrar dónde **no** coincidimos. Un desacuerdo entre dos integrantes en la misma dimensión es
@@ -224,23 +226,57 @@ ver las corridas del agente y sin hablar con los demás. Se carga acá dimensió
 > acomodado destruye exactamente el dato que estamos buscando.
 
 
-| Caso | Dim | Francisco | Martín | Federico | Verónica | Agente | Desacuerdo |
-|------|-----|:---:|:---:|:---:|:---:|:------:|:----------:|
-| excelente | D1 | | | | 3 | 4 | |
-| excelente | D2 | | | | 3 | 4 | |
-| excelente | D3 | | | | 3 | 4 | |
-| excelente | D4 | | | | 2 | 2 | |
-| excelente | D5 | | | | 1 | 3 | |
-| flojo | D1 | | | | | 1 | |
-| flojo | D2 | | | | | 1 | |
-| flojo | D3 | | | | | 1 | |
-| flojo | D4 | | | | | 0 | |
-| flojo | D5 | | | | | 0 | |
-| tramposo | D1 | | | | | 3 | |
-| tramposo | D2 | | | | | 2 | |
-| tramposo | D3 | | | | | 2 | |
-| tramposo | D4 | | | | | 1 | |
-| tramposo | D5 | | | | | 0 | |
+**Tu hoja.** Quince números, uno por celda. Nada más que esto hasta que estén los quince:
+
+| Caso | Dim | Francisco | Martín | Federico | Verónica |
+|------|-----|:---:|:---:|:---:|:---:|
+| excelente | D1 | | | | 3 |
+| excelente | D2 | | | | 3 |
+| excelente | D3 | | | | 3 |
+| excelente | D4 | | | | 2 |
+| excelente | D5 | | | | 1 |
+| flojo | D1 | | | | |
+| flojo | D2 | | | | |
+| flojo | D3 | | | | |
+| flojo | D4 | | | | |
+| flojo | D5 | | | | |
+| tramposo | D1 | | | | |
+| tramposo | D2 | | | | |
+| tramposo | D3 | | | | |
+| tramposo | D4 | | | | |
+| tramposo | D5 | | | | |
+
+Vectores G3 encontrados a mano en el tramposo (son ocho en total): Francisco ___ · Martín ___ ·
+Federico ___ · Verónica ___
+
+<details>
+<summary><b>Lo que puso el agente — no abrir hasta tener tus quince números</b></summary>
+
+<br>
+
+Hasta la v1.9 esta columna estaba **al lado** de las que hay que completar, a la vista. Una hoja que
+muestra la respuesta mientras la contestás no mide un criterio: mide la capacidad de leer de
+costado. Lo encontramos el 8/9 y por eso está acá abajo.
+
+| Caso | Dim | Agente | Desacuerdo |
+|------|-----|:------:|:----------:|
+| excelente | D1 | 4 | |
+| excelente | D2 | 4 | |
+| excelente | D3 | 4 | |
+| excelente | D4 | 2 | |
+| excelente | D5 | 3 | |
+| flojo | D1 | 1 | |
+| flojo | D2 | 1 | |
+| flojo | D3 | 1 | |
+| flojo | D4 | 0 | |
+| flojo | D5 | 0 | |
+| tramposo | D1 | 3 | |
+| tramposo | D2 | 2 | |
+| tramposo | D3 | 2 | |
+| tramposo | D4 | 1 | |
+| tramposo | D5 | 0 | |
+
+</details>
 
 > Para el tramposo, además de los niveles, anotar **cuántos de los ocho vectores G3 encontró
 > cada integrante leyendo el repositorio a mano**. Es la medición más honesta de si el caso es
