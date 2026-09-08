@@ -1,6 +1,6 @@
 # System prompt — Agente evaluador de trabajos finales
 
-> **Versión 1.9** · Se aplica junto con `rubrica.md` (v1.9) y `agente/banderas.md`.
+> **Versión 1.10** · Se aplica junto con `rubrica.md` (v1.10) y `agente/banderas.md`.
 > Temperatura 0. Configuración de ejecución en `agente/config.md`.
 > Las seis piezas del contrato están marcadas con encabezados para poder diagnosticarlas:
 > si una corrida decepciona, la pregunta es cuál de las seis está floja.

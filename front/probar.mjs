@@ -200,5 +200,41 @@ const corto = cortoDe(informe);
 check(corto.split(/\s+/).length <= 180, `no pasa de 180 palabras (${corto.split(/\s+/).length})`);
 check(!/\b74\b/.test(corto), "el número NO va adentro del texto: va en su columna");
 
+/* ------------------------------------------- 7 · el orden del lote */
+console.log("\n7 · el orden del lote (una vista, no una nota)");
+const dims = n => [0,1,2,3,4].map(i => ({ id:"D"+(i+1), nivel:n[i] }));
+ctx.TRABAJOS = [
+  { id:1, nombre:"Zulema Alta", testigo:false, informe:{ estado:"evaluado",
+    puntaje_final:81, puntaje_bruto:81, dimensiones:dims([4,3,3,2,2]), banderas:[] } },
+  { id:2, nombre:"Ana Media", testigo:false, informe:{ estado:"evaluado",
+    puntaje_final:74, puntaje_bruto:74, dimensiones:dims([3,3,3,2,2]), banderas:[] } },
+  // mismo final que Ana, pero hizo más y lo penalizaron: va primero
+  { id:3, nombre:"Beto Penado", testigo:false, informe:{ estado:"evaluado_con_reservas",
+    puntaje_final:74, puntaje_bruto:79, dimensiones:dims([3,3,3,2,2]), banderas:[{id:"G7"}] } },
+  { id:4, nombre:"Carlos Bajo", testigo:false, informe:{ estado:"evaluado",
+    puntaje_final:31, puntaje_bruto:31, dimensiones:dims([1,1,1,0,1]), banderas:[] } },
+  { id:5, nombre:"Delia Tramposa", testigo:false, informe:{ estado:"integridad_comprometida",
+    puntaje_final:0, puntaje_bruto:46.25, dimensiones:dims([3,2,2,1,0]), banderas:[{id:"G3a"}] } },
+  { id:6, nombre:"casos/excelente/", testigo:true, esperado:89, informe:{ estado:"evaluado",
+    puntaje_final:89, puntaje_bruto:88.75, dimensiones:dims([4,4,4,2,3]), banderas:[] } },
+];
+const tabla  = ctx.ordenDelLote();
+const cuerpo = tabla.split("Sin posición")[0];
+const cola   = tabla.split("Sin posición")[1] || "";
+const pos = n => cuerpo.indexOf(n);
+check(pos("Zulema Alta") < pos("Beto Penado") && pos("Beto Penado") < pos("Carlos Bajo"),
+  "ordena de mejor a peor por puntaje final");
+check(pos("Beto Penado") < pos("Ana Media"),
+  "empatados en 74, primero el de bruto mayor: hizo más y fue penalizado");
+check(!cuerpo.includes("casos/excelente/"),
+  "el caso testigo NO entra en el orden: no es un alumno");
+check(cola.includes("Delia Tramposa"),
+  "el integridad_comprometida va aparte, sin posición: la nota está suspendida, no es la peor");
+check(cuerpo.includes("-8") && cuerpo.includes("-15"),
+  "la distancia al testigo sale con signo (81 y 74 contra 89)");
+check(/no hay una segunda nota/.test(tabla),
+  "la tabla dice, en la propia pantalla, que no produce una segunda nota");
+
+
 console.log(`\n${ok.length} bien, ${mal.length} mal`);
 process.exit(mal.length ? 1 : 0);

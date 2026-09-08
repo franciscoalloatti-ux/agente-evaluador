@@ -431,7 +431,10 @@ function pintarContrato(){
   }).join("");
   var html='<table><tr><th>Archivo</th><th></th><th>Versión</th><th></th></tr>'+filas+'</table>';
   var vs=[]; REQUERIDOS.forEach(function(r){
-    if(CONTRATO[r]){ var v=versionDe(CONTRATO[r]); if(vs.indexOf(v)<0) vs.push(v); } });
+    if(!CONTRATO[r]) return;
+    var v=versionDe(CONTRATO[r]);
+    if(v==="—") return;            // sin version declarada: no se compara, se muestra en su fila
+    if(vs.indexOf(v)<0) vs.push(v); });
   if(vs.length>1) html+='<div class="card bad"><strong>Versiones distintas entre los archivos del '+
     'contrato: '+vs.map(esc).join(" · ")+'.</strong> Una corrida con criterios de versiones '+
     'distintas no es defendible. Revisá cuál quedó atrás antes de corregir.</div>';
@@ -1011,6 +1014,8 @@ function pintarMetricas(){
     kpi("Escalados",escs.length,"no salen sin que los lea alguien")+
     '</div>';
 
+  h+=ordenDelLote();
+
   h+='<h3>Distribución de puntajes</h3><div class="hist">'+
     cuenta.map(function(c,i){
       return '<div class="b"><div class="n">'+c+'</div><i style="height:'+(c/maxc*100)+
@@ -1062,6 +1067,64 @@ function pintarMetricas(){
       '</div></div>'
     :'<p class="muted">Sin testigos corregidos todavía.</p>';
   $("#metricas").innerHTML=h;
+}
+
+function ordenDelLote(){
+  /* Una vista sobre puntajes ya emitidos. No recalcula nada y no produce una segunda nota:
+     `agente/lote.md` §2 bis y la regla de la vara única de `rubrica.md` §1. */
+  var corr=TRABAJOS.filter(function(t){ return t.informe && !t.testigo; });
+  if(!corr.length) return "";
+  var conNota=corr.filter(function(t){ return !sinNotaDe(t.informe); });
+  var aparte =corr.filter(function(t){ return  sinNotaDe(t.informe); });
+  var testigo=TRABAJOS.filter(function(t){ return t.testigo && t.informe; })[0];
+  var ref = testigo ? testigo.informe.puntaje_final : null;
+
+  var niv=function(t,i){ var d=(t.informe.dimensiones||[])[i]; return d?Number(d.nivel):-1; };
+  var empatados=0;
+  conNota.sort(function(a,b){
+    if(b.informe.puntaje_final!==a.informe.puntaje_final)
+      return b.informe.puntaje_final-a.informe.puntaje_final;
+    if((b.informe.puntaje_bruto||0)!==(a.informe.puntaje_bruto||0))
+      return (b.informe.puntaje_bruto||0)-(a.informe.puntaje_bruto||0);
+    for(var i=0;i<5;i++){ if(niv(b,i)!==niv(a,i)) return niv(b,i)-niv(a,i); }
+    empatados++;                       // a esta altura el orden es arbitrario, y se dice
+    return norm(a.nombre)<norm(b.nombre)?-1:1;
+  });
+
+  var filas=conNota.map(function(t,i){
+    var d=t.informe, dist=ref==null?null:d.puntaje_final-ref;
+    return '<tr><td class="muted">'+(i+1)+'</td><td>'+esc(t.nombre)+
+      (t.identificador?'<div class="muted mono">'+esc(t.identificador)+'</div>':"")+
+      '</td><td class="mono"><strong>'+d.puntaje_final+'</strong></td>'+
+      '<td class="mono">'+(d.puntaje_bruto==null?"—":d.puntaje_bruto)+'</td>'+
+      '<td class="mono">'+(d.dimensiones||[]).map(function(x){return x.nivel;}).join("·")+'</td>'+
+      '<td class="mono">'+(dist==null?"—":(dist>0?"+":"")+dist)+'</td>'+
+      '<td><span class="pill '+({evaluado:"ev",evaluado_con_reservas:"res"}[d.estado]||"fue")+'">'+
+      esc(d.estado)+'</span></td><td class="muted">'+((d.banderas||[]).length||"—")+'</td></tr>';
+  }).join("");
+
+  var h='<h3>Orden del lote — de mejor a peor</h3>'+
+    '<table><tr><th>#</th><th>Alumno</th><th>Final</th><th>Bruto</th><th>D1·D2·D3·D4·D5</th>'+
+    '<th>vs. testigo</th><th>Estado</th><th>Banderas</th></tr>'+filas+'</table>'+
+    '<p class="muted">Es una <strong>vista</strong>, no una nota. Sale de puntajes ya emitidos y no '+
+    'recalcula nada: <strong>no hay una segunda nota relativa a la calidad del lote</strong>, porque '+
+    'la consigna dice que todos se evalúan con la misma vara y un trabajo no puede depender de '+
+    'quiénes fueron sus compañeros. <code>agente/lote.md</code> §2 bis.'+
+    (ref==null?" El testigo todavía no se corrigió, así que la columna de distancia está vacía.":"")+
+    '</p>';
+  if(empatados) h+='<div class="card warn">Hay empates que el desempate documentado no resuelve: '+
+    'a esa altura <strong>el orden es alfabético y arbitrario</strong>. Para esta vara son el mismo '+
+    'trabajo, y decir cuál es mejor sería inventarlo.</div>';
+  if(aparte.length) h+='<h3>Sin posición en la tabla</h3><table><tr><th>Alumno</th><th>Estado</th>'+
+    '<th>Bruto</th></tr>'+aparte.map(function(t){
+      return '<tr><td>'+esc(t.nombre)+'</td><td><span class="pill '+
+        ({integridad_comprometida:"int",fuera_de_alcance:"fue"}[t.informe.estado]||"noev")+'">'+
+        esc(t.informe.estado)+'</span></td><td class="mono">'+
+        (t.informe.puntaje_bruto==null?"—":t.informe.puntaje_bruto)+'</td></tr>'; }).join("")+
+    '</table><p class="muted">No entran en el orden. Un <code>integridad_comprometida</code> con '+
+    'final 0 no es "el peor": es una nota <strong>suspendida</strong>, y esa decisión la toma el '+
+    'profesor. Ponerlo último convertiría en nota lo que todavía no lo es.</p>';
+  return h;
 }
 
 /* ------------------------------------------------------------------- lote */

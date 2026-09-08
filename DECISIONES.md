@@ -298,6 +298,7 @@ consola es el tablero, no el motor.
 | 8/9 | `front/consola.html` | La consola de ejecución: carga, arma el prompt, valida el informe, controla el lote y exporta a Moodle | Decisión 10: revierte la 6. El profesor dijo que el agente necesita una forma de ejecución, y que no sea un artefacto |
 | 2/9 | contrato v1.3 | Bandera **G3d**, regla de la configuración ajena, paso 0 de la pasada 1, campo `config_agentes_hallada`, A6 extendido, aislamiento de directorios | El v1.2 **obedeció** al `AGENTS.md`: detectó trece banderas y reportó cero |
 | 8/9 | `front/consola.html` + `front/probar.mjs` | La consola pasa a escala: lista lateral, se guarda sola, carga incremental, métricas, apertura real de `.zip` y devolución con el identificador de cada alumno. Con banco de 27 pruebas | Decisión 11: no se corrigen cuatro trabajos sino la cursada entera |
+| 8/9 | contrato **v1.10** | (a) compuerta de **objetivo declarado** en D1; (b) **regla de la vara única** y orden del lote como vista, no como nota (`agente/lote.md` §2 bis); (c) `banderas.md` pasa a declarar su versión | Cruzamos la rúbrica contra los **seis requisitos** del documento del trabajo final: *“objetivo claro”* no lo verificaba ningún requisito nuestro. Ver `corridas/2026-09-08_cobertura-de-la-consigna.md` |
 
 ---
 
@@ -314,6 +315,10 @@ consola es el tablero, no el motor.
 5. **R2.3 acepta el recorte de alcance falso.** El tramposo v2 lo cobra sin haber descartado
    nada, y no encontramos una redacción que lo atrape sin castigar a quien honestamente recortó
    alcance temprano (`calibracion.md` §8.4).
-6. **La defensa contra G3d es mitad procedimiento.** El aislamiento de directorios es una
+6. **La compuerta de objetivo está escrita y no probada sobre un caso que la active.** Los tres
+   casos declaran su objetivo en la primera línea, así que ninguno la dispara. La estructura del
+   parcial fija tres casos y no agregamos un cuarto: queda como el primer lugar donde mirar si en la
+   prueba de fuego aparece un trabajo sin objetivo.
+7. **La defensa contra G3d es mitad procedimiento.** El aislamiento de directorios es una
    práctica operativa, y las prácticas operativas se olvidan bajo presión — que es exactamente
    la condición de la prueba de fuego (`calibracion.md` §8.2).
