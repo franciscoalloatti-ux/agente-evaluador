@@ -230,6 +230,18 @@ ver las corridas del agente y sin hablar con los demás. Se carga acá dimensió
 > acomodado destruye exactamente el dato que estamos buscando.
 
 
+> **El nombre de la carpeta ancla, y lo vimos pasar.** `excelente`, `flojo` y `tramposo` dan la
+> respuesta gruesa antes de leer una línea. No se puede arreglar: la consigna del parcial fija esos
+> tres nombres. Lo que sí se puede es no razonar al revés.
+>
+> El 8/9, puntuando D1 del caso excelente, el primer integrante llegó a *"para ser excelente
+> deberían ser casi todos SI"*. Es el orden invertido: primero el nivel, después las casillas. Así
+> la calibración no compara dos criterios — compara un criterio contra una etiqueta.
+>
+> **El orden es uno solo: evidencia → SI/NO → cuenta → nivel.** Y "excelente" no promete veinte SI:
+> es un rótulo sobre el trabajo entero. Si lo prometiera, no haría falta rúbrica — alcanzaría con el
+> nombre de la carpeta.
+
 **Tu hoja.** Quince números, uno por celda. Nada más que esto hasta que estén los quince:
 
 | Caso | Dim | Francisco | Martín | Federico | Verónica |
