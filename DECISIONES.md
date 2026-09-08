@@ -120,6 +120,10 @@ Quedó como cuatro **pasadas** de un agente, no cuatro agentes. Es menos vistoso
 renderizado. Se descartó por tiempo: no aporta a ninguna de las cinco dimensiones con las que nos
 corrigen, y las dos semanas se iban ahí.
 
+> **Esta decisión se revirtió el 8/9. Ver decisión 10.** El argumento seguía siendo válido para
+> *nuestra nota* y dejó de serlo para *el trabajo del evaluador*: en la clase del 3/9 el profesor
+> dijo que el agente necesita una forma de ejecución y que la mejor es un front.
+
 **Correlación con las notas reales del profesor.** Habría sido la validación más fuerte: comparar
 el puntaje del agente contra las notas que el profesor puso en las Entregas 1 y 2. No tenemos esas
 notas. Queda anotado como lo primero que haríamos si esto siguiera.
@@ -241,6 +245,38 @@ usar. Nos gustaría que la solución fuera elegante y del lado del prompt. No lo
 
 ---
 
+## Decisión 10 — La consola, y la línea que no se cruza
+
+**Por qué se revirtió la decisión 6.** El 2/9 descartamos la interfaz porque no tocaba ninguna de
+las cinco dimensiones con las que nos corrigen. Seguía siendo cierto. Lo que cambió es que en la
+clase del 3/9 el profesor dijo que el agente **necesita una forma de ejecución** —*"y la mejor
+opción es un front: necesitás correr el proceso"*— y describió el recorrido real de Moodle. Eso es
+material de clase y pesa más que nuestra estimación de esfuerzo.
+
+**Por qué un HTML suelto y no un artefacto.** En la misma clase explicó por qué desconfía de ellos:
+*"es interno de cada LLM… algo que te funciona localmente puede no funcionar en otro lado"*.
+`front/consola.html` se abre con doble click, sin instalar, sin cuenta, sin servidor y sin
+conexión. Cualquiera lee su código entero.
+
+**La línea que no cruzamos: la consola no evalúa.** Arma el prompt, recibe el JSON, lo valida y
+organiza el lote. El que corrige sigue siendo el contrato, y sigue corriendo en cualquier modelo
+con o sin la pantalla. Si la rúbrica viviera en JavaScript, el evaluador dejaría de ser portable y
+sería exactamente el problema que el profesor señaló. **Y no embebe el contrato: lo carga.** Si
+`rubrica.md` cambia, la consola no queda vieja — y avisa si los archivos que le diste tienen
+versiones distintas entre sí.
+
+**Lo que sí aporta, y no esperábamos.** El validador corre los chequeos A1, A2, A4, A5 y A9 de la
+pasada 4 **fuera del modelo**. Hasta ahora la auditoría la hacía el mismo agente sobre su propio
+informe, que es como pedirle a alguien que revise su propia cuenta. Probado contra un informe real
+de la v1.3 (detectó los campos que le faltaban) y contra uno saboteado a propósito en cinco
+lugares: los encontró todos.
+
+**Sobre la regla de la casa.** Nadie escribió código a mano: se describió y se iteró, que es el
+método de la materia. Y la decisión 1 sigue en pie donde importa — **el agente es un prompt**. La
+consola es el tablero, no el motor.
+
+---
+
 ## Registro de cambios del contrato
 
 | Fecha | Archivo | Qué cambió | Motivo |
@@ -259,6 +295,7 @@ usar. Nos gustaría que la solución fuera elegante y del lado del prompt. No lo
 | 2/9 | `agente/system_prompt.md` v1.2 | Barrido total de archivos, lectura del crudo, cruce de corridas entre sí, G3 en tres subtipos | Desacuerdos D-7 a D-10 |
 | 2/9 | `rubrica.md` v1.2 | Estado `integridad_comprometida`, regla de integridad, rúbrica única, no anclaje, no-halo, R4.4 endurecido | El tramposo v2 quedaba a 2 puntos del caso flojo |
 | 2/9 | `casos/tramposo/AGENTS.md` | Sexto vector: configuración de agente plantada | Decisión 9: los cinco vectores eran todos de la misma clase |
+| 8/9 | `front/consola.html` | La consola de ejecución: carga, arma el prompt, valida el informe, controla el lote y exporta a Moodle | Decisión 10: revierte la 6. El profesor dijo que el agente necesita una forma de ejecución, y que no sea un artefacto |
 | 2/9 | contrato v1.3 | Bandera **G3d**, regla de la configuración ajena, paso 0 de la pasada 1, campo `config_agentes_hallada`, A6 extendido, aislamiento de directorios | El v1.2 **obedeció** al `AGENTS.md`: detectó trece banderas y reportó cero |
 
 ---

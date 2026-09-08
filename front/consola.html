@@ -1,0 +1,627 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Consola del agente evaluador</title>
+<style>
+  :root{
+    --bg:#12121a; --panel:#1b1b24; --panel2:#23232e; --line:#2f2f3c;
+    --ink:#f0eee9; --ink2:#a9a69e; --ink3:#6f6c66;
+    --bordo:#9d2235; --bordo2:#c94b5e;
+    --ok:#3fb37f; --warn:#d99b2b; --bad:#d9544d; --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+       font:14px/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  header{background:linear-gradient(180deg,#1b1b24,#15151d);border-bottom:1px solid var(--line);
+         padding:14px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  header h1{font-size:15px;margin:0;font-weight:600;letter-spacing:.2px}
+  header .sub{color:var(--ink3);font-size:12px}
+  .chip{font-size:11px;padding:3px 9px;border-radius:99px;border:1px solid var(--line);color:var(--ink2)}
+  .chip.on{border-color:var(--ok);color:var(--ok)}
+  .chip.off{border-color:var(--bad);color:var(--bad)}
+  nav{display:flex;gap:2px;padding:0 16px;background:#15151d;border-bottom:1px solid var(--line);
+      overflow-x:auto}
+  nav button{background:none;border:0;color:var(--ink3);padding:11px 15px;cursor:pointer;
+             font-size:13px;border-bottom:2px solid transparent;white-space:nowrap}
+  nav button:hover{color:var(--ink2)}
+  nav button.sel{color:var(--ink);border-bottom-color:var(--bordo2)}
+  main{padding:22px;max-width:1180px}
+  section{display:none} section.sel{display:block}
+  h2{font-size:17px;margin:0 0 6px;color:var(--bordo2);font-weight:600}
+  h3{font-size:13px;margin:22px 0 8px;color:var(--ink2);text-transform:uppercase;letter-spacing:.7px}
+  p{color:var(--ink2);margin:6px 0 14px;max-width:76ch}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
+  .card.warn{border-left:3px solid var(--warn)}
+  .card.bad{border-left:3px solid var(--bad)}
+  .card.ok{border-left:3px solid var(--ok)}
+  button.act{background:var(--bordo);color:#fff;border:0;padding:9px 16px;border-radius:7px;
+             cursor:pointer;font-size:13px;font-weight:500}
+  button.act:hover{background:var(--bordo2)}
+  button.act.sec{background:var(--panel2);border:1px solid var(--line);color:var(--ink)}
+  button.act:disabled{opacity:.4;cursor:not-allowed}
+  textarea,input[type=text]{width:100%;background:#0e0e15;color:var(--ink);border:1px solid var(--line);
+    border-radius:7px;padding:10px;font-family:var(--mono);font-size:12px;line-height:1.5}
+  textarea{min-height:120px;resize:vertical}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+  th{text-align:left;color:var(--ink3);font-weight:500;font-size:11px;text-transform:uppercase;
+     letter-spacing:.6px;padding:8px 10px;border-bottom:1px solid var(--line)}
+  td{padding:9px 10px;border-bottom:1px solid #23232c;vertical-align:top}
+  tr.testigo td{background:#1d1a24}
+  .mono{font-family:var(--mono);font-size:12px}
+  .pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;white-space:nowrap}
+  .pill.ev{background:#17332a;color:var(--ok)}
+  .pill.res{background:#33291a;color:var(--warn)}
+  .pill.int{background:#3a1d21;color:var(--bad)}
+  .pill.fue{background:#2b2b38;color:var(--ink2)}
+  .pill.noev{background:#2b2b38;color:var(--ink3)}
+  .muted{color:var(--ink3);font-size:12px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px}
+  .stat{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:12px}
+  .stat .k{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.6px}
+  .stat .v{font-size:22px;font-weight:600;margin-top:3px}
+  code{background:#0e0e15;padding:1px 5px;border-radius:4px;font-size:12px;color:var(--bordo2)}
+  .drop{border:1.5px dashed var(--line);border-radius:10px;padding:26px;text-align:center;color:var(--ink3)}
+  .drop.hot{border-color:var(--bordo2);color:var(--ink2)}
+  ul{color:var(--ink2);max-width:76ch}  li{margin:4px 0}
+  .err{color:var(--bad)} .good{color:var(--ok)} .warnc{color:var(--warn)}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Consola del agente evaluador</h1>
+  <span class="sub">MBA UCEMA · 2026 2T</span>
+  <span id="chipContrato" class="chip off">contrato sin cargar</span>
+  <span id="chipTrabajos" class="chip">0 trabajos</span>
+  <span class="chip">todo se procesa en tu navegador</span>
+</header>
+
+<nav>
+  <button data-t="contrato" class="sel">1 · Contrato</button>
+  <button data-t="cargar">2 · Cargar trabajos</button>
+  <button data-t="corregir">3 · Corregir</button>
+  <button data-t="lote">4 · Lote y testigos</button>
+  <button data-t="devolucion">5 · Devolución</button>
+  <button data-t="acerca">Qué es esto</button>
+</nav>
+
+<main>
+
+<!-- ============================================================= CONTRATO -->
+<section id="contrato" class="sel">
+  <h2>El contrato</h2>
+  <p>La consola <strong>no contiene la rúbrica</strong>. La carga. Si el contrato cambia, esta
+     pantalla no queda vieja — y no hay dos versiones del criterio dando vueltas.</p>
+
+  <div class="card">
+    <div class="row">
+      <input type="file" id="fContrato" multiple accept=".md,.json">
+      <span class="muted">Elegí los cuatro archivos de <code>agente/</code> y <code>rubrica.md</code></span>
+    </div>
+    <div id="listaContrato"></div>
+  </div>
+
+  <div class="card warn">
+    <strong>Los cuatro se cargan juntos o la corrida no vale.</strong>
+    <ul>
+      <li><code>agente/system_prompt.md</code> — el contrato del corrector</li>
+      <li><code>rubrica.md</code> — el criterio</li>
+      <li><code>agente/banderas.md</code> — sin esto no detecta al tramposo</li>
+      <li><code>agente/esquema_salida.json</code> — sin esto la salida deja de ser comparable</li>
+    </ul>
+  </div>
+</section>
+
+<!-- =============================================================== CARGAR -->
+<section id="cargar">
+  <h2>Cargar trabajos</h2>
+  <p>Tres formas, según lo que tengas a mano. Las tres terminan en el mismo índice
+     <strong>nombre → repositorio</strong>.</p>
+
+  <h3>a · Formato Moodle</h3>
+  <p>La carpeta <code>Entregas/</code> de «Descargar todas las entregas». Lee cada
+     <code>Texto en línea.html</code> y saca la URL.</p>
+  <div class="card">
+    <input type="file" id="fMoodle" webkitdirectory directory multiple>
+  </div>
+
+  <h3>b · URLs sueltas</h3>
+  <p>Una por línea. Opcionalmente <code>Nombre Apellido &lt;TAB o ;&gt; url</code>.</p>
+  <div class="card">
+    <textarea id="txtUrls" placeholder="https://github.com/usuario/repo
+Ana Beltrán; https://github.com/otro/trabajo-final"></textarea>
+    <div class="row"><button class="act" onclick="cargarUrls()">Agregar al índice</button></div>
+  </div>
+
+  <h3>c · El caso testigo</h3>
+  <p>El control del lote. Se intercala tres veces —primero, en el medio y último— y su resultado
+     es conocido. Si los tres coinciden, la vara no se movió entre el trabajo 1 y el 50.</p>
+  <div class="card">
+    <div class="row">
+      <label class="muted">Puntaje esperado</label>
+      <input type="text" id="testigoEsperado" value="89" style="width:70px">
+      <label class="muted">Identificador</label>
+      <input type="text" id="testigoNombre" value="casos/excelente/" style="width:220px">
+      <button class="act sec" onclick="intercalarTestigos()">Intercalar los tres</button>
+    </div>
+  </div>
+
+  <h3>El índice</h3>
+  <div id="indice"></div>
+</section>
+
+<!-- ============================================================= CORREGIR -->
+<section id="corregir">
+  <h2>Corregir</h2>
+  <p>La consola arma el prompt exacto; lo corrés <strong>en el modelo que quieras</strong> y pegás
+     el JSON de vuelta. El que corrige es el contrato, no esta pantalla.</p>
+  <div class="card">
+    <div class="row">
+      <label class="muted">Trabajo</label>
+      <select id="selTrabajo" onchange="pintarCorregir()"
+              style="background:#0e0e15;color:var(--ink);border:1px solid var(--line);
+                     border-radius:7px;padding:8px;min-width:320px"></select>
+      <button class="act" onclick="copiarPrompt()">Copiar el prompt</button>
+      <span id="msgCopia" class="muted"></span>
+    </div>
+    <details style="margin-top:10px">
+      <summary class="muted" style="cursor:pointer">Ver el prompt que se copia</summary>
+      <textarea id="verPrompt" readonly style="min-height:220px;margin-top:8px"></textarea>
+    </details>
+  </div>
+
+  <h3>Pegar la respuesta</h3>
+  <div class="card">
+    <textarea id="txtJson" placeholder="Pegá acá el bloque JSON que devolvió el modelo"></textarea>
+    <div class="row">
+      <button class="act" onclick="recibirJson()">Validar y guardar</button>
+      <span class="muted">Se valida contra el esquema antes de aceptarlo</span>
+    </div>
+    <div id="valid"></div>
+  </div>
+</section>
+
+<!-- ================================================================= LOTE -->
+<section id="lote">
+  <h2>Lote y testigos</h2>
+  <div id="control"></div>
+  <div id="tablaLote"></div>
+</section>
+
+<!-- =========================================================== DEVOLUCION -->
+<section id="devolucion">
+  <h2>Devolución</h2>
+  <p>Dos salidas. La nota y el texto van <strong>separados</strong>, porque así los toma Moodle:
+     el puntaje en <code>Calificación</code> sobre 100 y la devolución en el cuadro de
+     retroalimentación. El número nunca va adentro del texto.</p>
+  <div class="row">
+    <button class="act" onclick="bajarCsv()">Descargar hoja para Moodle (.csv)</button>
+    <button class="act sec" onclick="verRapida()">Vista rápida</button>
+  </div>
+  <div class="card bad" id="avisoEscalados" style="display:none"></div>
+  <div id="salida"></div>
+</section>
+
+<!-- =============================================================== ACERCA -->
+<section id="acerca">
+  <h2>Qué es esto, y qué no es</h2>
+
+  <div class="card ok">
+    <strong>No evalúa.</strong> Arma el prompt, recibe el JSON, lo valida y organiza el lote.
+    <strong>El que corrige es el contrato</strong> — los archivos de <code>agente/</code> y
+    <code>rubrica.md</code>—, y sigue corriendo en cualquier modelo, con o sin esta pantalla.
+    Si la rúbrica viviera acá adentro en JavaScript, dejaría de ser portable y pasaría a ser
+    justamente lo que el profesor señaló como problema.
+  </div>
+
+  <div class="card">
+    <strong>No es un artefacto.</strong> Es un archivo HTML suelto. Se abre con doble click, sin
+    instalar nada, sin cuenta, sin servidor y sin conexión. Cualquiera puede leer su código entero
+    y correrlo en su máquina.
+  </div>
+
+  <div class="card">
+    <strong>Nada sale de tu máquina.</strong> No hay llamadas de red: los archivos se leen en el
+    navegador y los resultados se arman ahí. La consola nunca ve una credencial, porque nunca
+    necesita ninguna.
+  </div>
+
+  <h3>Lo que no hace, dicho de frente</h3>
+  <ul>
+    <li><strong>No llama al modelo.</strong> Copiás el prompt y pegás la respuesta. Automatizar eso
+        pediría una API key en el navegador, y una credencial nunca se pone donde no hace falta.</li>
+    <li><strong>No abre <code>.zip</code>.</strong> Para el trabajo final no hace falta: la entrega
+        es un link a un repositorio y el índice sale de <code>Texto en línea.html</code>.</li>
+    <li><strong>No sube nada a Moodle.</strong> Produce el archivo; lo importa una persona. Es el
+        mismo límite que tiene el evaluador con el repositorio que corrige.</li>
+  </ul>
+</section>
+
+</main>
+
+<script>
+"use strict";
+const $ = s => document.querySelector(s);
+const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, c =>
+  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+let CONTRATO = {};          // nombre de archivo -> texto
+let ESQUEMA = null;
+let TRABAJOS = [];          // {id, nombre, url, testigo, esperado, informe, error}
+let SEQ = 0;
+
+/* ---------------------------------------------------------------- navegación */
+document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
+  document.querySelectorAll("nav button").forEach(x => x.classList.remove("sel"));
+  document.querySelectorAll("section").forEach(x => x.classList.remove("sel"));
+  b.classList.add("sel");
+  $("#" + b.dataset.t).classList.add("sel");
+  if (b.dataset.t === "corregir") pintarSelector();
+  if (b.dataset.t === "lote") pintarLote();
+});
+
+/* ---------------------------------------------------------------- contrato */
+const REQUERIDOS = ["system_prompt.md", "rubrica.md", "banderas.md", "esquema_salida.json"];
+
+$("#fContrato").onchange = async e => {
+  for (const f of e.target.files) CONTRATO[f.name] = await f.text();
+  if (CONTRATO["esquema_salida.json"]) {
+    try { ESQUEMA = JSON.parse(CONTRATO["esquema_salida.json"]); }
+    catch (err) { ESQUEMA = null; }
+  }
+  pintarContrato();
+};
+
+function contratoCompleto() { return REQUERIDOS.every(r => CONTRATO[r]); }
+
+function pintarContrato() {
+  const filas = REQUERIDOS.map(r => {
+    const hay = !!CONTRATO[r];
+    const v = hay ? (CONTRATO[r].match(/Versi[oó]n\s+(\d+\.\d+)/i) ||
+                     CONTRATO[r].match(/"version"\s*:\s*"([\d.]+)"/) || [, "—"])[1] : "";
+    return `<tr><td class="mono">${esc(r)}</td>
+      <td>${hay ? '<span class="good">cargado</span>' : '<span class="err">falta</span>'}</td>
+      <td class="mono">${hay ? "v" + esc(v) : ""}</td>
+      <td class="muted">${hay ? CONTRATO[r].length.toLocaleString("es") + " caracteres" : ""}</td></tr>`;
+  }).join("");
+  const otros = Object.keys(CONTRATO).filter(k => !REQUERIDOS.includes(k));
+  $("#listaContrato").innerHTML =
+    `<table><tr><th>Archivo</th><th></th><th>Versión</th><th></th></tr>${filas}</table>` +
+    (otros.length ? `<p class="muted">También cargados: ${otros.map(esc).join(", ")}</p>` : "");
+
+  const vs = new Set(REQUERIDOS.filter(r => CONTRATO[r]).map(r =>
+    (CONTRATO[r].match(/Versi[oó]n\s+(\d+\.\d+)/i) ||
+     CONTRATO[r].match(/"version"\s*:\s*"([\d.]+)"/) || [, "?"])[1]));
+  if (vs.size > 1) {
+    $("#listaContrato").insertAdjacentHTML("beforeend",
+      `<div class="card bad"><strong>Versiones distintas entre los archivos del contrato:
+       ${[...vs].map(esc).join(" · ")}.</strong> Una corrida con criterios de versiones distintas
+       no es defendible. Revisá cuál quedó atrás antes de corregir.</div>`);
+  }
+  const c = $("#chipContrato");
+  c.textContent = contratoCompleto() ? "contrato completo" : "contrato incompleto";
+  c.className = "chip " + (contratoCompleto() ? "on" : "off");
+}
+
+/* ------------------------------------------------------------------ cargar */
+$("#fMoodle").onchange = async e => {
+  const files = [...e.target.files];
+  const textos = files.filter(f => /texto en l[ií]nea\.html?$/i.test(f.name));
+  if (!textos.length) {
+    alert("No encontré ningún 'Texto en línea.html'. ¿Elegiste la carpeta Entregas/?");
+    return;
+  }
+  for (const f of textos) {
+    const partes = (f.webkitRelativePath || f.name).split("/");
+    const nombre = partes.length >= 2 ? partes[partes.length - 2] : "(sin nombre)";
+    const html = await f.text();
+    const url = (html.match(/https?:\/\/[^\s"'<>]+/) || [null])[0];
+    agregar(nombre, url);
+  }
+  pintarIndice();
+};
+
+function cargarUrls() {
+  const lineas = $("#txtUrls").value.split("\n").map(l => l.trim()).filter(Boolean);
+  for (const l of lineas) {
+    const m = l.match(/^(.*?)[;\t]\s*(https?:\/\/\S+)$/);
+    if (m) agregar(m[1].trim(), m[2]);
+    else if (/^https?:\/\//.test(l)) agregar(nombreDeUrl(l), l);
+    else agregar(l, null);
+  }
+  $("#txtUrls").value = "";
+  pintarIndice();
+}
+
+const nombreDeUrl = u => { try { return new URL(u).pathname.split("/").filter(Boolean).pop(); }
+                           catch (e) { return "(sin nombre)"; } };
+
+function agregar(nombre, url, testigo, esperado) {
+  TRABAJOS.push({ id: ++SEQ, nombre: nombre || "(sin nombre)", url: url || null,
+                  testigo: !!testigo, esperado: esperado || null, informe: null });
+  $("#chipTrabajos").textContent = TRABAJOS.length + " trabajos";
+}
+
+function intercalarTestigos() {
+  const nom = $("#testigoNombre").value.trim() || "testigo";
+  const esp = parseInt($("#testigoEsperado").value, 10);
+  const reales = TRABAJOS.filter(t => !t.testigo);
+  if (!reales.length) { alert("Cargá primero los trabajos: los testigos van intercalados entre ellos."); return; }
+  const nuevo = [];
+  const t = () => ({ id: ++SEQ, nombre: nom, url: nom, testigo: true, esperado: esp, informe: null });
+  const medio = Math.floor(reales.length / 2);
+  nuevo.push(t());
+  reales.forEach((r, i) => { if (i === medio && i !== 0) nuevo.push(t()); nuevo.push(r); });
+  nuevo.push(t());
+  TRABAJOS = nuevo;
+  $("#chipTrabajos").textContent = TRABAJOS.length + " trabajos";
+  pintarIndice();
+}
+
+function quitar(id) { TRABAJOS = TRABAJOS.filter(t => t.id !== id);
+                      $("#chipTrabajos").textContent = TRABAJOS.length + " trabajos"; pintarIndice(); }
+
+function pintarIndice() {
+  if (!TRABAJOS.length) { $("#indice").innerHTML = '<p class="muted">Todavía no hay trabajos.</p>'; return; }
+  const filas = TRABAJOS.map((t, i) => {
+    let est = "", cls = "";
+    if (!t.url) { est = '<span class="pill noev">sin URL · no_evaluable</span>'; }
+    else if (!/github\.com|gitlab\.com|\.zip$/i.test(t.url) && !t.testigo) {
+      est = '<span class="pill fue">no parece un repositorio</span>';
+    }
+    return `<tr class="${t.testigo ? "testigo" : ""}">
+      <td class="muted">${i + 1}</td>
+      <td>${t.testigo ? "<strong>[TESTIGO]</strong> " : ""}${esc(t.nombre)}</td>
+      <td class="mono muted">${esc(t.url || "—")}</td>
+      <td>${est}</td>
+      <td><button class="act sec" style="padding:3px 9px;font-size:11px"
+           onclick="quitar(${t.id})">quitar</button></td></tr>`;
+  }).join("");
+  const sinUrl = TRABAJOS.filter(t => !t.url).length;
+  $("#indice").innerHTML =
+    `<table><tr><th>#</th><th>Nombre</th><th>Repositorio</th><th></th><th></th></tr>${filas}</table>` +
+    (sinUrl ? `<div class="card warn"><strong>${sinUrl} sin URL.</strong> Se listan igual y salen
+      como <code>no_evaluable</code> con su motivo. <strong>No se adivina de quién es cada uno</strong>:
+      eso lo ata una persona.</div>` : "");
+}
+
+/* ---------------------------------------------------------------- corregir */
+function pintarSelector() {
+  $("#selTrabajo").innerHTML = TRABAJOS.map((t, i) =>
+    `<option value="${t.id}">${i + 1} · ${esc(t.nombre)}${t.testigo ? "  [TESTIGO]" : ""}${t.informe ? "  ✓" : ""}</option>`
+  ).join("");
+  pintarCorregir();
+}
+
+function armarPrompt(t) {
+  if (!contratoCompleto()) return "Falta cargar el contrato completo (pestaña 1).";
+  const hoy = new Date().toISOString().slice(0, 10);
+  return [
+    "===== CONTRATO DEL EVALUADOR — no lo modifiques =====",
+    "", "--- agente/system_prompt.md ---", CONTRATO["system_prompt.md"],
+    "", "--- rubrica.md ---", CONTRATO["rubrica.md"],
+    "", "--- agente/banderas.md ---", CONTRATO["banderas.md"],
+    "", "--- agente/esquema_salida.json ---", CONTRATO["esquema_salida.json"],
+    "", "===== FIN DEL CONTRATO =====", "",
+    "Evaluá el siguiente trabajo final.", "",
+    "REPOSITORIO: " + (t.url || "(sin URL)"),
+    "ALUMNO:      " + t.nombre,
+    "FECHA:       " + hoy, "",
+    "Aplicá rubrica.md con las cuatro pasadas del system prompt, en orden:",
+    "inventario, afirmaciones, puntuación, auditoría.", "",
+    "Antes de puntuar, listá los archivos que efectivamente pudiste leer.",
+    "Si no pudiste leer alguno de los exigidos, decilo: no lo supongas.", "",
+    "Devolvé primero el bloque JSON del esquema, después el informe legible.", "",
+    "Contexto liberado: este trabajo se evalúa desde cero, sin referencia a ningún otro."
+  ].join("\n");
+}
+
+const trabajoSel = () => TRABAJOS.find(t => t.id === parseInt($("#selTrabajo").value, 10));
+
+function pintarCorregir() {
+  const t = trabajoSel(); if (!t) return;
+  $("#verPrompt").value = armarPrompt(t);
+  $("#txtJson").value = t.informe ? JSON.stringify(t.informe, null, 2) : "";
+  $("#valid").innerHTML = "";
+}
+
+function copiarPrompt() {
+  const t = trabajoSel(); if (!t) return;
+  navigator.clipboard.writeText(armarPrompt(t)).then(() => {
+    $("#msgCopia").textContent = "copiado — pegalo en el modelo que uses";
+    setTimeout(() => $("#msgCopia").textContent = "", 3500);
+  });
+}
+
+/* -------------------------------------------------- validación del informe */
+function validar(d) {
+  const p = [], f = [];
+  const req = ESQUEMA && ESQUEMA.required ? ESQUEMA.required : [];
+  const faltan = req.filter(k => !(k in d));
+  faltan.length ? f.push("faltan campos del esquema: " + faltan.join(", "))
+                : p.push("los " + req.length + " campos del esquema, presentes");
+
+  if (req.length && JSON.stringify(Object.keys(d)) !== JSON.stringify(req))
+    p.push("(el orden de los campos difiere del esquema)");
+
+  if (Array.isArray(d.dimensiones)) {
+    d.dimensiones.length === 5 ? p.push("las cinco dimensiones")
+                               : f.push("hay " + d.dimensiones.length + " dimensiones, no 5");
+    let suma = 0, mal = [];
+    for (const x of d.dimensiones) {
+      suma += Number(x.puntos) || 0;
+      const esp = (Number(x.nivel) / 4) * Number(x.peso);
+      if (Math.abs(esp - Number(x.puntos)) > 0.01) mal.push(x.id);
+      const si = (x.requisitos || []).filter(r => r.cumple).length;
+      const sinCita = (x.requisitos || []).filter(r => r.cumple && !(r.evidencia || []).length);
+      if (sinCita.length) f.push("A1 · " + x.id + ": requisito en SI sin evidencia citada");
+      if (Number(x.nivel) > si) f.push("A4 · " + x.id + ": nivel " + x.nivel + " con " + si + " requisitos cumplidos");
+    }
+    mal.length ? f.push("A5 · puntos mal calculados en " + mal.join(", "))
+               : p.push("A5 · nivel × peso cierra en las cinco");
+    if (Math.abs(suma - Number(d.puntaje_bruto)) > 0.01)
+      f.push("A5 · el bruto (" + d.puntaje_bruto + ") no es la suma de las dimensiones (" + suma.toFixed(2) + ")");
+    else p.push("A5 · el bruto es la suma de las dimensiones");
+  } else f.push("no hay dimensiones");
+
+  if (Array.isArray(d.cruces_realizados)) {
+    d.cruces_realizados.length >= 7 ? p.push("A9 · los siete cruces reportados")
+      : f.push("A9 · sólo " + d.cruces_realizados.length + " cruces reportados de 7. Un cruce sin reportar es indistinguible de uno no hecho");
+  } else f.push("A9 · no se reportaron los cruces");
+
+  const g3 = (d.banderas || []).filter(b => /^G3/.test(b.id));
+  if (g3.length && d.estado !== "integridad_comprometida")
+    f.push("hay " + g3.length + " bandera(s) G3 y el estado no es integridad_comprometida");
+  if (d.estado === "integridad_comprometida" && d.puntaje_final !== 0)
+    f.push("estado integridad_comprometida con puntaje_final " + d.puntaje_final + ": debe ser 0 por regla");
+  if ((d.puntaje_final < 40 || d.puntaje_final > 90) && !d.nota_al_margen)
+    f.push("puntaje extremo (" + d.puntaje_final + ") sin nota_al_margen");
+
+  const evid = new Set((((d.inventario || {}).evidencia) || []).map(e => e.id));
+  const usados = new Set();
+  (d.dimensiones || []).forEach(x => (x.requisitos || []).forEach(r => (r.evidencia || []).forEach(e => usados.add(e))));
+  (d.banderas || []).forEach(b => (b.evidencia || []).forEach(e => usados.add(e)));
+  const huerf = [...usados].filter(e => !evid.has(e));
+  huerf.length ? f.push("A2 · citas a evidencia inexistente: " + huerf.join(", "))
+               : p.push("A2 · todas las citas apuntan al inventario");
+  return { pasa: p, falla: f };
+}
+
+function recibirJson() {
+  const t = trabajoSel(); if (!t) return;
+  let txt = $("#txtJson").value.trim();
+  const m = txt.match(/```json\s*([\s\S]*?)```/);
+  if (m) txt = m[1];
+  let d;
+  try { d = JSON.parse(txt); }
+  catch (e) { $("#valid").innerHTML = `<div class="card bad"><strong>No es JSON válido.</strong>
+    <div class="mono muted">${esc(e.message)}</div></div>`; return; }
+
+  const r = validar(d);
+  t.informe = d;
+  $("#valid").innerHTML =
+    `<div class="card ${r.falla.length ? "bad" : "ok"}">
+       <strong>${r.falla.length ? "Guardado, con " + r.falla.length + " problema(s)" : "Guardado y validado"}</strong>
+       ${r.falla.length ? "<ul>" + r.falla.map(x => `<li class="err">${esc(x)}</li>`).join("") + "</ul>" : ""}
+       <ul>${r.pasa.map(x => `<li class="muted">${esc(x)}</li>`).join("")}</ul>
+     </div>`;
+  pintarSelector();
+}
+
+/* -------------------------------------------------------------------- lote */
+function pintarLote() {
+  const hechos = TRABAJOS.filter(t => t.informe);
+  const test = TRABAJOS.filter(t => t.testigo && t.informe);
+  let ctrl = "";
+  if (!test.length) {
+    ctrl = `<div class="card"><span class="muted">Sin testigos corregidos todavía. El control del
+      lote necesita al menos dos: uno al principio y uno al final.</span></div>`;
+  } else {
+    const notas = test.map(t => t.informe.puntaje_final);
+    const esp = test[0].esperado;
+    const iguales = notas.every(n => n === notas[0]);
+    const enEsperado = esp == null || notas.every(n => n === esp);
+    const ok = iguales && enEsperado;
+    ctrl = `<div class="card ${ok ? "ok" : "bad"}">
+      <div class="stat" style="background:none;border:0;padding:0">
+        <div class="k">Control del lote — los testigos</div>
+        <div class="v mono">${notas.join(" · ")}${esp != null ? '<span class="muted" style="font-size:13px"> · esperado ' + esp + "</span>" : ""}</div>
+      </div>
+      <p style="margin:10px 0 0">${ok
+        ? "<span class='good'><strong>La vara no se movió.</strong></span> Los testigos coinciden entre sí y con su valor esperado, después de haber corregido los trabajos que van en el medio. El lote es válido."
+        : "<span class='err'><strong>Hay deriva.</strong></span> Los testigos no coinciden. Se descarta el lote desde el testigo anterior y se rehace. <strong>Ningún informe se comunica.</strong>"}</p>
+      ${test.length < 2 ? '<p class="muted">Con un solo testigo corregido esto no prueba nada todavía.</p>' : ""}
+    </div>`;
+  }
+  $("#control").innerHTML = ctrl;
+
+  if (!hechos.length) { $("#tablaLote").innerHTML = '<p class="muted">Todavía no hay informes cargados.</p>'; return; }
+  const filas = TRABAJOS.map((t, i) => {
+    const d = t.informe;
+    if (!d) return `<tr class="${t.testigo ? "testigo" : ""}"><td class="muted">${i + 1}</td>
+      <td>${t.testigo ? "<strong>[TESTIGO]</strong> " : ""}${esc(t.nombre)}</td>
+      <td colspan="5" class="muted">pendiente</td></tr>`;
+    const niv = (d.dimensiones || []).map(x => x.nivel).join("·");
+    const bn = (d.banderas || []).length;
+    const cls = { evaluado: "ev", evaluado_con_reservas: "res", integridad_comprometida: "int",
+                  fuera_de_alcance: "fue", no_evaluable: "noev" }[d.estado] || "fue";
+    const sinNota = ["integridad_comprometida", "fuera_de_alcance", "no_evaluable"].includes(d.estado);
+    return `<tr class="${t.testigo ? "testigo" : ""}">
+      <td class="muted">${i + 1}</td>
+      <td>${t.testigo ? "<strong>[TESTIGO]</strong> " : ""}${esc(t.nombre)}</td>
+      <td class="mono">${niv}</td>
+      <td class="mono">${d.puntaje_bruto ?? "—"}</td>
+      <td class="mono"><strong>${sinNota ? "sin nota" : d.puntaje_final}</strong></td>
+      <td><span class="pill ${cls}">${esc(d.estado)}</span></td>
+      <td class="muted">${bn ? bn + " bandera" + (bn > 1 ? "s" : "") : "—"}${d.revision_humana_requerida ? ' · <span class="warnc">revisar</span>' : ""}</td>
+    </tr>`;
+  }).join("");
+  $("#tablaLote").innerHTML =
+    `<table><tr><th>#</th><th>Trabajo</th><th>D1·D2·D3·D4·D5</th><th>Bruto</th><th>Final</th>
+      <th>Estado</th><th></th></tr>${filas}</table>`;
+}
+
+/* -------------------------------------------------------------- devolución */
+function cortoDe(d) {
+  const l = [];
+  (d.dimensiones || []).forEach(x => l.push(x.id + " " + x.nivel + "/4 — " +
+    String(x.que_falta_para_el_nivel_siguiente || x.justificacion || "").split(/(?<=\.)\s/)[0]));
+  if (d.sugerencia_mejora)
+    l.push("Mejora: " + d.sugerencia_mejora.dimension + ", hasta " +
+           d.sugerencia_mejora.puntos_potenciales + " pts — " + d.sugerencia_mejora.accion);
+  let txt = l.join("\n");
+  const pal = txt.split(/\s+/);
+  if (pal.length > 180) txt = pal.slice(0, 180).join(" ") + " […]";
+  return txt;
+}
+
+function bajarCsv() {
+  const hechos = TRABAJOS.filter(t => t.informe && !t.testigo);
+  if (!hechos.length) { alert("No hay informes cargados."); return; }
+  const q = s => '"' + String(s == null ? "" : s).replace(/"/g, '""') + '"';
+  const filas = [["Nombre completo", "Calificación", "Comentarios de retroalimentación"].map(q).join(",")];
+  for (const t of hechos) {
+    const d = t.informe;
+    const sinNota = ["integridad_comprometida", "fuera_de_alcance", "no_evaluable"].includes(d.estado);
+    filas.push([q(t.nombre), q(sinNota ? "" : d.puntaje_final), q(cortoDe(d))].join(","));
+  }
+  const blob = new Blob(["﻿" + filas.join("\r\n")], { type: "text/csv;charset=utf-8" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "devolucion-moodle.csv";
+  a.click();
+  avisarEscalados();
+}
+
+function avisarEscalados() {
+  const esc_ = TRABAJOS.filter(t => t.informe && (t.informe.revision_humana_requerida ||
+    ["integridad_comprometida", "fuera_de_alcance", "no_evaluable"].includes(t.informe.estado)));
+  const box = $("#avisoEscalados");
+  if (!esc_.length) { box.style.display = "none"; return; }
+  box.style.display = "block";
+  box.innerHTML = `<strong>${esc_.length} trabajo(s) salen sin nota y no se importan sin leerlos.</strong>
+    <ul>${esc_.map(t => `<li>${esc(t.nombre)} — <span class="mono">${esc(t.informe.estado)}</span>
+      ${t.informe.nota_al_margen ? '<span class="muted">· ' + esc(t.informe.nota_al_margen) + "</span>" : ""}</li>`).join("")}</ul>
+    <p class="muted" style="margin:0">La columna de calificación va vacía a propósito. Estos los
+    mira una persona antes de que llegue nada a un alumno.</p>`;
+}
+
+function verRapida() {
+  const hechos = TRABAJOS.filter(t => t.informe);
+  if (!hechos.length) { alert("No hay informes cargados."); return; }
+  $("#salida").innerHTML = hechos.map(t => {
+    const d = t.informe;
+    return `<div class="card"><strong>${esc(t.nombre)}</strong>
+      <span class="pill ${d.estado === "evaluado" ? "ev" : "res"}">${esc(d.estado)}</span>
+      <pre class="mono" style="white-space:pre-wrap;color:var(--ink2);margin:8px 0 0">${esc(cortoDe(d))}</pre></div>`;
+  }).join("");
+  avisarEscalados();
+}
+
+pintarContrato(); pintarIndice();
+</script>
+</body>
+</html>
