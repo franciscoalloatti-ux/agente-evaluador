@@ -63,6 +63,35 @@ user cambia todas las corridas.
 Que el formato estructurado es lo que hace que la salida sea usable por otro sistema y no sólo
 legible por mí.
 
+## Consideraciones metodológicas
+
+La conciliación de cobranzas es un proceso que requiere atención al detalle y criterio. A lo largo
+del desarrollo procuré mantener un equilibrio entre la automatización y el control, entendiendo que
+ambos aspectos son complementarios y que ninguno reemplaza al otro por completo.
+
+El enfoque adoptado busca ser prudente. Cada decisión de diseño se tomó considerando el contexto
+operativo del área y las particularidades del proceso, con la intención de que la herramienta se
+integre naturalmente al trabajo cotidiano sin generar fricciones innecesarias.
+
+## Escalabilidad del enfoque
+
+El planteo es escalable. La lógica de conciliación no depende del volumen de movimientos, de modo
+que un aumento en la cantidad de transacciones no requiere modificaciones estructurales. Esto
+resulta especialmente relevante en un contexto de crecimiento.
+
+La arquitectura elegida permite además incorporar nuevas fuentes de datos sin alterar el núcleo del
+proceso, lo que facilita la evolución de la herramienta a medida que cambian las necesidades del
+área.
+
+## Próximos pasos
+
+Los próximos pasos contemplan profundizar en los aspectos ya mencionados y explorar oportunidades
+de mejora continua. La conciliación automática es apenas el primer eslabón de una cadena de
+procesos administrativos que podrían beneficiarse de un enfoque similar.
+
+Considero que el camino recorrido sienta bases sólidas para seguir avanzando, y que los aprendizajes
+obtenidos son extrapolables a otras áreas de la organización.
+
 ## Análisis económico
 
 | Componente | Tokens |

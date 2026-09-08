@@ -158,7 +158,7 @@ trazabilidad: sin esto no se puede defender una nota ni atender un reclamo.
 |---------|-----------|
 | `Nombre` | tal como vino en la carpeta, sin normalizar |
 | `Calificación` | `puntaje_final`. **Vacío** si el estado es `integridad_comprometida`, `fuera_de_alcance` o `no_evaluable` |
-| `Comentarios de retroalimentación` | La **variante corta** de `plantilla_informe.md`: máximo 180 palabras. **Sin el número adentro**: la nota ya va en su columna y repetirla la duplica en la pantalla del alumno |
+| `Comentarios de retroalimentación` | La **variante corta** de `plantilla_informe.md`: máximo 180 palabras. **Sin el número adentro** y **sin la nota al margen**, que es interna: la nota ya va en su columna y repetirla la duplica en la pantalla del alumno |
 
 Los tres estados sin nota van con su texto explicando por qué, y **se listan aparte en el resumen
 del lote** para que el profesor los mire uno por uno antes de importar nada.

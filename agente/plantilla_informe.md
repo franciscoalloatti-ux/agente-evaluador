@@ -71,6 +71,8 @@
 {{#si dudas}}{{#cada dudas}}- {{.}}
 {{/cada}}{{/si}}{{#no dudas}}Ninguna.{{/no}}
 
+{{#si nota_al_margen}}> **Nota al margen (interna, no va al alumno):** {{nota_al_margen}}{{/si}}
+
 {{#si revision_humana_requerida}}> **Este informe requiere revisión humana antes de comunicarse.**{{/si}}
 
 ## Registro de evidencia
@@ -126,6 +128,7 @@ D4 · <≤14 palabras, con [E…]>
 D5 · <≤14 palabras, con [E…]>
 
 Banderas: <lista compacta, o "ninguna">
+<nota al margen, si la hay — se lee en voz alta sólo si estamos entre nosotros>
 Mejora: <dimensión>, hasta <n> pts — <una oración>
 Cruces: C1–C7 ejecutados · hallazgos en <ids, o "ninguno">
 
