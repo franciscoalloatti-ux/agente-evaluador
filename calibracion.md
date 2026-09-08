@@ -195,16 +195,16 @@ Salidas completas en `corridas/`.
 
 ---
 
-## 5 · Ronda 3 — pendiente antes del 9/9
+## 5 · Ronda 3 — pendiente antes del jueves 10/9, 18:59
 
 Lo que falta, con el protocolo ya definido. **Esto no está hecho y no lo damos por hecho.**
 
 ### 5.1 Puntuación humana a ciegas — los cuatro integrantes
 
-Cada integrante puntúa los tres casos con `rubrica.md` v1.1 en la mano, sin ver `ESPERADO.md`, sin
+Cada integrante puntúa los tres casos con `rubrica.md` **v1.10** en la mano, sin ver `ESPERADO.md`, sin
 ver las corridas del agente y sin hablar con los demás. Se carga acá dimensión por dimensión.
 
-| Caso | Dim | Integrante 1 | Integrante 2 | Integrante 3 | Integrante 4 | Agente | Desacuerdo |
+| Caso | Dim | Francisco | Martín | Federico | Verónica | Agente | Desacuerdo |
 |------|-----|:---:|:---:|:---:|:---:|:------:|:----------:|
 | excelente | D1 | | | | 3 | 4 | |
 | excelente | D2 | | | | 3 | 4 | |
@@ -225,7 +225,7 @@ ver las corridas del agente y sin hablar con los demás. Se carga acá dimensió
 > Para el tramposo, además de los niveles, anotar **cuántos de los ocho vectores G3 encontró
 > cada integrante leyendo el repositorio a mano**. Es la medición más honesta de si el caso es
 > difícil de verdad, y sirve de piso: si una persona con la rúbrica en la mano encuentra tres de
-> cinco, exigirle cinco al agente es exigirle más que a nosotros.
+> ocho, exigirle los ocho al agente es exigirle más que a nosotros.
 
 > **Cómo se lee esta tabla.** El desacuerdo interesante no es agente-vs-humanos: es
 > **humano-vs-humano**. Si dos integrantes puntúan la misma dimensión con dos niveles distintos, el
