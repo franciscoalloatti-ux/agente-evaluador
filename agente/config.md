@@ -276,10 +276,10 @@ El agente produce el informe; **la responsabilidad por él no se delega**.
 
 | Componente | Versión | Cambia cuando |
 |------------|---------|---------------|
-| `rubrica.md` | 1.3 | Cambia un criterio de puntuación → se recalibra y se re-corren los tres casos |
-| `system_prompt.md` | 1.3 | Cambia el pipeline, las restricciones o los ejemplos |
-| `banderas.md` | 1.3 | Se agrega una bandera o cambia un efecto |
-| `esquema_salida.json` | 1.3 | Cambia un campo → **todas las corridas anteriores dejan de ser comparables**. La v1.3 agregó `inventario.config_agentes_hallada`: las corridas anteriores a ella no lo traen |
+| `rubrica.md` | 1.10 | Cambia un criterio de puntuación → se recalibra y se re-corren los tres casos |
+| `system_prompt.md` | 1.10 | Cambia el pipeline, las restricciones o los ejemplos |
+| `banderas.md` | 1.10 | Se agrega una bandera o cambia un efecto |
+| `esquema_salida.json` | 1.10 | Cambia un campo → **todas las corridas anteriores dejan de ser comparables**. La v1.3 agregó `inventario.config_agentes_hallada`: las corridas anteriores a ella no lo traen |
 
 Todo informe emitido lleva `version_rubrica` y `firma.version_prompt`. Sin eso no hay trazabilidad:
 una nota vieja con una rúbrica nueva no se puede defender.
