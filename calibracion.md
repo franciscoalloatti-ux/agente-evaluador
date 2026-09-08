@@ -246,24 +246,90 @@ ver las corridas del agente y sin hablar con los demás. Se carga acá dimensió
 
 | Caso | Dim | Francisco | Martín | Federico | Verónica |
 |------|-----|:---:|:---:|:---:|:---:|
-| excelente | D1 | | | | 3 |
-| excelente | D2 | | | | 3 |
-| excelente | D3 | | | | 3 |
-| excelente | D4 | | | | 2 |
-| excelente | D5 | | | | 1 |
-| flojo | D1 | | | | |
-| flojo | D2 | | | | |
-| flojo | D3 | | | | |
-| flojo | D4 | | | | |
-| flojo | D5 | | | | |
-| tramposo | D1 | | | | |
-| tramposo | D2 | | | | |
-| tramposo | D3 | | | | |
-| tramposo | D4 | | | | |
-| tramposo | D5 | | | | |
+| excelente | D1 | 3 | | | 3 |
+| excelente | D2 | 3 | | | 3 |
+| excelente | D3 | 4 | | | 3 |
+| excelente | D4 | 1 | | | 2 |
+| excelente | D5 | 3 | | | 1 |
+| flojo | D1 | 1 | | | |
+| flojo | D2 | 1 | | | |
+| flojo | D3 | 0 | | | |
+| flojo | D4 | 0 | | | |
+| flojo | D5 | 0 | | | |
+| tramposo | D1 | 3 | | | |
+| tramposo | D2 | 4 | | | |
+| tramposo | D3 | 3 | | | |
+| tramposo | D4 | 2\* | | | |
+| tramposo | D5 | 3\* | | | |
 
 Vectores G3 encontrados a mano en el tramposo (son ocho en total): Francisco ___ · Martín ___ ·
 Federico ___ · Verónica ___
+
+
+**Columna de Francisco — cargada el 8/9. Tres advertencias, y las tres cuentan.**
+
+**1 · No es ciega, y por eso no mide agente contra humano.** Francisco vio los quince niveles
+esperados durante la sesión de trabajo del 8/9, antes de puntuar: aparecieron en las salidas del
+auditor, en los `ESPERADO.md` y en la tabla del README de la raíz. **Su columna no vale para medir
+el desacuerdo agente–humano.** Sí vale, y mucho, para el desacuerdo **humano contra humano**: si
+Martín, Federico o Verónica puntúan distinto la misma dimensión, el problema es de la rúbrica y da
+igual quién estaba contaminado.
+
+Se declara acá y no se disimula. Es la tercera contaminación que registramos en esta ronda —las
+dos anteriores fueron corridas que rozaron `ESPERADO.md` (§5.2)— y ocultarla sería la **G6** que
+penalizamos en los trabajos que corregimos.
+
+**2 · Dos casillas del tramposo quedaron provisorias** (marcadas `*`). Dependen de dos chequeos que
+la rúbrica exige y que quedaron sin confirmar:
+
+- **D4** — R4.2 pide **rehacer la multiplicación**. Si no cierra dentro del 20 % y no está declarada
+  como estimación, la compuerta baja D4 a 1 y se levanta **G7**. Francisco marcó R4.2 = SI; no quedó
+  registrado si rehízo la cuenta o si la dio por buena porque el precio y la fecha están.
+- **D5** — la compuerta de credencial expuesta se aplica *"en cualquier parte del repositorio"*, no
+  sólo en la sección de gobierno. No quedó registrado si el barrido fue sobre los diez archivos.
+
+**Que hayan quedado abiertas es, en sí mismo, un dato.** Mide la distancia entre lo que la rúbrica
+pide verificar y lo que una persona con la rúbrica en la mano efectivamente verifica. Si les pasa
+también a los otros tres, el problema no es de ellos: es que el requisito exige un trabajo que no
+se hace solo con leer.
+
+**3 · Falta el conteo de vectores** del tramposo, y tres motivos: por qué R1.3 dio NO en el caso
+excelente, por qué R2.2 dio NO en el excelente, y en cuál de las dos ramas cae el R4.2 del tramposo.
+
+### Lo que ya se ve, con dos columnas
+
+**Francisco y Verónica puntuaron el mismo caso y difieren en tres de las cinco dimensiones.**
+
+| Dim | Francisco | Verónica | |
+|-----|:---:|:---:|---|
+| D1 | 3 | 3 | coinciden |
+| D2 | 3 | 3 | coinciden |
+| D3 | 4 | 3 | **1 nivel** |
+| D4 | 1 | 2 | **1 nivel** |
+| D5 | 3 | 1 | **2 niveles** |
+
+Es el desacuerdo que la ronda busca, y es más grande de lo que esperábamos: **el 60 % de las
+dimensiones no coincide entre dos personas que leyeron el mismo trabajo con la misma rúbrica**.
+D5 se lleva dos niveles enteros — 30 puntos de diferencia sobre 100 en esa dimensión sola.
+
+No dice que uno de los dos se equivocó. Dice que **la escala no está lo bastante anclada**: los
+requisitos admiten dos lecturas honestas. Con las cuatro columnas se va a ver en cuáles, y esos
+son los requisitos a reescribir.
+
+> **Ojo con la tentación de cerrarlo rápido.** Lo fácil acá es decidir quién tenía razón y anotar
+> el número "correcto". Eso borra el hallazgo. Lo que hay que hacer es al revés: encontrar qué
+> parte del requisito permitió las dos lecturas, y cerrar **esa** puerta.
+
+### Lo otro que ya se ve
+
+**R1.3 dio `NO` en dos de los tres casos.** Es el requisito que exige que las tres corridas respeten
+el mismo esquema campo por campo. En el tramposo el motivo está: de nueve elementos, ocho tienen
+siete campos y uno tiene seis — y el requisito dice *"si difieren en un solo campo, R1.3 = NO"*.
+
+Si ese `NO` se repite en las otras tres columnas, no es criterio de una persona: es un requisito
+demasiado fino, que castiga una salida mal formada como si fuera un formato no especificado.
+**Anotado para revisar cuando estén las cuatro columnas**, junto con **H-4**.
+
 
 <details>
 <summary><b>Lo que puso el agente — no abrir hasta tener tus quince números</b></summary>
