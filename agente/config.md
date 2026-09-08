@@ -1,6 +1,6 @@
 # Configuración del agente corrector
 
-> Versión 1.6 · Todo lo que hay que fijar para que dos corridas den el mismo resultado.
+> Versión 1.8 · Todo lo que hay que fijar para que dos corridas den el mismo resultado.
 
 ---
 
@@ -17,6 +17,8 @@ y en este orden**.
 | 4 | `agente/esquema_salida.json` | La forma exacta de la salida |
 
 `agente/plantilla_informe.md` se carga sólo si se quiere el informe legible además del JSON.
+`agente/lote.md` se carga cuando se corrigen varios trabajos de una: no reemplaza al contrato,
+lo envuelve.
 `agente/user_prompt.md` es lo único que cambia entre corridas.
 
 **Si falta cualquiera de las cuatro, la corrida no es válida** y el informe debe declararlo:
@@ -49,6 +51,55 @@ La medición que respalda esta decisión está en `calibracion.md` §4.
 > fecha de consulta. Publicar un precio sin fecha es exactamente lo que la rúbrica penaliza en R4.2.
 
 ---
+
+## 2 bis · Portabilidad — el contrato tiene que correr en cualquier lado
+
+En la clase del 3/9 el profesor fue explícito sobre por qué desconfía de los artefactos:
+
+> *"A mí no me gusta mucho trabajar con artefactos porque es interno de cada LLM, y por más que le
+> des acceso a otra persona hay cosas que no puede ver de ese artefacto o que no puede correr,
+> porque tiene el sandbox con el que fue creado y tiene protección. Por eso algo que te funciona
+> localmente a vos puede no funcionar en otro lado — hay que testearlo con otros del grupo."*
+
+Y antes: *"es importantísimo que el prompt sea determinista, es decir que en cualquier modelo
+funcione bien."*
+
+**Este agente no es un artefacto.** Son seis archivos de texto en un repositorio público. Se abren
+en cualquier editor, se pegan en cualquier modelo, no hay sandbox, no hay nada que otra persona no
+pueda ver. Esa fue la decisión 1 de `DECISIONES.md` y se tomó por la regla de la casa —nadie
+escribe código— pero resulta ser también la respuesta a esta objeción.
+
+**No alcanza con afirmarlo.** Él pide testearlo con otros del grupo, y eso está pendiente.
+
+### Protocolo de portabilidad — una persona por plataforma
+
+Cada integrante corre **el mismo caso** en **una plataforma distinta**, sin verse entre sí:
+
+| Integrante | Plataforma | Modelo | Resultado esperado |
+|------------|-----------|--------|--------------------|
+| | Claude (web o Code) | | **89** · niveles 4·4·4·2·3 |
+| | ChatGPT | | **89** · niveles 4·4·4·2·3 |
+| | Gemini / AI Studio | | **89** · niveles 4·4·4·2·3 |
+| | La que consiga (Copilot, Mistral, local) | | **89** · niveles 4·4·4·2·3 |
+
+**Entrada:** `casos/excelente/` empaquetado, con el contrato completo pegado adelante.
+**Se anota:** el puntaje, los cinco niveles, y **qué se rompió** — si algún modelo no respetó el
+esquema, se quedó sin contexto, ignoró un cruce o inventó un campo.
+
+**Lo que se está midiendo no es que los cuatro den 89.** Es dónde deja de darlo, y por qué. Un
+contrato que sólo funciona en el modelo con el que fue escrito no es un contrato: es un artefacto
+con otro nombre.
+
+### Lo que ya sabemos que puede romperse
+
+- **Ventana de contexto.** El contrato son ≈16.500 tokens y el repositorio evaluado suma otros
+  8.000–14.000. Un modelo con ventana chica va a truncar, y probablemente por el final —
+  justo donde está la batería de cruces.
+- **Adherencia al esquema.** Los modelos livianos tienden a "mejorar" el JSON: renombran campos,
+  omiten los vacíos, agregan comentarios. El chequeo A7 lo detecta; que lo detecte no lo arregla.
+- **Los siete cruces.** Es la parte más fácil de saltear bajo presión de contexto, y es
+  exactamente la que produjo D-13. Por eso `cruces_realizados` es obligatorio: si un modelo los
+  omite, **se ve**.
 
 ## 3 · Herramientas — los dos caminos
 
