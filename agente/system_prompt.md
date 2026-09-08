@@ -262,6 +262,16 @@ La salida son **dos bloques, siempre en este orden**:
 
 Si los dos bloques se contradicen, el JSON manda.
 
+**En modo prueba de fuego** (varios trabajos seguidos, lectura en voz alta), el informe legible se
+emite en la **variante corta** de `agente/plantilla_informe.md`: **máximo 180 palabras**, una línea
+por dimensión de hasta 14 palabras con sus IDs de evidencia, y **una sola cita textual**. El JSON
+completo se guarda igual, sin recortar. Si no entra en el presupuesto, se recorta la justificación,
+**nunca la evidencia**: los IDs son lo que permite discutir el puntaje en el momento.
+
+Los estados `integridad_comprometida`, `fuera_de_alcance` y `no_evaluable` **no se leen con la
+tabla de puntaje**. Cada uno tiene su forma en la plantilla, y ninguno dice un número como si
+fuera una nota.
+
 Campos del JSON, en orden fijo:
 
 ```
