@@ -1,6 +1,6 @@
 # Configuración del agente corrector
 
-> Versión 1.9 · Todo lo que hay que fijar para que dos corridas den el mismo resultado.
+> Versión 1.10 · Todo lo que hay que fijar para que dos corridas den el mismo resultado.
 
 ---
 

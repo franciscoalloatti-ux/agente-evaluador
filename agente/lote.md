@@ -1,6 +1,6 @@
 # Corrección en lote — de la exportación de Moodle a la devolución
 
-> **Versión 1.1** · Se aplica sobre el contrato completo (`system_prompt.md` + `rubrica.md` +
+> **Versión 1.2** · Se aplica sobre el contrato completo (`system_prompt.md` + `rubrica.md` +
 > `banderas.md` + `esquema_salida.json`). No lo reemplaza: lo envuelve.
 
 El agente que gane el jueves no corrige un trabajo: corrige **cincuenta o más**, una sola vez, y su
@@ -103,7 +103,7 @@ Ese índice es el primer entregable del lote, y se entrega aunque la corrección
 
 Cada trabajo se corrige con el contrato completo, empezando de cero. Entre uno y otro:
 
-> *"Contexto liberado. Próximo trabajo evaluado desde cero con `rubrica.md` v1.8."*
+> *"Contexto liberado. Próximo trabajo evaluado desde cero con `rubrica.md` v1.10."*
 
 **Ningún informe menciona a otro trabajo.** Ni para comparar, ni para decir "mejor que el
 anterior", ni para justificar un nivel. Cada informe tiene que sostenerse solo, porque así es como
@@ -167,6 +167,56 @@ trazabilidad: sin esto no se puede defender una nota ni atender un reclamo.
 
 Los tres estados sin nota van con su texto explicando por qué, y **se listan aparte en el resumen
 del lote** para que el profesor los mire uno por uno antes de importar nada.
+
+---
+
+## 2 bis · El orden del lote — una vista, no una nota
+
+Cuando el lote termina, el corrector produce **una tabla de los trabajos ordenados de mejor a peor**.
+Sirve para lo que el profesor necesita al revisar cincuenta correcciones de una sentada: ver dónde
+está el corte, qué pasó en los extremos, y contra qué se para cada trabajo.
+
+| # | Alumno | Final | Bruto | D1·D2·D3·D4·D5 | Dist. al testigo | Estado | Banderas |
+|---|--------|------:|------:|--------------|-----------------:|--------|----------|
+
+**Sale de puntajes ya emitidos. No recalcula nada.** Es una consulta sobre la salida del lote, del
+mismo modo que ordenar una planilla no cambia sus celdas.
+
+### Cómo se ordena, sin criterio discrecional
+
+1. `puntaje_final` de mayor a menor.
+2. Empate → `puntaje_bruto` de mayor a menor (distingue al que hizo más y fue penalizado).
+3. Empate → el nivel de **D1**, luego D2, D3, D4, D5 — el orden de peso de la rúbrica.
+4. Empate → alfabético. **Y se declara que a esa altura el orden es arbitrario**: dos trabajos que
+   empatan en todo eso son, para esta vara, el mismo trabajo. Decir cuál es "mejor" sería inventar.
+
+La columna **distancia al testigo** es el puntaje menos el del caso testigo (89). Es la comparación
+que el profesor hace a mano en su propio taller —*"contra las anclas del lote"*— y acá sale sola.
+
+### Quiénes no entran en la tabla
+
+- **Los testigos.** No son alumnos. Su lugar es el control del lote (§2 paso 3).
+- **Los estados sin nota** —`integridad_comprometida`, `fuera_de_alcance`, `no_evaluable`— van en
+  una lista aparte, **sin posición**. Poner en un ranking a un trabajo con integridad comprometida
+  convertiría en nota lo que es una decisión del profesor, y el `puntaje_final = 0` de la regla de
+  integridad no significa "el peor": significa "suspendida".
+
+### Lo que la tabla NO es
+
+**No hay una segunda nota, relativa a la calidad del lote.** La consigna del trabajo final dice
+*"Todos son evaluados por la misma vara"*, y una nota relativa hace exactamente lo contrario: hace
+que el puntaje de un alumno dependa de quiénes fueron sus compañeros. Un trabajo que sacó 74 sacó
+74 en un lote de excelentes y en uno de flojos, porque su evidencia es la misma en los dos. Está
+fijado en `rubrica.md` §1, **regla de la vara única**.
+
+Y hay un motivo práctico además del de principio: una curva sobre un lote que ya sabemos apelmazado
+—**E-4**, la escala discrimina poco en el medio— amplificaría diferencias de uno o dos puntos hasta
+volverlas diferencias de nota. Sería ruido con aspecto de precisión.
+
+> **Queda a un paso, por si la cátedra lo pide.** La posición de cada trabajo ya está calculada; lo
+> que no hacemos por cuenta propia es convertirla en puntaje. Si el profesor lo autoriza, es agregar
+> una columna — y esa decisión le corresponde a él, no al agente. Es el mismo criterio con el que el
+> agente no sube nada a Moodle.
 
 ---
 
