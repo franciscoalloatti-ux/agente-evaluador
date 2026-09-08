@@ -107,14 +107,22 @@ está fijado en una dirección, no librado a la corrida.
 Los 4 requisitos en `SI` **y además** tres cosas: el dato que evidencia la herramienta real es
 **irreproducible sin ella** (no pudo haberlo inventado el modelo: un identificador, una fecha de
 consulta, un valor que cambia); el esquema de salida es idéntico en las tres corridas, campo por
-campo; **y alguna corrida muestra un resultado que el autor efectivamente usó** — no sólo que el
-agente respondió, sino que la salida sirvió para algo: se pegó en una planilla, decidió una
-presentación, cambió una conversación.
+campo; **y el trabajo muestra que una salida concreta se usó**: hay una cita que dice **qué se hizo con
+ella** —se pegó en una planilla, decidió una presentación, cambió una conversación— y esa cita se
+puede **vincular a una corrida guardada**. La cita puede estar en cualquier archivo; lo que no
+puede faltar es el vínculo con una salida real.
 
 > La tercera existe porque las cinco dimensiones miden el **artefacto** y ninguna pregunta si el
-> sistema **sirve**, cuando la consigna pide *"un sistema aplicado a un caso real"*. No la
-> resuelve del todo — un trabajo inútil puede seguir sacando nivel 3 — pero es lo más cerca que
-> se puede llegar sin volver la rúbrica opinable. Ver `corridas/2026-09-08_autocritica-cinco-errores.md`, E-1.
+> sistema **sirve**, cuando la consigna pide *"un sistema aplicado a un caso real"*. No la resuelve
+> del todo — un trabajo inútil puede seguir sacando nivel 3 — pero es lo más cerca que se puede
+> llegar sin volver la rúbrica opinable. Ver `corridas/2026-09-08_autocritica-cinco-errores.md`, E-1.
+>
+> **Redactada dos veces.** La primera versión pedía que la evidencia estuviera *dentro de una
+> corrida*. Al verificarla contra `casos/excelente/` —donde la prueba de uso está en el README
+> (*"la ficha termina pegada en la hoja radar de mi planilla"*) y las corridas producen esas
+> fichas— el caso caía de 89 a 81, fuera de su propia banda. Exigir que la cita viva en un archivo
+> determinado es un formalismo, no el espíritu de la regla: lo que importa es que el vínculo con
+> una salida real exista y se pueda citar.
 
 ### Anclas
 
