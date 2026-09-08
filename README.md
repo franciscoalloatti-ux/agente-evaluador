@@ -134,6 +134,14 @@ El contrato completo está en `agente/`. Las instrucciones principales, en orden
   profesor) · `no_evaluable`. Un evaluador que produce un número confiable sobre la cosa equivocada
   es peor que uno que se planta.
 
+- **Tiene una forma de ejecución, y no es un artefacto.** `front/consola.html` es un archivo que
+  se abre con doble click: sin instalar, sin cuenta, sin servidor, sin conexión. Carga la carpeta
+  de Moodle, arma el prompt exacto, valida el JSON que devuelve el modelo, controla los testigos
+  del lote y exporta la hoja para importar. **No evalúa**: el que corrige es el contrato, y
+  sigue corriendo en cualquier modelo con o sin la pantalla. Y **no embebe la rúbrica, la
+  carga** — si el contrato cambia, la consola no queda vieja. Su validador corre los chequeos
+  A1, A2, A4, A5 y A9 **fuera del modelo**, que es donde no puede autoengañarse.
+
 - **Corrige de a uno o en lote.** `agente/lote.md` describe el recorrido completo desde la
   exportación de Moodle hasta la hoja lista para importar, con tres modos de carga —individual,
   carpeta, formato Moodle— y dos de salida. Su control es el **caso testigo**: se intercala un
@@ -254,6 +262,7 @@ rubrica.md        la rúbrica ejecutable (v1.9)
 agente/           system_prompt · user_prompt · config · esquema_salida · plantilla_informe · banderas · lote
 casos/            excelente/ · flojo/ · tramposo/ — cada uno con su ESPERADO.md
 calibracion.md    protocolo, los diez desacuerdos y su arbitraje, y lo que falta
+front/            consola.html — la forma de ejecución. NO evalúa: arma el prompt y valida
 corridas/         las salidas reales del agente sobre los tres casos
 DECISIONES.md     arquitectura, lo que descartamos y lo que quedó roto
 ```
