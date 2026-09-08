@@ -6,622 +6,1211 @@
 <title>Consola del agente evaluador</title>
 <style>
   :root{
-    --bg:#12121a; --panel:#1b1b24; --panel2:#23232e; --line:#2f2f3c;
+    --bg:#12121a; --panel:#1a1a23; --panel2:#22222d; --line:#2e2e3a; --line2:#3a3a48;
     --ink:#f0eee9; --ink2:#a9a69e; --ink3:#6f6c66;
     --bordo:#9d2235; --bordo2:#c94b5e;
-    --ok:#3fb37f; --warn:#d99b2b; --bad:#d9544d; --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --ok:#3fb37f; --warn:#d99b2b; --bad:#d9544d;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--ink);
-       font:14px/1.55 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  header{background:linear-gradient(180deg,#1b1b24,#15151d);border-bottom:1px solid var(--line);
-         padding:14px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
-  header h1{font-size:15px;margin:0;font-weight:600;letter-spacing:.2px}
-  header .sub{color:var(--ink3);font-size:12px}
-  .chip{font-size:11px;padding:3px 9px;border-radius:99px;border:1px solid var(--line);color:var(--ink2)}
-  .chip.on{border-color:var(--ok);color:var(--ok)}
-  .chip.off{border-color:var(--bad);color:var(--bad)}
-  nav{display:flex;gap:2px;padding:0 16px;background:#15151d;border-bottom:1px solid var(--line);
-      overflow-x:auto}
-  nav button{background:none;border:0;color:var(--ink3);padding:11px 15px;cursor:pointer;
-             font-size:13px;border-bottom:2px solid transparent;white-space:nowrap}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--ink);overflow:hidden;
+       font:13.5px/1.5 -apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+
+  header{height:52px;display:flex;align-items:center;gap:10px;padding:0 16px;
+         background:linear-gradient(180deg,#1c1c26,#15151d);border-bottom:1px solid var(--line)}
+  header .logo{width:26px;height:26px;border-radius:6px;background:var(--bordo);display:grid;
+               place-items:center;font-weight:700;font-size:12px;color:#fff;flex:none}
+  header h1{font-size:14px;margin:0;font-weight:600;white-space:nowrap}
+  header .sub{color:var(--ink3);font-size:11px;white-space:nowrap}
+  header .sp{flex:1}
+  .chip{font-size:11px;padding:3px 9px;border-radius:99px;border:1px solid var(--line2);
+        color:var(--ink2);white-space:nowrap}
+  .chip.on{border-color:var(--ok);color:var(--ok)} .chip.off{border-color:var(--bad);color:var(--bad)}
+  nav{display:flex;gap:1px;padding:0 12px;background:#15151d;border-bottom:1px solid var(--line)}
+  nav button{background:none;border:0;color:var(--ink3);padding:9px 14px;cursor:pointer;
+             font-size:12.5px;border-bottom:2px solid transparent;white-space:nowrap}
   nav button:hover{color:var(--ink2)}
   nav button.sel{color:var(--ink);border-bottom-color:var(--bordo2)}
-  main{padding:22px;max-width:1180px}
-  section{display:none} section.sel{display:block}
-  h2{font-size:17px;margin:0 0 6px;color:var(--bordo2);font-weight:600}
-  h3{font-size:13px;margin:22px 0 8px;color:var(--ink2);text-transform:uppercase;letter-spacing:.7px}
-  p{color:var(--ink2);margin:6px 0 14px;max-width:76ch}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:12px 0}
-  .card.warn{border-left:3px solid var(--warn)}
+
+  .vista{display:none;height:calc(100vh - 89px)} .vista.sel{display:block}
+  #vCorreccion.sel{display:grid;grid-template-columns:268px 1fr 340px}
+  .col{overflow-y:auto;height:100%}
+  .col.izq{border-right:1px solid var(--line);background:#161620}
+  .col.der{border-left:1px solid var(--line);background:#161620}
+  .col.centro{padding:16px 22px}
+  .scroll{overflow-y:auto;height:100%;padding:20px 26px}
+
+  .listaTop{padding:11px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;
+            background:#161620;z-index:2}
+  .listaTop .t{display:flex;align-items:baseline;gap:7px;margin-bottom:8px}
+  .listaTop .t b{font-size:11px;letter-spacing:.9px;text-transform:uppercase;color:var(--ink3)}
+  .listaTop .t span{font-size:17px;font-weight:600}
+  .prog{height:4px;background:#26262f;border-radius:99px;overflow:hidden;margin-bottom:8px}
+  .prog i{display:block;height:100%;background:var(--ok);width:0;transition:width .2s}
+  #buscar{width:100%;background:#0e0e15;border:1px solid var(--line);color:var(--ink);
+          border-radius:6px;padding:5px 8px;font-size:12px;margin-bottom:7px}
+  .filtros{display:flex;gap:3px;flex-wrap:wrap}
+  .filtros button{background:#22222d;border:1px solid var(--line);color:var(--ink3);
+    font-size:10.5px;padding:3px 7px;border-radius:5px;cursor:pointer}
+  .filtros button.sel{border-color:var(--bordo2);color:var(--ink)}
+  .item{padding:9px 12px;border-bottom:1px solid #21212a;cursor:pointer;display:flex;gap:9px;
+        align-items:flex-start}
+  .item:hover{background:#1c1c26}
+  .item.sel{background:#241f28;box-shadow:inset 2px 0 0 var(--bordo2)}
+  .item .dot{width:7px;height:7px;border-radius:99px;background:#3d3d4a;margin-top:5px;flex:none}
+  .item .dot.ok{background:var(--ok)} .item .dot.curso{background:var(--warn)}
+  .item .dot.esc{background:var(--bad)}
+  .item .nom{font-size:12.5px;line-height:1.35;word-break:break-word}
+  .item .met{font-size:10.5px;color:var(--ink3);margin-top:2px}
+  .item .pt{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--ink2);flex:none}
+  .item.testigo .nom:before{content:"TESTIGO";font-size:9px;letter-spacing:.6px;background:#332536;
+    color:var(--bordo2);padding:1px 5px;border-radius:4px;margin-right:6px;vertical-align:1px}
+
+  .pcTabs{display:flex;border-bottom:1px solid var(--line);position:sticky;top:0;background:#161620;z-index:2}
+  .pcTabs button{flex:1;background:none;border:0;color:var(--ink3);padding:10px 4px;font-size:11.5px;
+    cursor:pointer;border-bottom:2px solid transparent}
+  .pcTabs button.sel{color:var(--ink);border-bottom-color:var(--bordo2)}
+  .pc{padding:15px 14px}
+  .nota{display:flex;align-items:baseline;gap:9px}
+  .nota .n{font-size:40px;font-weight:700;line-height:1}
+  .nota .d{color:var(--ink3);font-size:13px}
+  .nota .quien{margin-left:auto;text-align:right;font-size:11px;color:var(--ink3);line-height:1.35}
+  .barra{height:7px;background:#26262f;border-radius:99px;margin:11px 0 16px;position:relative}
+  .barra i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--bordo),var(--bordo2))}
+  .barra .tick{position:absolute;top:9px;font-size:9px;color:var(--ink3);transform:translateX(-50%)}
+  .dims{display:flex;gap:4px;margin:16px 0 4px}
+  .dims div{flex:1;text-align:center;background:#22222d;border:1px solid var(--line);
+            border-radius:6px;padding:6px 2px}
+  .dims .k{font-size:9.5px;color:var(--ink3)} .dims .v{font-size:15px;font-weight:600;margin-top:1px}
+  .campo{margin-top:16px}
+  .campo .lbl{font-size:10px;letter-spacing:.9px;text-transform:uppercase;color:var(--ink3);
+              display:flex;justify-content:space-between;margin-bottom:5px}
+  .estados{display:flex;gap:4px;margin-top:6px}
+  .estados button{flex:1;background:#22222d;border:1px solid var(--line);color:var(--ink3);
+    padding:6px 3px;font-size:11px;border-radius:6px;cursor:pointer}
+  .estados button.sel{background:var(--bordo);border-color:var(--bordo);color:#fff}
+
+  h2{font-size:16px;margin:0 0 6px;color:var(--bordo2);font-weight:600}
+  h3{font-size:11px;margin:22px 0 7px;color:var(--ink3);text-transform:uppercase;letter-spacing:.8px}
+  p{color:var(--ink2);margin:6px 0 13px;max-width:76ch}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:14px;margin:10px 0}
+  .card.ok{border-left:3px solid var(--ok)} .card.warn{border-left:3px solid var(--warn)}
   .card.bad{border-left:3px solid var(--bad)}
-  .card.ok{border-left:3px solid var(--ok)}
-  button.act{background:var(--bordo);color:#fff;border:0;padding:9px 16px;border-radius:7px;
-             cursor:pointer;font-size:13px;font-weight:500}
+  button.act{background:var(--bordo);color:#fff;border:0;padding:8px 14px;border-radius:6px;
+             cursor:pointer;font-size:12.5px}
   button.act:hover{background:var(--bordo2)}
-  button.act.sec{background:var(--panel2);border:1px solid var(--line);color:var(--ink)}
-  button.act:disabled{opacity:.4;cursor:not-allowed}
+  button.act.sec{background:var(--panel2);border:1px solid var(--line2);color:var(--ink)}
+  button.act.mini{padding:4px 9px;font-size:11px}
   textarea,input[type=text]{width:100%;background:#0e0e15;color:var(--ink);border:1px solid var(--line);
-    border-radius:7px;padding:10px;font-family:var(--mono);font-size:12px;line-height:1.5}
-  textarea{min-height:120px;resize:vertical}
-  table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
-  th{text-align:left;color:var(--ink3);font-weight:500;font-size:11px;text-transform:uppercase;
-     letter-spacing:.6px;padding:8px 10px;border-bottom:1px solid var(--line)}
-  td{padding:9px 10px;border-bottom:1px solid #23232c;vertical-align:top}
-  tr.testigo td{background:#1d1a24}
-  .mono{font-family:var(--mono);font-size:12px}
-  .pill{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;white-space:nowrap}
-  .pill.ev{background:#17332a;color:var(--ok)}
-  .pill.res{background:#33291a;color:var(--warn)}
-  .pill.int{background:#3a1d21;color:var(--bad)}
-  .pill.fue{background:#2b2b38;color:var(--ink2)}
+    border-radius:6px;padding:9px;font-family:var(--mono);font-size:11.5px;line-height:1.5}
+  textarea{resize:vertical}
+  table{width:100%;border-collapse:collapse;font-size:12.5px;margin:8px 0}
+  th{text-align:left;color:var(--ink3);font-weight:500;font-size:10.5px;text-transform:uppercase;
+     letter-spacing:.6px;padding:7px 9px;border-bottom:1px solid var(--line)}
+  td{padding:8px 9px;border-bottom:1px solid #22222c;vertical-align:top}
+  tr.testigoRow td{background:#1d1a24}
+  .mono{font-family:var(--mono);font-size:11.5px}
+  .muted{color:var(--ink3);font-size:11.5px}
+  .pill{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:99px;white-space:nowrap}
+  .pill.ev{background:#17332a;color:var(--ok)} .pill.res{background:#33291a;color:var(--warn)}
+  .pill.int{background:#3a1d21;color:var(--bad)} .pill.fue{background:#2b2b38;color:var(--ink2)}
   .pill.noev{background:#2b2b38;color:var(--ink3)}
-  .muted{color:var(--ink3);font-size:12px}
-  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px}
-  .stat{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:12px}
-  .stat .k{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.6px}
-  .stat .v{font-size:22px;font-weight:600;margin-top:3px}
-  code{background:#0e0e15;padding:1px 5px;border-radius:4px;font-size:12px;color:var(--bordo2)}
-  .drop{border:1.5px dashed var(--line);border-radius:10px;padding:26px;text-align:center;color:var(--ink3)}
-  .drop.hot{border-color:var(--bordo2);color:var(--ink2)}
-  ul{color:var(--ink2);max-width:76ch}  li{margin:4px 0}
+  .drop{border:1.5px dashed var(--line2);border-radius:11px;padding:34px 26px;text-align:center;
+        color:var(--ink3);max-width:580px;margin:30px auto}
+  .drop h4{color:var(--ink);font-size:15px;margin:0 0 10px;font-weight:600}
+  .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:9px 0}
   .err{color:var(--bad)} .good{color:var(--ok)} .warnc{color:var(--warn)}
+  ul{color:var(--ink2);max-width:76ch;padding-left:20px} li{margin:3px 0}
+  code{background:#0e0e15;padding:1px 5px;border-radius:4px;font-size:11.5px;color:var(--bordo2)}
+  .vacio{display:grid;place-items:center;height:100%;color:var(--ink3);text-align:center}
+
+  /* pantallas angostas: la de tres columnas es la que se rompe primero */
+  @media (max-width:1150px){
+    #vCorreccion.sel{grid-template-columns:216px 1fr 290px}
+    .dimbar .et{width:130px}
+  }
+  @media (max-width:900px){
+    #vCorreccion.sel{grid-template-columns:1fr;grid-template-rows:auto auto auto;overflow-y:auto}
+    .col{height:auto;overflow:visible}
+    .col.izq{border-right:0;border-bottom:1px solid var(--line)}
+    .col.der{border-left:0;border-top:1px solid var(--line)}
+    .listaTop,.pcTabs{position:static}
+    #lista{max-height:260px;overflow-y:auto}
+  }
+  .drop{max-width:min(580px,100%)}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(122px,1fr));gap:9px;margin:10px 0 4px}
+  .kpi{background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:11px 13px}
+  .kpi .k{font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:var(--ink3)}
+  .kpi .v{font-size:25px;font-weight:600;margin-top:2px;line-height:1.1}
+  .kpi .s{font-size:11px;color:var(--ink3)}
+  .hist{display:flex;align-items:flex-end;gap:7px;height:150px;margin:14px 0 4px}
+  .hist .b{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%}
+  .hist .b i{display:block;width:100%;background:linear-gradient(180deg,var(--bordo2),var(--bordo));
+             border-radius:4px 4px 0 0;min-height:2px}
+  .hist .b .n{font-size:12px;font-weight:600;margin-bottom:3px}
+  .hist .b .l{font-size:10px;color:var(--ink3);margin-top:5px;text-align:center}
+  .dimbar{display:flex;align-items:center;gap:10px;margin:6px 0}
+  .dimbar .et{width:210px;font-size:12px;color:var(--ink2);flex:none}
+  .dimbar .tr{flex:1;height:9px;background:#26262f;border-radius:99px;overflow:hidden}
+  .dimbar .tr i{display:block;height:100%;background:var(--bordo2)}
+  .dimbar .vv{width:56px;text-align:right;font-family:var(--mono);font-size:11.5px;color:var(--ink2);flex:none}
 </style>
 </head>
 <body>
 
 <header>
+  <div class="logo">AE</div>
   <h1>Consola del agente evaluador</h1>
-  <span class="sub">MBA UCEMA · 2026 2T</span>
+  <span class="sub">MBA UCEMA &middot; 2026 2T</span>
+  <span class="sp"></span>
   <span id="chipContrato" class="chip off">contrato sin cargar</span>
-  <span id="chipTrabajos" class="chip">0 trabajos</span>
-  <span class="chip">todo se procesa en tu navegador</span>
+  <span id="chipProg" class="chip">0 / 0 corregidos</span>
+  <span class="chip">nada sale de tu máquina</span>
+  <button class="act sec mini" onclick="guardar(1)">Guardar</button>
 </header>
 
 <nav>
-  <button data-t="contrato" class="sel">1 · Contrato</button>
-  <button data-t="cargar">2 · Cargar trabajos</button>
-  <button data-t="corregir">3 · Corregir</button>
-  <button data-t="lote">4 · Lote y testigos</button>
-  <button data-t="devolucion">5 · Devolución</button>
-  <button data-t="acerca">Qué es esto</button>
+  <button data-v="vCorreccion" class="sel">Corrección</button>
+  <button data-v="vMetricas">Métricas</button>
+  <button data-v="vLote">Lote y testigos</button>
+  <button data-v="vDevolucion">Devolución</button>
+  <button data-v="vCargar">Cargar</button>
+  <button data-v="vAcerca">Qué es esto</button>
 </nav>
 
-<main>
+<!-- ================================================= CORRECCIÓN (3 columnas) -->
+<div id="vCorreccion" class="vista sel">
 
-<!-- ============================================================= CONTRATO -->
-<section id="contrato" class="sel">
-  <h2>El contrato</h2>
-  <p>La consola <strong>no contiene la rúbrica</strong>. La carga. Si el contrato cambia, esta
-     pantalla no queda vieja — y no hay dos versiones del criterio dando vueltas.</p>
-
-  <div class="card">
-    <div class="row">
-      <input type="file" id="fContrato" multiple accept=".md,.json">
-      <span class="muted">Elegí los cuatro archivos de <code>agente/</code> y <code>rubrica.md</code></span>
+  <div class="col izq">
+    <div class="listaTop">
+      <div class="t"><b>Entregas</b><span id="nEntregas">0</span></div>
+      <div class="prog"><i id="barraProg"></i></div>
+      <input id="buscar" type="text" placeholder="buscar por nombre o identificador…">
+      <div class="filtros" id="filtros">
+        <button data-f="todas" class="sel">todas</button>
+        <button data-f="pend">pendientes</button>
+        <button data-f="corr">corregidas</button>
+        <button data-f="esc">escaladas</button>
+        <button data-f="test">testigos</button>
+      </div>
     </div>
-    <div id="listaContrato"></div>
-  </div>
-
-  <div class="card warn">
-    <strong>Los cuatro se cargan juntos o la corrida no vale.</strong>
-    <ul>
-      <li><code>agente/system_prompt.md</code> — el contrato del corrector</li>
-      <li><code>rubrica.md</code> — el criterio</li>
-      <li><code>agente/banderas.md</code> — sin esto no detecta al tramposo</li>
-      <li><code>agente/esquema_salida.json</code> — sin esto la salida deja de ser comparable</li>
-    </ul>
-  </div>
-</section>
-
-<!-- =============================================================== CARGAR -->
-<section id="cargar">
-  <h2>Cargar trabajos</h2>
-  <p>Tres formas, según lo que tengas a mano. Las tres terminan en el mismo índice
-     <strong>nombre → repositorio</strong>.</p>
-
-  <h3>a · Formato Moodle</h3>
-  <p>La carpeta <code>Entregas/</code> de «Descargar todas las entregas». Lee cada
-     <code>Texto en línea.html</code> y saca la URL.</p>
-  <div class="card">
-    <input type="file" id="fMoodle" webkitdirectory directory multiple>
-  </div>
-
-  <h3>b · URLs sueltas</h3>
-  <p>Una por línea. Opcionalmente <code>Nombre Apellido &lt;TAB o ;&gt; url</code>.</p>
-  <div class="card">
-    <textarea id="txtUrls" placeholder="https://github.com/usuario/repo
-Ana Beltrán; https://github.com/otro/trabajo-final"></textarea>
-    <div class="row"><button class="act" onclick="cargarUrls()">Agregar al índice</button></div>
-  </div>
-
-  <h3>c · El caso testigo</h3>
-  <p>El control del lote. Se intercala tres veces —primero, en el medio y último— y su resultado
-     es conocido. Si los tres coinciden, la vara no se movió entre el trabajo 1 y el 50.</p>
-  <div class="card">
-    <div class="row">
-      <label class="muted">Puntaje esperado</label>
-      <input type="text" id="testigoEsperado" value="89" style="width:70px">
-      <label class="muted">Identificador</label>
-      <input type="text" id="testigoNombre" value="casos/excelente/" style="width:220px">
-      <button class="act sec" onclick="intercalarTestigos()">Intercalar los tres</button>
+    <div id="lista"></div>
+    <div style="padding:12px">
+      <button class="act sec mini" style="width:100%" onclick="irA('vCargar')">Cargar entregas</button>
     </div>
   </div>
 
-  <h3>El índice</h3>
-  <div id="indice"></div>
-</section>
+  <div class="col centro" id="centro"></div>
+  <div class="col der" id="derecha"></div>
+</div>
 
-<!-- ============================================================= CORREGIR -->
-<section id="corregir">
-  <h2>Corregir</h2>
-  <p>La consola arma el prompt exacto; lo corrés <strong>en el modelo que quieras</strong> y pegás
-     el JSON de vuelta. El que corrige es el contrato, no esta pantalla.</p>
-  <div class="card">
-    <div class="row">
-      <label class="muted">Trabajo</label>
-      <select id="selTrabajo" onchange="pintarCorregir()"
-              style="background:#0e0e15;color:var(--ink);border:1px solid var(--line);
-                     border-radius:7px;padding:8px;min-width:320px"></select>
-      <button class="act" onclick="copiarPrompt()">Copiar el prompt</button>
-      <span id="msgCopia" class="muted"></span>
-    </div>
-    <details style="margin-top:10px">
-      <summary class="muted" style="cursor:pointer">Ver el prompt que se copia</summary>
-      <textarea id="verPrompt" readonly style="min-height:220px;margin-top:8px"></textarea>
-    </details>
-  </div>
+<!-- ============================================================== MÉTRICAS -->
+<div id="vMetricas" class="vista"><div class="scroll">
+  <h2>Métricas del lote</h2>
+  <p>Son descriptivas, no evaluativas: describen lo que ya salió del evaluador. Ningún número de acá
+     entra en ninguna nota. Si la distribución del lote pudiera mover una nota, la nota dejaría de
+     depender del trabajo.</p>
+  <div id="metricas"></div>
+</div></div>
 
-  <h3>Pegar la respuesta</h3>
-  <div class="card">
-    <textarea id="txtJson" placeholder="Pegá acá el bloque JSON que devolvió el modelo"></textarea>
-    <div class="row">
-      <button class="act" onclick="recibirJson()">Validar y guardar</button>
-      <span class="muted">Se valida contra el esquema antes de aceptarlo</span>
-    </div>
-    <div id="valid"></div>
-  </div>
-</section>
-
-<!-- ================================================================= LOTE -->
-<section id="lote">
+<!-- ================================================================== LOTE -->
+<div id="vLote" class="vista"><div class="scroll">
   <h2>Lote y testigos</h2>
   <div id="control"></div>
   <div id="tablaLote"></div>
-</section>
+</div></div>
 
-<!-- =========================================================== DEVOLUCION -->
-<section id="devolucion">
-  <h2>Devolución</h2>
-  <p>Dos salidas. La nota y el texto van <strong>separados</strong>, porque así los toma Moodle:
-     el puntaje en <code>Calificación</code> sobre 100 y la devolución en el cuadro de
-     retroalimentación. El número nunca va adentro del texto.</p>
+<!-- ============================================================ DEVOLUCIÓN -->
+<div id="vDevolucion" class="vista"><div class="scroll">
+  <h2>Devolución para Moodle</h2>
+  <p>La nota y el texto van <strong>separados</strong>, porque así los toma Moodle: el puntaje en
+     <code>Calificación</code> sobre 100 y la devolución en el cuadro de retroalimentación. El
+     número nunca va adentro del texto.</p>
+  <div id="identidad"></div>
   <div class="row">
-    <button class="act" onclick="bajarCsv()">Descargar hoja para Moodle (.csv)</button>
+    <button class="act" onclick="bajarCsv()">Descargar hoja de calificaciones (.csv)</button>
     <button class="act sec" onclick="verRapida()">Vista rápida</button>
   </div>
   <div class="card bad" id="avisoEscalados" style="display:none"></div>
   <div id="salida"></div>
-</section>
+</div></div>
 
-<!-- =============================================================== ACERCA -->
-<section id="acerca">
+<!-- ================================================================ CARGAR -->
+<div id="vCargar" class="vista"><div class="scroll">
+  <h2>1 &middot; El contrato</h2>
+  <p>La consola <strong>no contiene la rúbrica</strong>. La carga. Si el contrato cambia, esta
+     pantalla no queda vieja &mdash; y no hay dos versiones del criterio dando vueltas.</p>
+  <div class="card">
+    <div class="row">
+      <input type="file" id="fContrato" multiple accept=".md,.json">
+      <span class="muted">Los cuatro archivos de <code>agente/</code> y <code>rubrica.md</code></span>
+    </div>
+    <div id="listaContrato"></div>
+  </div>
+
+  <h2 style="margin-top:30px">2 &middot; Las entregas</h2>
+  <p>Dos formas de entrega &mdash;<strong>link a un repositorio</strong> o
+     <strong><code>.zip</code></strong>&mdash; y tres formas de cargarlas. En las tres,
+     <strong>lo que ya estaba no se toca: sólo se suman las entregas nuevas.</strong></p>
+
+  <h3>a &middot; Una por una</h3>
+  <div class="card">
+    <div class="row">
+      <input type="text" id="unoNombre" placeholder="Nombre del alumno" style="max-width:230px">
+      <input type="text" id="unoUrl" placeholder="https://github.com/usuario/repo" style="max-width:330px">
+      <button class="act" onclick="cargarUno()">Agregar</button>
+    </div>
+    <div class="row"><span class="muted">o un <code>.zip</code> suelto:</span>
+      <input type="file" id="fZipUno" accept=".zip"></div>
+  </div>
+
+  <h3>b &middot; Todas juntas</h3>
+  <div class="card">
+    <textarea id="txtUrls" style="min-height:88px" placeholder="Una por línea. Con nombre, separado por punto y coma:
+Ana Beltrán; https://github.com/ana/trabajo-final
+https://github.com/otro/repo"></textarea>
+    <div class="row"><button class="act" onclick="cargarUrls()">Agregar las URLs</button></div>
+    <div class="row" style="border-top:1px solid var(--line);padding-top:11px;margin-top:12px">
+      <span class="muted">o varios <code>.zip</code> de una vez:</span>
+      <input type="file" id="fZips" accept=".zip" multiple>
+    </div>
+    <span class="muted">En el modo <code>.zip</code>, <strong>el nombre del archivo es el único
+      vínculo con el alumno</strong>. Si viene como <code>entrega_final.zip</code> y nada más, se
+      corrige igual pero la fila sale marcada para que una persona la ate a mano. No se adivina de
+      quién es.</span>
+  </div>
+
+  <h3>c &middot; El formato que baja del campus</h3>
+  <div class="card">
+    <div class="row"><span class="muted" style="width:170px">Carpeta de entregas</span>
+      <input type="file" id="fMoodle" webkitdirectory directory multiple></div>
+    <span class="muted">Lee cada <code>Texto en línea.html</code>, saca la URL del repositorio y, si
+      la carpeta trae el identificador en el nombre, lo guarda. Si adentro hay <code>.zip</code>,
+      los abre.</span>
+    <div class="row" style="border-top:1px solid var(--line);padding-top:11px;margin-top:12px">
+      <span class="muted" style="width:170px">Hoja de calificaciones</span>
+      <input type="file" id="fHoja" accept=".csv"></div>
+    <span class="muted">Opcional y recomendado. Es el <code>.csv</code> de <em>Descargar hoja de
+      calificaciones</em>. Trae el <strong>identificador de cada alumno</strong>, que es por donde
+      Moodle reconoce la fila al reimportar. Si lo cargás, la devolución sale con
+      <strong>esas mismas columnas y esos mismos identificadores</strong>, y sólo se completan la
+      calificación y el comentario.</span>
+    <div id="estadoHoja"></div>
+  </div>
+
+  <h3>d &middot; El caso testigo</h3>
+  <p>El control del lote. Se intercala tres veces &mdash;primero, en el medio y último&mdash; y su
+     resultado es conocido. Si los tres coinciden, la vara no se movió entre el trabajo 1 y el 50.</p>
+  <div class="card">
+    <div class="row">
+      <span class="muted">Esperado</span><input type="text" id="testigoEsperado" value="89" style="width:62px">
+      <span class="muted">Identificador</span><input type="text" id="testigoNombre" value="casos/excelente/" style="width:200px">
+      <button class="act sec" onclick="intercalarTestigos()">Intercalar los tres</button>
+    </div>
+  </div>
+
+  <div class="row" style="margin-top:24px">
+    <button class="act sec" onclick="vaciar()">Vaciar todo</button>
+    <span class="muted">Borra las entregas y sus correcciones de este navegador.</span>
+  </div>
+</div></div>
+
+<!-- ================================================================ ACERCA -->
+<div id="vAcerca" class="vista"><div class="scroll">
   <h2>Qué es esto, y qué no es</h2>
-
-  <div class="card ok">
-    <strong>No evalúa.</strong> Arma el prompt, recibe el JSON, lo valida y organiza el lote.
-    <strong>El que corrige es el contrato</strong> — los archivos de <code>agente/</code> y
-    <code>rubrica.md</code>—, y sigue corriendo en cualquier modelo, con o sin esta pantalla.
-    Si la rúbrica viviera acá adentro en JavaScript, dejaría de ser portable y pasaría a ser
-    justamente lo que el profesor señaló como problema.
-  </div>
-
-  <div class="card">
-    <strong>No es un artefacto.</strong> Es un archivo HTML suelto. Se abre con doble click, sin
-    instalar nada, sin cuenta, sin servidor y sin conexión. Cualquiera puede leer su código entero
-    y correrlo en su máquina.
-  </div>
-
-  <div class="card">
-    <strong>Nada sale de tu máquina.</strong> No hay llamadas de red: los archivos se leen en el
-    navegador y los resultados se arman ahí. La consola nunca ve una credencial, porque nunca
-    necesita ninguna.
-  </div>
-
+  <div class="card ok"><strong>No evalúa.</strong> Arma el prompt, recibe el JSON, lo valida y
+    organiza el lote. <strong>El que corrige es el contrato</strong> &mdash;<code>agente/*</code> y
+    <code>rubrica.md</code>&mdash; y sigue corriendo en cualquier modelo, con o sin esta pantalla. Si
+    la rúbrica viviera acá adentro en JavaScript, dejaría de ser portable y sería justamente lo que
+    el profesor señaló como problema.</div>
+  <div class="card"><strong>No es un artefacto.</strong> Es un archivo HTML suelto: doble click, sin
+    instalar, sin cuenta, sin servidor y sin conexión. Cualquiera lee su código entero.</div>
+  <div class="card"><strong>Nada sale de tu máquina.</strong> No hay una sola llamada de red. Los
+    archivos &mdash;incluidos los <code>.zip</code>&mdash; se abren en el navegador y el
+    <code>.csv</code> se arma ahí. La consola nunca ve una credencial porque nunca necesita ninguna.
+    Lo corregido queda guardado en este navegador.</div>
   <h3>Lo que no hace, dicho de frente</h3>
   <ul>
-    <li><strong>No llama al modelo.</strong> Copiás el prompt y pegás la respuesta. Automatizar eso
-        pediría una API key en el navegador, y una credencial nunca se pone donde no hace falta.</li>
-    <li><strong>No abre <code>.zip</code>.</strong> Para el trabajo final no hace falta: la entrega
-        es un link a un repositorio y el índice sale de <code>Texto en línea.html</code>.</li>
-    <li><strong>No sube nada a Moodle.</strong> Produce el archivo; lo importa una persona. Es el
-        mismo límite que tiene el evaluador con el repositorio que corrige.</li>
+    <li><strong>No llama al modelo.</strong> Copiás el prompt y pegás la respuesta. Automatizarlo
+      pediría una API key en el navegador, y una credencial no se pone donde no hace falta: es el
+      mismo criterio con el que penalizamos la G8 en los trabajos que corregimos.</li>
+    <li><strong>No sube nada a Moodle.</strong> Produce el archivo; lo importa una persona.</li>
+    <li><strong>No adivina de quién es un trabajo.</strong> Sin identificador o sin nombre, la fila
+      sale marcada y la ata una persona.</li>
+    <li><strong>De un <code>.zip</code> lee texto, no binarios.</strong> Lo que no pudo leer queda
+      listado dentro del prompt, para que el evaluador no puntúe sobre lo que no vio.</li>
   </ul>
-</section>
-
-</main>
+</div></div>
 
 <script>
 "use strict";
-const $ = s => document.querySelector(s);
-const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, c =>
-  ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+var $ = function(s){ return document.querySelector(s); };
+function esc(t){ return String(t==null?"":t).replace(/[&<>"]/g,function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+function norm(s){ return String(s==null?"":s).normalize("NFD")
+  .replace(/[\u0300-\u036f]/g,"").toLowerCase().trim(); }
+var CLAVE="consola-agente-evaluador-v2", TOPE_ARCHIVO=40000, TOPE_TOTAL=320000;
 
-let CONTRATO = {};          // nombre de archivo -> texto
-let ESQUEMA = null;
-let TRABAJOS = [];          // {id, nombre, url, testigo, esperado, informe, error}
-let SEQ = 0;
+var CONTRATO={}, ESQUEMA=null, TRABAJOS=[], SEQ=0, SEL=null, FILTRO="todas", BUSCA="",
+    PESTANA="prompt", HOJA=null;
 
-/* ---------------------------------------------------------------- navegación */
-document.querySelectorAll("nav button").forEach(b => b.onclick = () => {
-  document.querySelectorAll("nav button").forEach(x => x.classList.remove("sel"));
-  document.querySelectorAll("section").forEach(x => x.classList.remove("sel"));
-  b.classList.add("sel");
-  $("#" + b.dataset.t).classList.add("sel");
-  if (b.dataset.t === "corregir") pintarSelector();
-  if (b.dataset.t === "lote") pintarLote();
-});
+/* ------------------------------------------------------------ persistencia */
+function guardar(aviso){
+  function paq(){ return JSON.stringify({TRABAJOS:TRABAJOS,SEQ:SEQ,CONTRATO:CONTRATO,HOJA:HOJA}); }
+  try{ localStorage.setItem(CLAVE,paq()); }
+  catch(e){
+    TRABAJOS.forEach(function(t){ if(t.zip) t.zip.texto=null; });
+    try{ localStorage.setItem(CLAVE,paq());
+      if(aviso) alert("Guardado, pero no entraba todo: se soltó el contenido de los .zip para no "+
+        "perder las correcciones. Los prompts de esos trabajos hay que rearmarlos volviendo a "+
+        "cargar el archivo.");
+    }catch(e2){ if(aviso) alert("No se pudo guardar: "+e2.message); return; }
+  }
+  if(aviso) alert("Guardado en este navegador: "+TRABAJOS.length+" entregas, "+
+    TRABAJOS.filter(function(t){return t.informe;}).length+" corregidas.");
+}
+function restaurar(){
+  try{
+    var d=JSON.parse(localStorage.getItem(CLAVE)||"null"); if(!d) return;
+    TRABAJOS=d.TRABAJOS||[]; SEQ=d.SEQ||0; CONTRATO=d.CONTRATO||{}; HOJA=d.HOJA||null;
+    if(CONTRATO["esquema_salida.json"]){
+      try{ ESQUEMA=JSON.parse(CONTRATO["esquema_salida.json"]); }catch(e){}
+    }
+  }catch(e){}
+}
+function vaciar(){
+  if(!confirm("Borra todas las entregas y sus correcciones. ¿Seguro?")) return;
+  TRABAJOS=[]; SEL=null; HOJA=null; guardar(); todo();
+}
+
+/* -------------------------------------------------------------- navegación */
+Array.prototype.forEach.call(document.querySelectorAll("nav button"),function(b){
+  b.onclick=function(){ irA(b.dataset.v); }; });
+function irA(v){
+  Array.prototype.forEach.call(document.querySelectorAll("nav button"),function(x){
+    x.classList.toggle("sel",x.dataset.v===v); });
+  Array.prototype.forEach.call(document.querySelectorAll(".vista"),function(x){
+    x.classList.toggle("sel",x.id===v); });
+  if(v==="vLote") pintarLote();
+  if(v==="vMetricas") pintarMetricas();
+  if(v==="vDevolucion"){ pintarIdentidad(); avisarEscalados(); }
+}
+$("#filtros").onclick=function(e){
+  if(!e.target.dataset.f) return;
+  FILTRO=e.target.dataset.f;
+  Array.prototype.forEach.call(document.querySelectorAll("#filtros button"),function(b){
+    b.classList.toggle("sel",b.dataset.f===FILTRO); });
+  pintarLista();
+};
+$("#buscar").oninput=function(e){ BUSCA=norm(e.target.value); pintarLista(); };
 
 /* ---------------------------------------------------------------- contrato */
-const REQUERIDOS = ["system_prompt.md", "rubrica.md", "banderas.md", "esquema_salida.json"];
-
-$("#fContrato").onchange = async e => {
-  for (const f of e.target.files) CONTRATO[f.name] = await f.text();
-  if (CONTRATO["esquema_salida.json"]) {
-    try { ESQUEMA = JSON.parse(CONTRATO["esquema_salida.json"]); }
-    catch (err) { ESQUEMA = null; }
+var REQUERIDOS=["system_prompt.md","rubrica.md","banderas.md","esquema_salida.json"];
+$("#fContrato").onchange=async function(e){
+  for(var i=0;i<e.target.files.length;i++){
+    var f=e.target.files[i]; CONTRATO[f.name]=await f.text();
   }
-  pintarContrato();
+  if(CONTRATO["esquema_salida.json"]){
+    try{ ESQUEMA=JSON.parse(CONTRATO["esquema_salida.json"]); }catch(err){ ESQUEMA=null; }
+  }
+  guardar(); pintarContrato(); pintarCentro();
 };
-
-function contratoCompleto() { return REQUERIDOS.every(r => CONTRATO[r]); }
-
-function pintarContrato() {
-  const filas = REQUERIDOS.map(r => {
-    const hay = !!CONTRATO[r];
-    const v = hay ? (CONTRATO[r].match(/Versi[oó]n\s+(\d+\.\d+)/i) ||
-                     CONTRATO[r].match(/"version"\s*:\s*"([\d.]+)"/) || [, "—"])[1] : "";
-    return `<tr><td class="mono">${esc(r)}</td>
-      <td>${hay ? '<span class="good">cargado</span>' : '<span class="err">falta</span>'}</td>
-      <td class="mono">${hay ? "v" + esc(v) : ""}</td>
-      <td class="muted">${hay ? CONTRATO[r].length.toLocaleString("es") + " caracteres" : ""}</td></tr>`;
+function contratoCompleto(){ return REQUERIDOS.every(function(r){ return CONTRATO[r]; }); }
+function versionDe(t){
+  var m=t.match(/Versi[oó]n\s+(\d+\.\d+)/i)||t.match(/"version"\s*:\s*"([\d.]+)"/);
+  return m?m[1]:"—";
+}
+function pintarContrato(){
+  var filas=REQUERIDOS.map(function(r){
+    return '<tr><td class="mono">'+esc(r)+'</td><td>'+
+      (CONTRATO[r]?'<span class="good">cargado</span>':'<span class="err">falta</span>')+
+      '</td><td class="mono">'+(CONTRATO[r]?"v"+esc(versionDe(CONTRATO[r])):"")+
+      '</td><td class="muted">'+(CONTRATO[r]?CONTRATO[r].length.toLocaleString("es")+" caracteres":"")+
+      '</td></tr>';
   }).join("");
-  const otros = Object.keys(CONTRATO).filter(k => !REQUERIDOS.includes(k));
-  $("#listaContrato").innerHTML =
-    `<table><tr><th>Archivo</th><th></th><th>Versión</th><th></th></tr>${filas}</table>` +
-    (otros.length ? `<p class="muted">También cargados: ${otros.map(esc).join(", ")}</p>` : "");
-
-  const vs = new Set(REQUERIDOS.filter(r => CONTRATO[r]).map(r =>
-    (CONTRATO[r].match(/Versi[oó]n\s+(\d+\.\d+)/i) ||
-     CONTRATO[r].match(/"version"\s*:\s*"([\d.]+)"/) || [, "?"])[1]));
-  if (vs.size > 1) {
-    $("#listaContrato").insertAdjacentHTML("beforeend",
-      `<div class="card bad"><strong>Versiones distintas entre los archivos del contrato:
-       ${[...vs].map(esc).join(" · ")}.</strong> Una corrida con criterios de versiones distintas
-       no es defendible. Revisá cuál quedó atrás antes de corregir.</div>`);
-  }
-  const c = $("#chipContrato");
-  c.textContent = contratoCompleto() ? "contrato completo" : "contrato incompleto";
-  c.className = "chip " + (contratoCompleto() ? "on" : "off");
+  var html='<table><tr><th>Archivo</th><th></th><th>Versión</th><th></th></tr>'+filas+'</table>';
+  var vs=[]; REQUERIDOS.forEach(function(r){
+    if(CONTRATO[r]){ var v=versionDe(CONTRATO[r]); if(vs.indexOf(v)<0) vs.push(v); } });
+  if(vs.length>1) html+='<div class="card bad"><strong>Versiones distintas entre los archivos del '+
+    'contrato: '+vs.map(esc).join(" · ")+'.</strong> Una corrida con criterios de versiones '+
+    'distintas no es defendible. Revisá cuál quedó atrás antes de corregir.</div>';
+  $("#listaContrato").innerHTML=html;
+  var c=$("#chipContrato");
+  c.textContent=contratoCompleto()?"contrato v"+vs[0]:"contrato incompleto";
+  c.className="chip "+(contratoCompleto()&&vs.length===1?"on":"off");
 }
 
-/* ------------------------------------------------------------------ cargar */
-$("#fMoodle").onchange = async e => {
-  const files = [...e.target.files];
-  const textos = files.filter(f => /texto en l[ií]nea\.html?$/i.test(f.name));
-  if (!textos.length) {
-    alert("No encontré ningún 'Texto en línea.html'. ¿Elegiste la carpeta Entregas/?");
+/* --------------------------------------------------------------------- zip */
+async function leerZip(file){
+  var buf=new Uint8Array(await file.arrayBuffer()), dv=new DataView(buf.buffer);
+  var eo=-1, min=Math.max(0,buf.length-66000);
+  for(var i=buf.length-22;i>=min;i--){ if(dv.getUint32(i,true)===0x06054b50){ eo=i; break; } }
+  if(eo<0) throw new Error("no parece un .zip (no encontré su índice)");
+  var n=dv.getUint16(eo+10,true), p=dv.getUint32(eo+16,true), ent=[], dec=new TextDecoder("utf-8");
+  for(var k=0;k<n;k++){
+    if(p+46>buf.length||dv.getUint32(p,true)!==0x02014b50) break;
+    var metodo=dv.getUint16(p+10,true), comp=dv.getUint32(p+20,true), size=dv.getUint32(p+24,true),
+        nl=dv.getUint16(p+28,true), el=dv.getUint16(p+30,true), cl=dv.getUint16(p+32,true),
+        lho=dv.getUint32(p+42,true),
+        ruta=dec.decode(buf.subarray(p+46,p+46+nl));
+    p+=46+nl+el+cl;
+    if(ruta.charAt(ruta.length-1)!=="/") ent.push({ruta:ruta,metodo:metodo,comp:comp,size:size,lho:lho});
+  }
+  if(!ent.length) throw new Error("el .zip no tiene archivos legibles");
+  ent.forEach(function(e){
+    var nl2=dv.getUint16(e.lho+26,true), el2=dv.getUint16(e.lho+28,true), ini=e.lho+30+nl2+el2;
+    e.crudo=buf.subarray(ini,ini+e.comp);
+  });
+  return ent;
+}
+function ES_TEXTO(r){
+  return /\.(md|markdown|txt|json|ya?ml|toml|ini|cfg|csv|tsv|html?|css|js|ts|jsx|tsx|py|sql|sh|r|ipynb|xml|env|gitignore)$/i.test(r)
+    || /(^|\/)(README|LICENSE|Makefile|Dockerfile|CHANGELOG|DECISIONES)$/i.test(r);
+}
+async function inflar(e){
+  if(e.metodo===0) return e.crudo;
+  if(e.metodo!==8) return null;
+  try{
+    var s=new Blob([e.crudo]).stream().pipeThrough(new DecompressionStream("deflate-raw"));
+    return new Uint8Array(await new Response(s).arrayBuffer());
+  }catch(err){ return null; }
+}
+async function abrirZip(file){
+  var ent=await leerZip(file), dec=new TextDecoder("utf-8",{fatal:false});
+  var archivos=ent.map(function(e){ return {ruta:e.ruta,bytes:e.size}; });
+  var omitidos=[], total=0, partes=[];
+  for(var i=0;i<ent.length;i++){
+    var e=ent[i];
+    if(!ES_TEXTO(e.ruta)){ omitidos.push(e.ruta+" (binario o no textual)"); continue; }
+    if(total>=TOPE_TOTAL){ omitidos.push(e.ruta+" (se llegó al tope de lectura)"); continue; }
+    var cr=await inflar(e);
+    if(!cr){ omitidos.push(e.ruta+" (compresión que no sé abrir)"); continue; }
+    var txt=dec.decode(cr);
+    if(txt.length>TOPE_ARCHIVO){
+      txt=txt.slice(0,TOPE_ARCHIVO)+"\n[…recortado, el archivo sigue]";
+      omitidos.push(e.ruta+" (recortado a "+TOPE_ARCHIVO.toLocaleString("es")+" caracteres)");
+    }
+    total+=txt.length;
+    partes.push("--- "+e.ruta+" ---\n"+txt);
+  }
+  return {nombreArchivo:file.name,archivos:archivos,omitidos:omitidos,texto:partes.join("\n\n")};
+}
+async function agregarZip(file,nombre){
+  var t;
+  try{
+    var z=await abrirZip(file);
+    t=agregar(nombre||file.name.replace(/\.zip$/i,""),null);
+    t.zip=z; t.sinIdentidad=!nombre;
+  }catch(err){
+    t=agregar(nombre||file.name.replace(/\.zip$/i,""),null);
+    t.sinIdentidad=!nombre;
+    t.error="No se pudo abrir el .zip: "+err.message;
+  }
+  return t;
+}
+$("#fZipUno").onchange=async function(e){
+  for(var i=0;i<e.target.files.length;i++)
+    await agregarZip(e.target.files[i],$("#unoNombre").value.trim()||null);
+  $("#unoNombre").value=""; e.target.value=""; guardar(); todo(); irA("vCorreccion");
+};
+$("#fZips").onchange=async function(e){
+  var n=0;
+  for(var i=0;i<e.target.files.length;i++){ await agregarZip(e.target.files[i],null); n++; }
+  e.target.value=""; guardar(); todo();
+  alert(n+" archivo(s) .zip incorporados. Los que no traen el nombre del alumno en el nombre del "+
+        "archivo quedan marcados: hay que atarlos a mano.");
+};
+
+/* ---------------------------------------------------------------- entregas */
+function agregar(nombre,url,extra){
+  var t={id:++SEQ,nombre:nombre||"(sin nombre)",identificador:null,email:null,url:url||null,
+         zip:null,testigo:false,esperado:null,informe:null,estado:"pendiente",
+         sinIdentidad:false,error:null};
+  if(extra) for(var k in extra) t[k]=extra[k];
+  TRABAJOS.push(t); return t;
+}
+function yaEsta(n){ return TRABAJOS.some(function(t){ return norm(t.nombre)===norm(n); }); }
+function cargarUno(){
+  var n=$("#unoNombre").value.trim(), u=$("#unoUrl").value.trim();
+  if(!u&&!n){ alert("Poné al menos un nombre o una URL."); return; }
+  agregar(n||nombreDeUrl(u),u||null,{sinIdentidad:!n});
+  $("#unoNombre").value=""; $("#unoUrl").value=""; guardar(); todo(); irA("vCorreccion");
+}
+function cargarUrls(){
+  var n=0;
+  $("#txtUrls").value.split("\n").map(function(x){return x.trim();})
+   .filter(Boolean).forEach(function(l){
+    var m=l.match(/^(.*?)[;\t]\s*(https?:\/\/\S+)$/);
+    if(m){ if(yaEsta(m[1].trim())) return; agregar(m[1].trim(),m[2]); }
+    else if(/^https?:\/\//.test(l)) agregar(nombreDeUrl(l),l,{sinIdentidad:true});
+    else { if(yaEsta(l)) return; agregar(l,null); }
+    n++;
+  });
+  $("#txtUrls").value=""; guardar(); todo();
+  alert(n+" entregas nuevas. Las que ya estaban no se tocaron.");
+}
+function nombreDeUrl(u){
+  try{ return new URL(u).pathname.split("/").filter(Boolean).pop()||u; }
+  catch(e){ return "(sin nombre)"; }
+}
+/* Moodle nombra las carpetas "Nombre Apellido_1234567_assignsubmission_..." */
+function partirCarpeta(c){
+  var m=c.match(/^(.*?)_(\d+)_assignsubmission/);
+  if(m) return {nombre:m[1].trim(),identificador:"Participante "+m[2]};
+  return {nombre:String(c).trim(),identificador:null};
+}
+$("#fMoodle").onchange=async function(e){
+  var fs=Array.prototype.slice.call(e.target.files);
+  var textos=fs.filter(function(f){ return /texto en l[ií]nea\.html?$/i.test(f.name); });
+  var zips=fs.filter(function(f){ return /\.zip$/i.test(f.name); });
+  if(!textos.length&&!zips.length){
+    alert("No encontré ningún 'Texto en línea.html' ni ningún .zip. ¿Elegiste la carpeta de entregas?");
     return;
   }
-  for (const f of textos) {
-    const partes = (f.webkitRelativePath || f.name).split("/");
-    const nombre = partes.length >= 2 ? partes[partes.length - 2] : "(sin nombre)";
-    const html = await f.text();
-    const url = (html.match(/https?:\/\/[^\s"'<>]+/) || [null])[0];
-    agregar(nombre, url);
+  var nuevos=0, repetidos=0, i;
+  for(i=0;i<textos.length;i++){
+    var f=textos[i], p=(f.webkitRelativePath||f.name).split("/");
+    var q1=partirCarpeta(p.length>=2?p[p.length-2]:"(sin nombre)");
+    if(yaEsta(q1.nombre)){ repetidos++; continue; }
+    var m=(await f.text()).match(/https?:\/\/[^\s"'<>]+/);
+    agregar(q1.nombre,m?m[0]:null,{identificador:q1.identificador,sinIdentidad:!m});
+    nuevos++;
   }
-  pintarIndice();
+  for(i=0;i<zips.length;i++){
+    var fz=zips[i], pz=(fz.webkitRelativePath||fz.name).split("/");
+    var q2=partirCarpeta(pz.length>=2?pz[pz.length-2]:fz.name.replace(/\.zip$/i,""));
+    var ya=TRABAJOS.filter(function(t){ return norm(t.nombre)===norm(q2.nombre); })[0];
+    if(ya&&ya.zip){ repetidos++; continue; }
+    if(ya){
+      try{ ya.zip=await abrirZip(fz); ya.error=null; }
+      catch(err){ ya.error="No se pudo abrir el .zip: "+err.message; }
+    } else {
+      var t=await agregarZip(fz,q2.nombre); t.identificador=q2.identificador; nuevos++;
+    }
+  }
+  guardar(); todo();
+  alert(nuevos+" entregas nuevas"+(repetidos?", "+repetidos+" que ya estaban y no se tocaron":"")+".");
 };
 
-function cargarUrls() {
-  const lineas = $("#txtUrls").value.split("\n").map(l => l.trim()).filter(Boolean);
-  for (const l of lineas) {
-    const m = l.match(/^(.*?)[;\t]\s*(https?:\/\/\S+)$/);
-    if (m) agregar(m[1].trim(), m[2]);
-    else if (/^https?:\/\//.test(l)) agregar(nombreDeUrl(l), l);
-    else agregar(l, null);
-  }
-  $("#txtUrls").value = "";
-  pintarIndice();
-}
-
-const nombreDeUrl = u => { try { return new URL(u).pathname.split("/").filter(Boolean).pop(); }
-                           catch (e) { return "(sin nombre)"; } };
-
-function agregar(nombre, url, testigo, esperado) {
-  TRABAJOS.push({ id: ++SEQ, nombre: nombre || "(sin nombre)", url: url || null,
-                  testigo: !!testigo, esperado: esperado || null, informe: null });
-  $("#chipTrabajos").textContent = TRABAJOS.length + " trabajos";
-}
-
-function intercalarTestigos() {
-  const nom = $("#testigoNombre").value.trim() || "testigo";
-  const esp = parseInt($("#testigoEsperado").value, 10);
-  const reales = TRABAJOS.filter(t => !t.testigo);
-  if (!reales.length) { alert("Cargá primero los trabajos: los testigos van intercalados entre ellos."); return; }
-  const nuevo = [];
-  const t = () => ({ id: ++SEQ, nombre: nom, url: nom, testigo: true, esperado: esp, informe: null });
-  const medio = Math.floor(reales.length / 2);
-  nuevo.push(t());
-  reales.forEach((r, i) => { if (i === medio && i !== 0) nuevo.push(t()); nuevo.push(r); });
-  nuevo.push(t());
-  TRABAJOS = nuevo;
-  $("#chipTrabajos").textContent = TRABAJOS.length + " trabajos";
-  pintarIndice();
-}
-
-function quitar(id) { TRABAJOS = TRABAJOS.filter(t => t.id !== id);
-                      $("#chipTrabajos").textContent = TRABAJOS.length + " trabajos"; pintarIndice(); }
-
-function pintarIndice() {
-  if (!TRABAJOS.length) { $("#indice").innerHTML = '<p class="muted">Todavía no hay trabajos.</p>'; return; }
-  const filas = TRABAJOS.map((t, i) => {
-    let est = "", cls = "";
-    if (!t.url) { est = '<span class="pill noev">sin URL · no_evaluable</span>'; }
-    else if (!/github\.com|gitlab\.com|\.zip$/i.test(t.url) && !t.testigo) {
-      est = '<span class="pill fue">no parece un repositorio</span>';
+/* --------------------------------------------------- hoja de calificaciones */
+function parseCsv(txt){
+  txt=txt.replace(/^\uFEFF/,"");
+  var filas=[], f=[], c="", q=false, i, ch;
+  for(i=0;i<txt.length;i++){
+    ch=txt.charAt(i);
+    if(q){
+      if(ch==='"'){ if(txt.charAt(i+1)==='"'){ c+='"'; i++; } else q=false; }
+      else c+=ch;
     }
-    return `<tr class="${t.testigo ? "testigo" : ""}">
-      <td class="muted">${i + 1}</td>
-      <td>${t.testigo ? "<strong>[TESTIGO]</strong> " : ""}${esc(t.nombre)}</td>
-      <td class="mono muted">${esc(t.url || "—")}</td>
-      <td>${est}</td>
-      <td><button class="act sec" style="padding:3px 9px;font-size:11px"
-           onclick="quitar(${t.id})">quitar</button></td></tr>`;
+    else if(ch==='"') q=true;
+    else if(ch===",") { f.push(c); c=""; }
+    else if(ch==="\r"){}
+    else if(ch==="\n"){ f.push(c); filas.push(f); f=[]; c=""; }
+    else c+=ch;
+  }
+  if(c!==""||f.length){ f.push(c); filas.push(f); }
+  return filas.filter(function(x){ return x.length>1||x[0]!==""; });
+}
+function buscaCol(h){
+  var ns=Array.prototype.slice.call(arguments,1);
+  for(var i=0;i<h.length;i++)
+    for(var j=0;j<ns.length;j++)
+      if(norm(h[i]).indexOf(norm(ns[j]))===0) return i;
+  return -1;
+}
+$("#fHoja").onchange=async function(e){
+  var f=e.target.files[0]; if(!f) return;
+  var filas=parseCsv(await f.text());
+  if(filas.length<2){ alert("Ese .csv no tiene filas."); return; }
+  var h=filas[0],
+      iId=buscaCol(h,"identificador"),
+      iNom=buscaCol(h,"nombre completo","nombre"),
+      iMail=buscaCol(h,"direccion de correo","correo","email"),
+      iCal=buscaCol(h,"calificacion"),
+      iCom=buscaCol(h,"comentarios de retroalimentacion","comentarios");
+  if(iNom<0||iCal<0){
+    alert("No reconozco las columnas: necesito al menos 'Nombre completo' y 'Calificación'. "+
+          "Encontré: "+h.join(" · ")); return;
+  }
+  HOJA={cabecera:h,filas:filas.slice(1),iId:iId,iNom:iNom,iMail:iMail,iCal:iCal,iCom:iCom,archivo:f.name};
+  var atados=0;
+  TRABAJOS.forEach(function(t){
+    var fila=HOJA.filas.filter(function(r){ return norm(r[iNom])===norm(t.nombre); })[0];
+    if(fila){
+      if(iId>=0) t.identificador=fila[iId];
+      if(iMail>=0) t.email=fila[iMail];
+      t.sinIdentidad=false; atados++;
+    }
+  });
+  guardar(); pintarHoja(); pintarLista();
+  alert("Hoja leída: "+HOJA.filas.length+" alumnos. "+atados+" quedaron atados a entregas ya cargadas.");
+};
+function pintarHoja(){
+  var b=$("#estadoHoja"); if(!b) return;
+  if(!HOJA){ b.innerHTML=""; return; }
+  b.innerHTML='<div class="card ok" style="margin-top:12px"><strong>'+esc(HOJA.archivo)+'</strong> — '+
+    HOJA.filas.length+' alumnos, columnas: <span class="mono">'+HOJA.cabecera.map(esc).join(" · ")+
+    '</span>.<div class="muted" style="margin-top:5px">La devolución va a salir con esta misma '+
+    'cabecera y estos mismos identificadores. Sólo se completan calificación y comentario.</div></div>';
+}
+
+/* ---------------------------------------------------------------- testigos */
+function intercalarTestigos(){
+  var nom=$("#testigoNombre").value.trim()||"testigo", esp=parseInt($("#testigoEsperado").value,10);
+  var reales=TRABAJOS.filter(function(t){ return !t.testigo; });
+  if(!reales.length){ alert("Cargá primero las entregas: los testigos van intercalados entre ellas."); return; }
+  function nuevo(){ return {id:++SEQ,nombre:nom,identificador:null,email:null,url:nom,zip:null,
+    testigo:true,esperado:esp,informe:null,estado:"pendiente",sinIdentidad:false,error:null}; }
+  var medio=Math.floor(reales.length/2), out=[nuevo()];
+  reales.forEach(function(r,i){ if(i===medio&&i!==0) out.push(nuevo()); out.push(r); });
+  out.push(nuevo()); TRABAJOS=out; guardar(); todo(); irA("vCorreccion");
+}
+
+/* ------------------------------------------------------------------- lista */
+function escalado(d){
+  return !!d && (d.revision_humana_requerida ||
+    ["integridad_comprometida","fuera_de_alcance","no_evaluable"].indexOf(d.estado)>=0);
+}
+function sinNotaDe(d){
+  return !!d && ["integridad_comprometida","fuera_de_alcance","no_evaluable"].indexOf(d.estado)>=0;
+}
+function visibles(){
+  return TRABAJOS.filter(function(t){
+    if(BUSCA && (norm(t.nombre)+" "+norm(t.identificador)).indexOf(BUSCA)<0) return false;
+    if(FILTRO==="pend") return !t.informe;
+    if(FILTRO==="corr") return !!t.informe;
+    if(FILTRO==="esc")  return escalado(t.informe);
+    if(FILTRO==="test") return t.testigo;
+    return true;
+  });
+}
+function pintarLista(){
+  var v=visibles(), hechos=TRABAJOS.filter(function(t){return t.informe;}).length;
+  $("#nEntregas").textContent=TRABAJOS.length;
+  $("#barraProg").style.width=TRABAJOS.length?(hechos/TRABAJOS.length*100)+"%":"0";
+  $("#chipProg").textContent=hechos+" / "+TRABAJOS.length+" corregidos";
+  if(!v.length){
+    $("#lista").innerHTML='<div style="padding:16px" class="muted">Sin entregas en este filtro.</div>';
+    return;
+  }
+  $("#lista").innerHTML=v.map(function(t){
+    var d=t.informe, met;
+    var dot=!d?(t.estado==="curso"?"curso":""):(escalado(d)?"esc":"ok");
+    if(t.error) met='<span class="err">'+esc(t.error)+'</span>';
+    else if(d) met=esc(d.estado);
+    else if(t.zip) met=t.zip.archivos.length+" archivos · .zip";
+    else if(t.url) met="pendiente";
+    else met='<span class="warnc">sin URL ni archivo</span>';
+    return '<div class="item '+(t.id===SEL?"sel":"")+" "+(t.testigo?"testigo":"")+
+      '" onclick="abrir('+t.id+')"><div class="dot '+dot+'"></div>'+
+      '<div style="min-width:0;flex:1"><div class="nom">'+esc(t.nombre)+
+      (t.sinIdentidad?' <span class="warnc" title="sin alumno atado">·?</span>':"")+
+      '</div><div class="met">'+met+'</div></div>'+
+      '<div class="pt">'+(d?(sinNotaDe(d)?"—":d.puntaje_final):"")+'</div></div>';
   }).join("");
-  const sinUrl = TRABAJOS.filter(t => !t.url).length;
-  $("#indice").innerHTML =
-    `<table><tr><th>#</th><th>Nombre</th><th>Repositorio</th><th></th><th></th></tr>${filas}</table>` +
-    (sinUrl ? `<div class="card warn"><strong>${sinUrl} sin URL.</strong> Se listan igual y salen
-      como <code>no_evaluable</code> con su motivo. <strong>No se adivina de quién es cada uno</strong>:
-      eso lo ata una persona.</div>` : "");
 }
-
-/* ---------------------------------------------------------------- corregir */
-function pintarSelector() {
-  $("#selTrabajo").innerHTML = TRABAJOS.map((t, i) =>
-    `<option value="${t.id}">${i + 1} · ${esc(t.nombre)}${t.testigo ? "  [TESTIGO]" : ""}${t.informe ? "  ✓" : ""}</option>`
-  ).join("");
-  pintarCorregir();
+function abrir(id){
+  SEL=id;
+  var t=TRABAJOS.filter(function(x){return x.id===id;})[0];
+  PESTANA = (t&&t.informe) ? "informe" : "prompt";
+  todo();
 }
+function trabajo(){ return TRABAJOS.filter(function(t){return t.id===SEL;})[0]; }
 
-function armarPrompt(t) {
-  if (!contratoCompleto()) return "Falta cargar el contrato completo (pestaña 1).";
-  const hoy = new Date().toISOString().slice(0, 10);
-  return [
-    "===== CONTRATO DEL EVALUADOR — no lo modifiques =====",
-    "", "--- agente/system_prompt.md ---", CONTRATO["system_prompt.md"],
-    "", "--- rubrica.md ---", CONTRATO["rubrica.md"],
-    "", "--- agente/banderas.md ---", CONTRATO["banderas.md"],
-    "", "--- agente/esquema_salida.json ---", CONTRATO["esquema_salida.json"],
-    "", "===== FIN DEL CONTRATO =====", "",
-    "Evaluá el siguiente trabajo final.", "",
-    "REPOSITORIO: " + (t.url || "(sin URL)"),
-    "ALUMNO:      " + t.nombre,
-    "FECHA:       " + hoy, "",
-    "Aplicá rubrica.md con las cuatro pasadas del system prompt, en orden:",
-    "inventario, afirmaciones, puntuación, auditoría.", "",
+/* ------------------------------------------------------------------ centro */
+function armarPrompt(t){
+  if(!contratoCompleto()) return "Falta cargar el contrato completo (pestaña Cargar).";
+  var L=["===== CONTRATO DEL EVALUADOR — no lo modifiques =====","",
+    "--- agente/system_prompt.md ---",CONTRATO["system_prompt.md"],"",
+    "--- rubrica.md ---",CONTRATO["rubrica.md"],"",
+    "--- agente/banderas.md ---",CONTRATO["banderas.md"],"",
+    "--- agente/esquema_salida.json ---",CONTRATO["esquema_salida.json"],"",
+    "===== FIN DEL CONTRATO =====","","Evaluá el siguiente trabajo final.","",
+    "ALUMNO: "+t.nombre+(t.identificador?"  ("+t.identificador+")":""),
+    "FECHA:  "+new Date().toISOString().slice(0,10)];
+  if(t.zip){
+    L.push("ENTREGA: archivo "+t.zip.nombreArchivo+" ("+t.zip.archivos.length+" archivos)","",
+      "ÁRBOL COMPLETO DEL ENTREGABLE:");
+    t.zip.archivos.forEach(function(a){
+      L.push("  "+a.ruta+"   ("+a.bytes.toLocaleString("es")+" bytes)"); });
+    if(t.zip.omitidos.length){
+      L.push("","NO PUDE LEER EL CONTENIDO DE:");
+      t.zip.omitidos.forEach(function(o){ L.push("  "+o); });
+      L.push("No los supongas: si algo de la rúbrica depende de uno de estos archivos, decilo.");
+    }
+    L.push("","===== CONTENIDO DE LOS ARCHIVOS =====","",
+      t.zip.texto||"(el contenido no está en memoria: volvé a cargar el .zip)","",
+      "===== FIN DEL ENTREGABLE =====");
+  } else {
+    L.push("REPOSITORIO: "+(t.url||"(sin URL)"));
+  }
+  L.push("","Aplicá rubrica.md con las cuatro pasadas del system prompt, en orden:",
+    "inventario, afirmaciones, puntuación, auditoría.","",
     "Antes de puntuar, listá los archivos que efectivamente pudiste leer.",
-    "Si no pudiste leer alguno de los exigidos, decilo: no lo supongas.", "",
-    "Devolvé primero el bloque JSON del esquema, después el informe legible.", "",
-    "Contexto liberado: este trabajo se evalúa desde cero, sin referencia a ningún otro."
-  ].join("\n");
+    "Si no pudiste leer alguno de los exigidos, decilo: no lo supongas.","",
+    "Devolvé primero el bloque JSON del esquema, después el informe legible.","",
+    "Contexto liberado: este trabajo se evalúa desde cero, sin referencia a ningún otro.");
+  return L.join("\n");
+}
+function pintarCentro(){
+  var t=trabajo();
+  if(!t){
+    $("#centro").innerHTML='<div class="vacio"><div class="drop">'+
+      '<h4>Todavía no hay entregas cargadas</h4>'+
+      '<p style="margin:0 auto">Se entrega de dos formas —<strong>link a un repositorio</strong> o '+
+      '<strong><code>.zip</code></strong>— y se cargan de tres: una por una, todas juntas, o con la '+
+      'carpeta que baja del campus.<br><br>Lo que ya estaba no se toca: <strong>sólo se suman las '+
+      'entregas nuevas.</strong></p><div class="row" style="justify-content:center;margin-top:16px">'+
+      '<button class="act" onclick="irA(\'vCargar\')">Cargar entregas</button></div>'+
+      '<p class="muted" style="margin-top:20px">Todo se procesa en tu navegador. Ningún archivo sale '+
+      'de tu máquina.</p></div></div>';
+    return;
+  }
+  var tabs=[["prompt","Prompt"],["respuesta","Respuesta"],["informe","Informe"],["archivos","Entregable"]];
+  var cuerpo="";
+  if(PESTANA==="prompt"){
+    cuerpo='<div class="row"><button class="act" onclick="copiarPrompt()">Copiar el prompt</button>'+
+      '<span id="msgCopia" class="muted"></span></div>'+
+      '<p class="muted">Se copia el contrato completo más este trabajo. Corrélo en el modelo que '+
+      'quieras y volvé con el JSON.</p>'+
+      '<textarea readonly style="min-height:calc(100vh - 290px)">'+esc(armarPrompt(t))+'</textarea>';
+  } else if(PESTANA==="respuesta"){
+    cuerpo='<p class="muted">Pegá el bloque JSON que devolvió el modelo. Se valida antes de aceptarlo.</p>'+
+      '<textarea id="txtJson" style="min-height:calc(100vh - 350px)">'+
+      (t.informe?esc(JSON.stringify(t.informe,null,2)):"")+'</textarea>'+
+      '<div class="row"><button class="act" onclick="recibirJson()">Validar y guardar</button></div>'+
+      '<div id="valid"></div>';
+  } else if(PESTANA==="archivos"){
+    if(t.zip){
+      cuerpo='<p class="muted"><strong>'+esc(t.zip.nombreArchivo)+'</strong> — '+
+        t.zip.archivos.length+' archivos. Se abrió acá adentro, sin subirlo a ningún lado.</p>'+
+        '<table><tr><th>Archivo</th><th>Bytes</th><th></th></tr>'+
+        t.zip.archivos.map(function(a){
+          return '<tr><td class="mono">'+esc(a.ruta)+'</td><td class="mono">'+
+            a.bytes.toLocaleString("es")+'</td><td class="muted">'+
+            (ES_TEXTO(a.ruta)?"leído":"no textual")+'</td></tr>'; }).join("")+'</table>'+
+        (t.zip.omitidos.length?'<h3>No se leyó el contenido de</h3><ul>'+
+          t.zip.omitidos.map(function(o){ return '<li class="mono">'+esc(o)+'</li>'; }).join("")+
+          '</ul><p class="muted">Va listado dentro del prompt, para que el evaluador no puntúe '+
+          'sobre lo que no vio.</p>':"");
+    } else if(t.url){
+      cuerpo='<p>La entrega es un link: <a href="'+esc(t.url)+'" target="_blank" rel="noopener" '+
+        'style="color:var(--bordo2)">'+esc(t.url)+'</a></p><p class="muted">La consola no lo '+
+        'descarga —no hace ninguna llamada de red—. Lo lee el modelo cuando corrés el prompt, o lo '+
+        'bajás vos si el modelo no navega.</p>';
+    } else cuerpo='<p class="muted">Esta entrega no tiene ni URL ni archivo.</p>';
+  } else {
+    cuerpo=t.informe?informeHtml(t.informe)
+      :'<p class="muted">Todavía no hay informe para este trabajo.</p>';
+  }
+  $("#centro").innerHTML='<div class="row" style="margin:0 0 14px">'+
+    tabs.map(function(x){
+      return '<button class="act '+(PESTANA===x[0]?"":"sec")+' mini" onclick="PESTANA=\''+x[0]+
+        '\';pintarCentro()">'+x[1]+'</button>'; }).join("")+
+    '<span style="flex:1"></span>'+
+    '<button class="act sec mini" onclick="mover(-1)">‹ anterior</button>'+
+    '<button class="act sec mini" onclick="mover(1)">siguiente ›</button></div>'+
+    (t.error?'<div class="card bad">'+esc(t.error)+'</div>':"")+cuerpo;
+}
+function mover(d){
+  var v=visibles(); if(!v.length) return;
+  var i=-1; v.forEach(function(t,j){ if(t.id===SEL) i=j; });
+  i=(i+d+v.length)%v.length; abrir(v[i].id);
+}
+function informeHtml(d){
+  var dims=(d.dimensiones||[]).map(function(x){
+    return '<tr><td><strong>'+esc(x.id)+'</strong> '+esc(x.nombre)+'</td><td class="mono">'+
+      x.nivel+'/4</td><td class="mono">'+x.puntos+'</td><td class="muted">'+
+      esc(x.que_falta_para_el_nivel_siguiente||"")+'</td></tr>'; }).join("");
+  var bs=(d.banderas||[]).map(function(b){
+    return '<tr><td class="mono">'+esc(b.id)+'</td><td>'+esc(b.nombre)+'</td><td class="muted">"'+
+      esc(String(b.cita_textual||"").slice(0,150))+'"</td><td class="mono">'+b.puntos+'</td></tr>';
+  }).join("");
+  var cru=(d.cruces_realizados||[]).map(function(c){
+    return '<li class="mono">'+esc(typeof c==="string"?c:JSON.stringify(c))+'</li>'; }).join("");
+  return (d.alerta?'<div class="card bad"><strong>⚠ '+esc(d.alerta)+'</strong></div>':"")+
+    '<table><tr><th>Dimensión</th><th>Nivel</th><th>Puntos</th><th>Para el nivel siguiente</th></tr>'+
+    dims+'</table>'+
+    (bs?'<h3>Banderas</h3><table><tr><th>ID</th><th></th><th>Qué se encontró</th><th>Pts</th></tr>'+
+      bs+'</table>':'<p class="muted">Sin banderas.</p>')+
+    (d.sugerencia_mejora?'<h3>Sugerencia de mejora</h3><div class="card"><strong>'+
+      esc(d.sugerencia_mejora.dimension)+' — hasta '+esc(d.sugerencia_mejora.puntos_potenciales)+
+      ' pts.</strong> '+esc(d.sugerencia_mejora.accion)+'</div>':"")+
+    (cru?'<h3>Cruces realizados</h3><ul>'+cru+'</ul>':"")+
+    ((d.dudas||[]).length?'<h3>Reservas</h3><ul>'+
+      d.dudas.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul>':"");
+}
+function copiarPrompt(){
+  var t=trabajo(); if(!t) return;
+  navigator.clipboard.writeText(armarPrompt(t)).then(function(){
+    var m=$("#msgCopia");
+    if(m){ m.textContent="copiado — pegalo en el modelo que uses";
+      setTimeout(function(){ m.textContent=""; },3500); }
+  });
 }
 
-const trabajoSel = () => TRABAJOS.find(t => t.id === parseInt($("#selTrabajo").value, 10));
-
-function pintarCorregir() {
-  const t = trabajoSel(); if (!t) return;
-  $("#verPrompt").value = armarPrompt(t);
-  $("#txtJson").value = t.informe ? JSON.stringify(t.informe, null, 2) : "";
-  $("#valid").innerHTML = "";
+/* ----------------------------------------------------------------- derecha */
+function pintarDerecha(){
+  var t=trabajo();
+  if(!t){
+    $("#derecha").innerHTML='<div class="vacio muted" style="padding:20px">Eligí una entrega de la lista.</div>';
+    return;
+  }
+  var d=t.informe, sn=sinNotaDe(d);
+  var cls={evaluado:"ev",evaluado_con_reservas:"res",integridad_comprometida:"int",
+           fuera_de_alcance:"fue",no_evaluable:"noev"}[d&&d.estado]||"fue";
+  var dims=((d&&d.dimensiones)||[]).map(function(x){
+    return '<div><div class="k">'+esc(x.id)+'</div><div class="v">'+x.nivel+'</div></div>'; }).join("");
+  var ticks=[20,40,60,80,100].map(function(n){
+    return '<span class="tick" style="left:'+n+'%">'+n+'</span>'; }).join("");
+  var ests=["pendiente","curso","corregido"].map(function(e){
+    return '<button class="'+((t.informe?"corregido":t.estado)===e?"sel":"")+'" onclick="marcar(\''+
+      e+'\')">'+(e==="curso"?"En curso":e.charAt(0).toUpperCase()+e.slice(1))+'</button>'; }).join("");
+  $("#derecha").innerHTML=
+    '<div class="pcTabs"><button class="sel">Corrección</button>'+
+    '<button onclick="PESTANA=\'informe\';pintarCentro()">Informe</button>'+
+    '<button onclick="PESTANA=\'archivos\';pintarCentro()">Entregable</button></div>'+
+    '<div class="pc"><div class="nota"><div class="n">'+(d?(sn?"—":d.puntaje_final):"—")+
+    '</div><div class="d">/100</div><div class="quien"><strong style="color:var(--ink2)">'+
+    esc(t.nombre)+'</strong>'+
+    (t.identificador?"<br>"+esc(t.identificador)
+      :(t.testigo?"":'<br><span class="warnc">sin identificador</span>'))+
+    (t.testigo?'<br><span class="warnc">testigo · espera '+esc(t.esperado)+'</span>':"")+
+    '</div></div>'+
+    '<div class="barra"><i style="width:'+(d&&!sn?d.puntaje_final:0)+'%"></i>'+ticks+'</div>'+
+    '<div>'+(d?'<span class="pill '+cls+'">'+esc(d.estado)+'</span>'
+                :'<span class="muted">sin corregir</span>')+
+    (d&&d.puntaje_bruto!=null?'<span class="muted mono"> · bruto '+d.puntaje_bruto+'</span>':"")+
+    (d&&d.revision_humana_requerida?' <span class="pill res">revisión humana</span>':"")+'</div>'+
+    (dims?'<div class="dims">'+dims+'</div><div class="muted" style="text-align:center">niveles por dimensión</div>':"")+
+    (d&&d.nota_al_margen?'<div class="card warn" style="margin-top:16px">'+
+      '<div style="font-size:10px;letter-spacing:.9px;color:var(--warn);margin-bottom:4px">'+
+      'NOTA AL MARGEN · INTERNA</div>'+esc(d.nota_al_margen)+'</div>':"")+
+    '<div class="campo"><div class="lbl"><span>Comentario para el alumno</span><span>'+
+    (d?cortoDe(d).split(/\s+/).length:0)+' / 180 palabras</span></div>'+
+    '<textarea readonly style="min-height:150px">'+(d?esc(cortoDe(d)):"")+'</textarea>'+
+    (d?'<div class="row"><button class="act sec mini" onclick="copiarDev()">Copiar para Moodle</button>'+
+       '<span id="msgDev" class="muted"></span></div>':"")+'</div>'+
+    '<div class="campo"><div class="lbl"><span>Estado del trabajo</span></div>'+
+    '<div class="estados">'+ests+'</div></div>'+
+    (t.sinIdentidad?'<div class="card warn" style="margin-top:16px"><strong>Sin alumno atado.</strong> '+
+      'Esta entrega llegó sin nombre reconocible. Se corrige igual, pero la fila de Moodle no sale '+
+      'sola: la ata una persona.</div>':"")+
+    '</div>';
 }
-
-function copiarPrompt() {
-  const t = trabajoSel(); if (!t) return;
-  navigator.clipboard.writeText(armarPrompt(t)).then(() => {
-    $("#msgCopia").textContent = "copiado — pegalo en el modelo que uses";
-    setTimeout(() => $("#msgCopia").textContent = "", 3500);
+function marcar(e){ var t=trabajo(); if(!t) return; t.estado=e; guardar(); todo(); }
+function copiarDev(){
+  var t=trabajo(); if(!t||!t.informe) return;
+  navigator.clipboard.writeText(cortoDe(t.informe)).then(function(){
+    var m=$("#msgDev"); if(m){ m.textContent="copiado"; setTimeout(function(){m.textContent="";},2500); }
   });
 }
 
 /* -------------------------------------------------- validación del informe */
-function validar(d) {
-  const p = [], f = [];
-  const req = ESQUEMA && ESQUEMA.required ? ESQUEMA.required : [];
-  const faltan = req.filter(k => !(k in d));
-  faltan.length ? f.push("faltan campos del esquema: " + faltan.join(", "))
-                : p.push("los " + req.length + " campos del esquema, presentes");
-
-  if (req.length && JSON.stringify(Object.keys(d)) !== JSON.stringify(req))
-    p.push("(el orden de los campos difiere del esquema)");
-
-  if (Array.isArray(d.dimensiones)) {
-    d.dimensiones.length === 5 ? p.push("las cinco dimensiones")
-                               : f.push("hay " + d.dimensiones.length + " dimensiones, no 5");
-    let suma = 0, mal = [];
-    for (const x of d.dimensiones) {
-      suma += Number(x.puntos) || 0;
-      const esp = (Number(x.nivel) / 4) * Number(x.peso);
-      if (Math.abs(esp - Number(x.puntos)) > 0.01) mal.push(x.id);
-      const si = (x.requisitos || []).filter(r => r.cumple).length;
-      const sinCita = (x.requisitos || []).filter(r => r.cumple && !(r.evidencia || []).length);
-      if (sinCita.length) f.push("A1 · " + x.id + ": requisito en SI sin evidencia citada");
-      if (Number(x.nivel) > si) f.push("A4 · " + x.id + ": nivel " + x.nivel + " con " + si + " requisitos cumplidos");
-    }
-    mal.length ? f.push("A5 · puntos mal calculados en " + mal.join(", "))
-               : p.push("A5 · nivel × peso cierra en las cinco");
-    if (Math.abs(suma - Number(d.puntaje_bruto)) > 0.01)
-      f.push("A5 · el bruto (" + d.puntaje_bruto + ") no es la suma de las dimensiones (" + suma.toFixed(2) + ")");
+function validar(d){
+  var p=[], f=[];
+  var req=(ESQUEMA&&ESQUEMA.required)?ESQUEMA.required:[];
+  var faltan=req.filter(function(k){ return !(k in d); });
+  if(faltan.length) f.push("faltan campos del esquema: "+faltan.join(", "));
+  else p.push("los "+req.length+" campos del esquema, presentes");
+  if(Array.isArray(d.dimensiones)){
+    if(d.dimensiones.length===5) p.push("las cinco dimensiones");
+    else f.push("hay "+d.dimensiones.length+" dimensiones, no 5");
+    var suma=0, mal=[];
+    d.dimensiones.forEach(function(x){
+      suma+=Number(x.puntos)||0;
+      if(Math.abs((Number(x.nivel)/4)*Number(x.peso)-Number(x.puntos))>0.01) mal.push(x.id);
+      var reqs=x.requisitos||[];
+      var si=reqs.filter(function(r){ return r.cumple; }).length;
+      if(reqs.some(function(r){ return r.cumple&&!(r.evidencia||[]).length; }))
+        f.push("A1 · "+x.id+": requisito en SI sin evidencia citada");
+      if(Number(x.nivel)>si) f.push("A4 · "+x.id+": nivel "+x.nivel+" con "+si+" requisitos cumplidos");
+    });
+    if(mal.length) f.push("A5 · puntos mal calculados en "+mal.join(", "));
+    else p.push("A5 · nivel × peso cierra en las cinco");
+    if(Math.abs(suma-Number(d.puntaje_bruto))>0.01)
+      f.push("A5 · el bruto ("+d.puntaje_bruto+") no es la suma de las dimensiones ("+suma.toFixed(2)+")");
     else p.push("A5 · el bruto es la suma de las dimensiones");
   } else f.push("no hay dimensiones");
-
-  if (Array.isArray(d.cruces_realizados)) {
-    d.cruces_realizados.length >= 7 ? p.push("A9 · los siete cruces reportados")
-      : f.push("A9 · sólo " + d.cruces_realizados.length + " cruces reportados de 7. Un cruce sin reportar es indistinguible de uno no hecho");
+  if(Array.isArray(d.cruces_realizados)){
+    if(d.cruces_realizados.length>=7) p.push("A9 · los siete cruces reportados");
+    else f.push("A9 · sólo "+d.cruces_realizados.length+" cruces de 7. Un cruce sin reportar es "+
+      "indistinguible de uno no hecho");
   } else f.push("A9 · no se reportaron los cruces");
-
-  const g3 = (d.banderas || []).filter(b => /^G3/.test(b.id));
-  if (g3.length && d.estado !== "integridad_comprometida")
-    f.push("hay " + g3.length + " bandera(s) G3 y el estado no es integridad_comprometida");
-  if (d.estado === "integridad_comprometida" && d.puntaje_final !== 0)
-    f.push("estado integridad_comprometida con puntaje_final " + d.puntaje_final + ": debe ser 0 por regla");
-  if ((d.puntaje_final < 40 || d.puntaje_final > 90) && !d.nota_al_margen)
-    f.push("puntaje extremo (" + d.puntaje_final + ") sin nota_al_margen");
-
-  const evid = new Set((((d.inventario || {}).evidencia) || []).map(e => e.id));
-  const usados = new Set();
-  (d.dimensiones || []).forEach(x => (x.requisitos || []).forEach(r => (r.evidencia || []).forEach(e => usados.add(e))));
-  (d.banderas || []).forEach(b => (b.evidencia || []).forEach(e => usados.add(e)));
-  const huerf = [...usados].filter(e => !evid.has(e));
-  huerf.length ? f.push("A2 · citas a evidencia inexistente: " + huerf.join(", "))
-               : p.push("A2 · todas las citas apuntan al inventario");
-  return { pasa: p, falla: f };
+  var g3=(d.banderas||[]).filter(function(b){ return /^G3/.test(b.id); });
+  if(g3.length&&d.estado!=="integridad_comprometida")
+    f.push("hay "+g3.length+" bandera(s) G3 y el estado no es integridad_comprometida");
+  if(d.estado==="integridad_comprometida"&&d.puntaje_final!==0)
+    f.push("estado integridad_comprometida con puntaje_final "+d.puntaje_final+": debe ser 0 por regla");
+  if((d.puntaje_final<40||d.puntaje_final>90)&&!d.nota_al_margen)
+    f.push("puntaje extremo ("+d.puntaje_final+") sin nota_al_margen");
+  var evid={}, usados={};
+  (((d.inventario||{}).evidencia)||[]).forEach(function(e){ evid[e.id]=1; });
+  (d.dimensiones||[]).forEach(function(x){ (x.requisitos||[]).forEach(function(r){
+    (r.evidencia||[]).forEach(function(e){ usados[e]=1; }); }); });
+  (d.banderas||[]).forEach(function(b){ (b.evidencia||[]).forEach(function(e){ usados[e]=1; }); });
+  var h=Object.keys(usados).filter(function(e){ return !evid[e]; });
+  if(h.length) f.push("A2 · citas a evidencia inexistente: "+h.join(", "));
+  else p.push("A2 · todas las citas apuntan al inventario");
+  return {pasa:p,falla:f};
 }
-
-function recibirJson() {
-  const t = trabajoSel(); if (!t) return;
-  let txt = $("#txtJson").value.trim();
-  const m = txt.match(/```json\s*([\s\S]*?)```/);
-  if (m) txt = m[1];
-  let d;
-  try { d = JSON.parse(txt); }
-  catch (e) { $("#valid").innerHTML = `<div class="card bad"><strong>No es JSON válido.</strong>
-    <div class="mono muted">${esc(e.message)}</div></div>`; return; }
-
-  const r = validar(d);
-  t.informe = d;
-  $("#valid").innerHTML =
-    `<div class="card ${r.falla.length ? "bad" : "ok"}">
-       <strong>${r.falla.length ? "Guardado, con " + r.falla.length + " problema(s)" : "Guardado y validado"}</strong>
-       ${r.falla.length ? "<ul>" + r.falla.map(x => `<li class="err">${esc(x)}</li>`).join("") + "</ul>" : ""}
-       <ul>${r.pasa.map(x => `<li class="muted">${esc(x)}</li>`).join("")}</ul>
-     </div>`;
-  pintarSelector();
-}
-
-/* -------------------------------------------------------------------- lote */
-function pintarLote() {
-  const hechos = TRABAJOS.filter(t => t.informe);
-  const test = TRABAJOS.filter(t => t.testigo && t.informe);
-  let ctrl = "";
-  if (!test.length) {
-    ctrl = `<div class="card"><span class="muted">Sin testigos corregidos todavía. El control del
-      lote necesita al menos dos: uno al principio y uno al final.</span></div>`;
-  } else {
-    const notas = test.map(t => t.informe.puntaje_final);
-    const esp = test[0].esperado;
-    const iguales = notas.every(n => n === notas[0]);
-    const enEsperado = esp == null || notas.every(n => n === esp);
-    const ok = iguales && enEsperado;
-    ctrl = `<div class="card ${ok ? "ok" : "bad"}">
-      <div class="stat" style="background:none;border:0;padding:0">
-        <div class="k">Control del lote — los testigos</div>
-        <div class="v mono">${notas.join(" · ")}${esp != null ? '<span class="muted" style="font-size:13px"> · esperado ' + esp + "</span>" : ""}</div>
-      </div>
-      <p style="margin:10px 0 0">${ok
-        ? "<span class='good'><strong>La vara no se movió.</strong></span> Los testigos coinciden entre sí y con su valor esperado, después de haber corregido los trabajos que van en el medio. El lote es válido."
-        : "<span class='err'><strong>Hay deriva.</strong></span> Los testigos no coinciden. Se descarta el lote desde el testigo anterior y se rehace. <strong>Ningún informe se comunica.</strong>"}</p>
-      ${test.length < 2 ? '<p class="muted">Con un solo testigo corregido esto no prueba nada todavía.</p>' : ""}
-    </div>`;
+function recibirJson(){
+  var t=trabajo(); if(!t) return;
+  var txt=$("#txtJson").value.trim();
+  var m=txt.match(/```json\s*([\s\S]*?)```/); if(m) txt=m[1];
+  var d;
+  try{ d=JSON.parse(txt); }
+  catch(e){
+    $("#valid").innerHTML='<div class="card bad"><strong>No es JSON válido.</strong>'+
+      '<div class="mono muted">'+esc(e.message)+'</div></div>';
+    return;
   }
-  $("#control").innerHTML = ctrl;
+  var r=validar(d); t.informe=d; t.estado="corregido"; guardar();
+  $("#valid").innerHTML='<div class="card '+(r.falla.length?"bad":"ok")+'"><strong>'+
+    (r.falla.length?"Guardado, con "+r.falla.length+" problema(s)":"Guardado y validado")+'</strong>'+
+    (r.falla.length?"<ul>"+r.falla.map(function(x){ return '<li class="err">'+esc(x)+'</li>'; }).join("")+"</ul>":"")+
+    '<ul>'+r.pasa.map(function(x){ return '<li class="muted">'+esc(x)+'</li>'; }).join("")+'</ul></div>';
+  pintarLista(); pintarDerecha();
+}
 
-  if (!hechos.length) { $("#tablaLote").innerHTML = '<p class="muted">Todavía no hay informes cargados.</p>'; return; }
-  const filas = TRABAJOS.map((t, i) => {
-    const d = t.informe;
-    if (!d) return `<tr class="${t.testigo ? "testigo" : ""}"><td class="muted">${i + 1}</td>
-      <td>${t.testigo ? "<strong>[TESTIGO]</strong> " : ""}${esc(t.nombre)}</td>
-      <td colspan="5" class="muted">pendiente</td></tr>`;
-    const niv = (d.dimensiones || []).map(x => x.nivel).join("·");
-    const bn = (d.banderas || []).length;
-    const cls = { evaluado: "ev", evaluado_con_reservas: "res", integridad_comprometida: "int",
-                  fuera_de_alcance: "fue", no_evaluable: "noev" }[d.estado] || "fue";
-    const sinNota = ["integridad_comprometida", "fuera_de_alcance", "no_evaluable"].includes(d.estado);
-    return `<tr class="${t.testigo ? "testigo" : ""}">
-      <td class="muted">${i + 1}</td>
-      <td>${t.testigo ? "<strong>[TESTIGO]</strong> " : ""}${esc(t.nombre)}</td>
-      <td class="mono">${niv}</td>
-      <td class="mono">${d.puntaje_bruto ?? "—"}</td>
-      <td class="mono"><strong>${sinNota ? "sin nota" : d.puntaje_final}</strong></td>
-      <td><span class="pill ${cls}">${esc(d.estado)}</span></td>
-      <td class="muted">${bn ? bn + " bandera" + (bn > 1 ? "s" : "") : "—"}${d.revision_humana_requerida ? ' · <span class="warnc">revisar</span>' : ""}</td>
-    </tr>`;
+/* --------------------------------------------------------------- métricas */
+function mediana(a){
+  if(!a.length) return null;
+  var s=a.slice().sort(function(x,y){return x-y;}), m=s.length>>1;
+  return s.length%2 ? s[m] : (s[m-1]+s[m])/2;
+}
+function pintarMetricas(){
+  var reales=TRABAJOS.filter(function(t){ return !t.testigo; });
+  var corr=reales.filter(function(t){ return t.informe; });
+  var conNota=corr.filter(function(t){ return !sinNotaDe(t.informe); })
+                  .map(function(t){ return t.informe.puntaje_final; });
+  var escs=corr.filter(function(t){ return escalado(t.informe); });
+  if(!corr.length){
+    $("#metricas").innerHTML='<div class="card"><span class="muted">Todavía no hay ningún informe '+
+      'cargado. Las métricas aparecen a medida que corregís.</span></div>';
+    return;
+  }
+  var prom=conNota.length?conNota.reduce(function(a,b){return a+b;},0)/conNota.length:null;
+  var desv=conNota.length>1?Math.sqrt(conNota.reduce(function(a,b){
+    return a+Math.pow(b-prom,2); },0)/(conNota.length-1)):null;
+  var bandas=[[0,39],[40,54],[55,69],[70,84],[85,100]];
+  var cuenta=bandas.map(function(b){
+    return conNota.filter(function(n){ return n>=b[0]&&n<=b[1]; }).length; });
+  var maxc=Math.max.apply(null,[1].concat(cuenta));
+  function kpi(k,v,s){
+    return '<div class="kpi"><div class="k">'+k+'</div><div class="v">'+v+'</div><div class="s">'+
+      (s||"")+'</div></div>';
+  }
+  var h='<div class="kpis">'+
+    kpi("Corregidos",corr.length+" / "+reales.length,"sin contar testigos")+
+    kpi("Promedio",prom!=null?prom.toFixed(1):"—",conNota.length+" con nota")+
+    kpi("Mediana",mediana(conNota)!=null?mediana(conNota):"—","")+
+    kpi("Mín / máx",conNota.length?Math.min.apply(null,conNota)+" / "+Math.max.apply(null,conNota):"—","")+
+    kpi("Desvío",desv!=null?desv.toFixed(1):"—","dispersión de la vara")+
+    kpi("Escalados",escs.length,"no salen sin que los lea alguien")+
+    '</div>';
+
+  h+='<h3>Distribución de puntajes</h3><div class="hist">'+
+    cuenta.map(function(c,i){
+      return '<div class="b"><div class="n">'+c+'</div><i style="height:'+(c/maxc*100)+
+        '%"></i><div class="l">'+bandas[i][0]+'–'+bandas[i][1]+'</div></div>'; }).join("")+'</div>';
+  if(desv!=null&&desv<8&&conNota.length>=8)
+    h+='<div class="card warn"><strong>La escala se está apelmazando.</strong> Con '+conNota.length+
+      ' trabajos el desvío es '+desv.toFixed(1)+' puntos: casi todos caen en la misma franja. Está '+
+      'anotado como <span class="mono">E-4</span> en la autocrítica y es esperable con volumen — no '+
+      'significa que las notas estén mal, sino que la rúbrica discrimina poco en el medio. Vale '+
+      'decirlo antes de que lo diga otro.</div>';
+
+  var acum={}, cant={}, nom={};
+  corr.forEach(function(t){ (t.informe.dimensiones||[]).forEach(function(x){
+    acum[x.id]=(acum[x.id]||0)+Number(x.nivel); cant[x.id]=(cant[x.id]||0)+1; nom[x.id]=x.nombre; }); });
+  var ds=["D1","D2","D3","D4","D5"].filter(function(d){ return cant[d]; });
+  h+='<h3>Nivel promedio por dimensión</h3>';
+  h+=ds.length?ds.map(function(d){
+      var v=acum[d]/cant[d];
+      return '<div class="dimbar"><div class="et">'+d+' · '+esc(nom[d]||"")+'</div>'+
+        '<div class="tr"><i style="width:'+(v/4*100)+'%"></i></div>'+
+        '<div class="vv">'+v.toFixed(2)+'/4</div></div>'; }).join("")
+    :'<p class="muted">Sin datos.</p>';
+
+  var est={};
+  corr.forEach(function(t){ est[t.informe.estado]=(est[t.informe.estado]||0)+1; });
+  h+='<h3>Estados</h3><table><tr><th>Estado</th><th>Trabajos</th></tr>'+
+    Object.keys(est).sort(function(a,b){ return est[b]-est[a]; }).map(function(k){
+      return '<tr><td>'+esc(k)+'</td><td class="mono">'+est[k]+'</td></tr>'; }).join("")+'</table>';
+
+  var ban={};
+  corr.forEach(function(t){ (t.informe.banderas||[]).forEach(function(b){
+    if(!ban[b.id]) ban[b.id]={n:0,nombre:b.nombre};
+    ban[b.id].n++; }); });
+  var bk=Object.keys(ban).sort(function(a,b){ return ban[b].n-ban[a].n; });
+  h+='<h3>Banderas encontradas</h3>';
+  h+=bk.length?'<table><tr><th>ID</th><th></th><th>Veces</th></tr>'+bk.map(function(k){
+      return '<tr><td class="mono">'+esc(k)+'</td><td>'+esc(ban[k].nombre||"")+
+        '</td><td class="mono">'+ban[k].n+'</td></tr>'; }).join("")+'</table>'
+    :'<p class="muted">Ninguna hasta ahora.</p>';
+
+  var test=TRABAJOS.filter(function(t){ return t.testigo&&t.informe; })
+                   .map(function(t){ return t.informe.puntaje_final; });
+  h+='<h3>Control de la vara</h3>';
+  h+=test.length?'<div class="card '+(test.every(function(x){return x===test[0];})?"ok":"bad")+'">'+
+      '<span class="mono" style="font-size:18px">'+test.join(" · ")+'</span><div class="muted">'+
+      (test.every(function(x){return x===test[0];})
+        ?"Los testigos coinciden: la vara no se movió."
+        :"Los testigos no coinciden: hay deriva. El lote se rehace desde el testigo anterior.")+
+      '</div></div>'
+    :'<p class="muted">Sin testigos corregidos todavía.</p>';
+  $("#metricas").innerHTML=h;
+}
+
+/* ------------------------------------------------------------------- lote */
+function pintarLote(){
+  var test=TRABAJOS.filter(function(t){ return t.testigo&&t.informe; });
+  var ctrl;
+  if(!test.length){
+    ctrl='<div class="card"><span class="muted">Sin testigos corregidos. El control necesita al '+
+      'menos dos: uno al principio y uno al final.</span></div>';
+  } else {
+    var notas=test.map(function(t){ return t.informe.puntaje_final; }), espd=test[0].esperado;
+    var ok=notas.every(function(n){ return n===notas[0]; }) &&
+           (espd==null||notas.every(function(n){ return n===espd; }));
+    ctrl='<div class="card '+(ok?"ok":"bad")+'">'+
+      '<div class="muted" style="text-transform:uppercase;letter-spacing:.8px;font-size:10.5px">'+
+      'Control del lote — los testigos</div>'+
+      '<div class="mono" style="font-size:24px;font-weight:600;margin:4px 0">'+notas.join(" · ")+
+      (espd!=null?'<span class="muted" style="font-size:13px"> · esperado '+espd+'</span>':"")+
+      '</div><p style="margin:8px 0 0">'+(ok
+        ?"<span class='good'><strong>La vara no se movió.</strong></span> Los testigos coinciden entre sí y con su valor esperado, después de corregir los trabajos que van en el medio. El lote es válido."
+        :"<span class='err'><strong>Hay deriva.</strong></span> Los testigos no coinciden. Se descarta el lote desde el testigo anterior y se rehace. <strong>Ningún informe se comunica.</strong>")+
+      '</p>'+(test.length<2?'<p class="muted">Con un solo testigo corregido esto todavía no prueba nada.</p>':"")+
+      '</div>';
+  }
+  $("#control").innerHTML=ctrl;
+  var filas=TRABAJOS.map(function(t,i){
+    var d=t.informe;
+    var quien=(t.testigo?"<strong>[TESTIGO]</strong> ":"")+esc(t.nombre)+
+      (t.identificador?'<div class="muted mono">'+esc(t.identificador)+'</div>':"");
+    if(!d) return '<tr class="'+(t.testigo?"testigoRow":"")+'"><td class="muted">'+(i+1)+'</td><td>'+
+      quien+'</td><td colspan="5" class="muted">pendiente</td></tr>';
+    var cls={evaluado:"ev",evaluado_con_reservas:"res",integridad_comprometida:"int",
+             fuera_de_alcance:"fue",no_evaluable:"noev"}[d.estado]||"fue";
+    return '<tr class="'+(t.testigo?"testigoRow":"")+'"><td class="muted">'+(i+1)+'</td><td>'+quien+
+      '</td><td class="mono">'+(d.dimensiones||[]).map(function(x){return x.nivel;}).join("·")+
+      '</td><td class="mono">'+(d.puntaje_bruto==null?"—":d.puntaje_bruto)+
+      '</td><td class="mono"><strong>'+(sinNotaDe(d)?"sin nota":d.puntaje_final)+
+      '</strong></td><td><span class="pill '+cls+'">'+esc(d.estado)+'</span></td><td class="muted">'+
+      ((d.banderas||[]).length||"—")+(d.revision_humana_requerida?' · <span class="warnc">revisar</span>':"")+
+      '</td></tr>';
   }).join("");
-  $("#tablaLote").innerHTML =
-    `<table><tr><th>#</th><th>Trabajo</th><th>D1·D2·D3·D4·D5</th><th>Bruto</th><th>Final</th>
-      <th>Estado</th><th></th></tr>${filas}</table>`;
+  $("#tablaLote").innerHTML='<table><tr><th>#</th><th>Alumno</th><th>D1·D2·D3·D4·D5</th><th>Bruto</th>'+
+    '<th>Final</th><th>Estado</th><th>Banderas</th></tr>'+filas+'</table>';
 }
 
 /* -------------------------------------------------------------- devolución */
-function cortoDe(d) {
-  const l = [];
-  (d.dimensiones || []).forEach(x => l.push(x.id + " " + x.nivel + "/4 — " +
-    String(x.que_falta_para_el_nivel_siguiente || x.justificacion || "").split(/(?<=\.)\s/)[0]));
-  if (d.sugerencia_mejora)
-    l.push("Mejora: " + d.sugerencia_mejora.dimension + ", hasta " +
-           d.sugerencia_mejora.puntos_potenciales + " pts — " + d.sugerencia_mejora.accion);
-  let txt = l.join("\n");
-  const pal = txt.split(/\s+/);
-  if (pal.length > 180) txt = pal.slice(0, 180).join(" ") + " […]";
+function cortoDe(d){
+  var l=[];
+  (d.dimensiones||[]).forEach(function(x){
+    var t=String(x.que_falta_para_el_nivel_siguiente||x.justificacion||"");
+    l.push(x.id+" "+x.nivel+"/4 — "+t.split(". ")[0]);
+  });
+  if(d.sugerencia_mejora) l.push("Mejora: "+d.sugerencia_mejora.dimension+", hasta "+
+    d.sugerencia_mejora.puntos_potenciales+" pts — "+d.sugerencia_mejora.accion);
+  var txt=l.join("\n"), pal=txt.split(/\s+/);
+  if(pal.length>180) txt=pal.slice(0,180).join(" ")+" […]";
   return txt;
 }
-
-function bajarCsv() {
-  const hechos = TRABAJOS.filter(t => t.informe && !t.testigo);
-  if (!hechos.length) { alert("No hay informes cargados."); return; }
-  const q = s => '"' + String(s == null ? "" : s).replace(/"/g, '""') + '"';
-  const filas = [["Nombre completo", "Calificación", "Comentarios de retroalimentación"].map(q).join(",")];
-  for (const t of hechos) {
-    const d = t.informe;
-    const sinNota = ["integridad_comprometida", "fuera_de_alcance", "no_evaluable"].includes(d.estado);
-    filas.push([q(t.nombre), q(sinNota ? "" : d.puntaje_final), q(cortoDe(d))].join(","));
+function pintarIdentidad(){
+  var corr=TRABAJOS.filter(function(t){ return t.informe&&!t.testigo; });
+  var huerf=corr.filter(function(t){ return !t.identificador; });
+  var h="";
+  if(HOJA){
+    var atados=corr.filter(function(t){
+      return HOJA.filas.some(function(r){ return norm(r[HOJA.iNom])===norm(t.nombre); }); }).length;
+    h+='<div class="card ok"><strong>La devolución sale con la hoja original.</strong> '+
+      esc(HOJA.archivo)+': '+HOJA.filas.length+' alumnos, '+atados+' con corrección lista. Se '+
+      'conservan la cabecera y el identificador de cada fila —que es por donde Moodle la reconoce— '+
+      'y sólo se completan calificación y comentario. Los alumnos sin corregir salen con su fila '+
+      'intacta.</div>';
+  } else {
+    h+='<div class="card warn"><strong>Sin hoja de calificaciones cargada.</strong> El archivo va a '+
+      'salir con identificador, nombre, calificación y comentario, que alcanza para pegarlo a mano. '+
+      'Para importarlo de una, cargá en <em>Cargar</em> el <code>.csv</code> de <em>Descargar hoja '+
+      'de calificaciones</em>: trae el identificador con el que Moodle reconoce a cada alumno.</div>';
   }
-  const blob = new Blob(["﻿" + filas.join("\r\n")], { type: "text/csv;charset=utf-8" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "devolucion-moodle.csv";
-  a.click();
+  if(huerf.length) h+='<div class="card bad"><strong>'+huerf.length+' corrección(es) sin '+
+    'identificador de alumno:</strong> '+huerf.map(function(t){ return esc(t.nombre); }).join(" · ")+
+    '. Salen igual en el archivo, por nombre. Antes de importar, atalas a mano: <strong>no se '+
+    'adivina de quién es un trabajo.</strong></div>';
+  $("#identidad").innerHTML=h;
+}
+function q(s){ return '"'+String(s==null?"":s).replace(/"/g,'""')+'"'; }
+function bajarCsv(){
+  var corr=TRABAJOS.filter(function(t){ return t.informe&&!t.testigo; });
+  if(!corr.length){ alert("No hay informes cargados."); return; }
+  var filas;
+  if(HOJA){
+    filas=[HOJA.cabecera.map(q).join(",")];
+    HOJA.filas.forEach(function(r){
+      var f=r.slice();
+      var t=corr.filter(function(x){ return norm(x.nombre)===norm(r[HOJA.iNom]); })[0];
+      if(t){
+        f[HOJA.iCal]=sinNotaDe(t.informe)?"":String(t.informe.puntaje_final);
+        if(HOJA.iCom>=0) f[HOJA.iCom]=cortoDe(t.informe);
+      }
+      filas.push(f.map(q).join(","));
+    });
+    corr.forEach(function(t){
+      if(HOJA.filas.some(function(r){ return norm(r[HOJA.iNom])===norm(t.nombre); })) return;
+      var f=HOJA.cabecera.map(function(){ return ""; });
+      if(HOJA.iId>=0) f[HOJA.iId]=t.identificador||"SIN IDENTIFICADOR";
+      f[HOJA.iNom]=t.nombre;
+      f[HOJA.iCal]=sinNotaDe(t.informe)?"":String(t.informe.puntaje_final);
+      if(HOJA.iCom>=0) f[HOJA.iCom]=cortoDe(t.informe);
+      filas.push(f.map(q).join(","));
+    });
+  } else {
+    filas=[["Identificador","Nombre completo","Calificación","Comentarios de retroalimentación"]
+             .map(q).join(",")];
+    corr.forEach(function(t){
+      filas.push([q(t.identificador||""),q(t.nombre),
+        q(sinNotaDe(t.informe)?"":t.informe.puntaje_final),q(cortoDe(t.informe))].join(","));
+    });
+  }
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob(["\uFEFF"+filas.join("\r\n")],{type:"text/csv;charset=utf-8"}));
+  a.download="calificaciones-para-moodle.csv"; a.click();
+  pintarIdentidad(); avisarEscalados();
+}
+function avisarEscalados(){
+  var e=TRABAJOS.filter(function(t){ return t.informe&&escalado(t.informe); }), box=$("#avisoEscalados");
+  if(!e.length){ box.style.display="none"; return; }
+  box.style.display="block";
+  box.innerHTML='<strong>'+e.length+' trabajo(s) salen sin nota y no se importan sin leerlos.</strong>'+
+    '<ul>'+e.map(function(t){
+      return '<li>'+esc(t.nombre)+' — <span class="mono">'+esc(t.informe.estado)+'</span>'+
+        (t.informe.nota_al_margen?'<span class="muted"> · '+esc(t.informe.nota_al_margen)+'</span>':"")+
+        '</li>'; }).join("")+'</ul>'+
+    '<p class="muted" style="margin:0">La columna de calificación va vacía a propósito. Estos los '+
+    'mira una persona antes de que llegue nada a un alumno.</p>';
+}
+function verRapida(){
+  var h=TRABAJOS.filter(function(t){ return t.informe; });
+  if(!h.length){ alert("No hay informes cargados."); return; }
+  $("#salida").innerHTML=h.map(function(t){
+    return '<div class="card"><strong>'+esc(t.nombre)+'</strong>'+
+      (t.identificador?'<span class="muted mono"> · '+esc(t.identificador)+'</span>':"")+
+      ' <span class="pill '+(t.informe.estado==="evaluado"?"ev":"res")+'">'+esc(t.informe.estado)+
+      '</span><span class="mono" style="float:right">'+
+      (sinNotaDe(t.informe)?"sin nota":t.informe.puntaje_final)+'</span>'+
+      '<pre class="mono" style="white-space:pre-wrap;color:var(--ink2);margin:8px 0 0">'+
+      esc(cortoDe(t.informe))+'</pre></div>'; }).join("");
   avisarEscalados();
 }
 
-function avisarEscalados() {
-  const esc_ = TRABAJOS.filter(t => t.informe && (t.informe.revision_humana_requerida ||
-    ["integridad_comprometida", "fuera_de_alcance", "no_evaluable"].includes(t.informe.estado)));
-  const box = $("#avisoEscalados");
-  if (!esc_.length) { box.style.display = "none"; return; }
-  box.style.display = "block";
-  box.innerHTML = `<strong>${esc_.length} trabajo(s) salen sin nota y no se importan sin leerlos.</strong>
-    <ul>${esc_.map(t => `<li>${esc(t.nombre)} — <span class="mono">${esc(t.informe.estado)}</span>
-      ${t.informe.nota_al_margen ? '<span class="muted">· ' + esc(t.informe.nota_al_margen) + "</span>" : ""}</li>`).join("")}</ul>
-    <p class="muted" style="margin:0">La columna de calificación va vacía a propósito. Estos los
-    mira una persona antes de que llegue nada a un alumno.</p>`;
-}
-
-function verRapida() {
-  const hechos = TRABAJOS.filter(t => t.informe);
-  if (!hechos.length) { alert("No hay informes cargados."); return; }
-  $("#salida").innerHTML = hechos.map(t => {
-    const d = t.informe;
-    return `<div class="card"><strong>${esc(t.nombre)}</strong>
-      <span class="pill ${d.estado === "evaluado" ? "ev" : "res"}">${esc(d.estado)}</span>
-      <pre class="mono" style="white-space:pre-wrap;color:var(--ink2);margin:8px 0 0">${esc(cortoDe(d))}</pre></div>`;
-  }).join("");
-  avisarEscalados();
-}
-
-pintarContrato(); pintarIndice();
+/* -------------------------------------------------------------------- init */
+function todo(){ pintarLista(); pintarCentro(); pintarDerecha(); pintarContrato(); pintarHoja(); }
+restaurar(); todo();
 </script>
 </body>
 </html>

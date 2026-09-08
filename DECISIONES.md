@@ -297,6 +297,7 @@ consola es el tablero, no el motor.
 | 2/9 | `casos/tramposo/AGENTS.md` | Sexto vector: configuración de agente plantada | Decisión 9: los cinco vectores eran todos de la misma clase |
 | 8/9 | `front/consola.html` | La consola de ejecución: carga, arma el prompt, valida el informe, controla el lote y exporta a Moodle | Decisión 10: revierte la 6. El profesor dijo que el agente necesita una forma de ejecución, y que no sea un artefacto |
 | 2/9 | contrato v1.3 | Bandera **G3d**, regla de la configuración ajena, paso 0 de la pasada 1, campo `config_agentes_hallada`, A6 extendido, aislamiento de directorios | El v1.2 **obedeció** al `AGENTS.md`: detectó trece banderas y reportó cero |
+| 8/9 | `front/consola.html` + `front/probar.mjs` | La consola pasa a escala: lista lateral, se guarda sola, carga incremental, métricas, apertura real de `.zip` y devolución con el identificador de cada alumno. Con banco de 27 pruebas | Decisión 11: no se corrigen cuatro trabajos sino la cursada entera |
 
 ---
 
