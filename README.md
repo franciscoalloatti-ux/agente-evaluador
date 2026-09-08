@@ -182,6 +182,12 @@ El contrato completo está en `agente/`. Las instrucciones principales, en orden
   lo que infla cualquier medición de acierto. Lo compensamos parcialmente corriéndolo sobre cuatro
   repositorios reales y ajenos (`corridas/`), donde perdimos uno contra el criterio del profesor.
 
+- **La compuerta de objetivo está escrita y no probada.** La v1.10 exige poder citar qué
+  problema resuelve el trabajo y para quién; sin eso, D1 ≤ 2. Los tres casos declaran su objetivo
+  en la primera línea —los escribimos nosotros y a nadie se le ocurrió omitirlo— así que **ninguno
+  la dispara**. La estructura del parcial fija tres casos y no agregamos un cuarto para probarla:
+  queda como el primer lugar donde mirar si en la prueba de fuego aparece un trabajo sin objetivo.
+
 - **El cuadro de costos de `agente/config.md` §4 está sin números.** Tenemos los tokens medidos
   (≈16.500 el contrato, ≈3.500 la salida); faltan los precios con fecha de consulta. Publicar un
   costo que no se puede rehacer es la bandera G7 de nuestra propia rúbrica, así que preferimos el

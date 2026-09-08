@@ -302,6 +302,30 @@ consola es el tablero, no el motor.
 
 ---
 
+## Quién tiene qué, antes del jueves 10/9 18:59
+
+Lo que sigue abierto **no es trabajo de arquitectura**: es evidencia que sólo puede producir una
+persona distinta. Está acá y no en un chat porque un pendiente que vive en un mensaje se pierde.
+
+| # | Qué falta | Quién | Por qué no lo puede hacer otro | Vale |
+|---|-----------|-------|-------------------------------|------|
+| 1 | **Puntuación humana a ciegas** de los tres casos: `calibracion.md` §5.1, 10 de 15 celdas vacías | Martín · Federico · Verónica, cada uno la suya | La consigna pide *"qué notas hubieran puesto **ustedes**"*. Si la carga una sola persona, deja de ser calibración y pasa a ser una opinión repetida | **15 pts** del parcial |
+| 2 | **Prueba de portabilidad**: correr el contrato en un modelo distinto y pegar la salida | Uno por plataforma — idealmente cuatro personas, cuatro modelos | El profesor lo pidió textualmente: *"hay que testearlo con otros del grupo"*. Desde una sola máquina no se prueba nada | Sostiene la afirmación de que el contrato es portable |
+| 3 | **Cuadro de costos** de `agente/config.md` §4: precios por millón de tokens **con fecha de consulta** | Quien tenga acceso a la lista de precios vigente | Los tokens ya están medidos. Falta el precio, y un precio sin fecha es la G7 que penalizamos | Es nuestra propia D4 |
+| 4 | **Guion de la prueba de fuego**: qué se muestra, en qué orden, quién habla | Los cuatro, media hora juntos | El agente puede estar impecable y la demo puede salir mal | La prueba de fuego es pública |
+
+### Lo que ya no depende de nadie
+
+Rúbrica ejecutable (v1.10, veinte requisitos verificables, once banderas, cinco estados), agente
+corrector con cuatro pasadas y nueve chequeos de auditoría, los tres casos con su `ESPERADO.md`,
+dieciséis corridas guardadas, el procedimiento de lote con su caso testigo, y la consola con su
+banco de treinta y tres pruebas. Eso está y se defiende solo.
+
+**El repositorio no está incompleto: está desbalanceado.** Tiene mucho de lo que se construye solo
+y poco de lo que necesita a cuatro personas — y justo eso es lo que la consigna llama calibración.
+
+---
+
 ## Lo que queda roto
 
 1. **Ronda 3 de calibración sin hacer.** Las puntuaciones humanas a ciegas de los cuatro

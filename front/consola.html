@@ -759,15 +759,37 @@ function armarPrompt(t){
 function pintarCentro(){
   var t=trabajo();
   if(!t){
-    $("#centro").innerHTML='<div class="vacio"><div class="drop">'+
-      '<h4>Todavía no hay entregas cargadas</h4>'+
-      '<p style="margin:0 auto">Se entrega de dos formas —<strong>link a un repositorio</strong> o '+
-      '<strong><code>.zip</code></strong>— y se cargan de tres: una por una, todas juntas, o con la '+
-      'carpeta que baja del campus.<br><br>Lo que ya estaba no se toca: <strong>sólo se suman las '+
-      'entregas nuevas.</strong></p><div class="row" style="justify-content:center;margin-top:16px">'+
-      '<button class="act" onclick="irA(\'vCargar\')">Cargar entregas</button></div>'+
-      '<p class="muted" style="margin-top:20px">Todo se procesa en tu navegador. Ningún archivo sale '+
-      'de tu máquina.</p></div></div>';
+    var falta = REQUERIDOS.filter(function(r){ return !CONTRATO[r]; });
+    var paso = function(n, hecho, titulo, detalle){
+      return '<div style="display:flex;gap:11px;align-items:flex-start;text-align:left;margin:14px 0">'+
+        '<div style="width:23px;height:23px;border-radius:99px;flex:none;display:grid;place-items:center;'+
+        'font-size:12px;font-weight:600;'+(hecho
+          ? 'background:#17332a;color:var(--ok)'
+          : 'background:var(--bordo);color:#fff')+'">'+(hecho?"✓":n)+'</div>'+
+        '<div><div style="color:var(--ink);font-size:13.5px">'+titulo+'</div>'+
+        '<div class="muted" style="margin-top:2px">'+detalle+'</div></div></div>';
+    };
+    $("#centro").innerHTML='<div class="vacio"><div class="drop" style="text-align:left">'+
+      '<h4 style="text-align:center">Está vacía porque todavía no cargaste nada</h4>'+
+      '<p style="text-align:center;margin:0 0 4px">La consola no trae la rúbrica adentro: la carga. '+
+      'Son dos pasos.</p>'+
+      paso(1, falta.length===0, "Cargar el contrato",
+        falta.length===0
+          ? "Los cuatro archivos están cargados."
+          : "Faltan <span class=\'mono\'>"+falta.map(esc).join("</span>, <span class=\'mono\'>")+
+            "</span>. Están en la carpeta <span class=\'mono\'>agente/</span> del repositorio, "+
+            "salvo <span class=\'mono\'>rubrica.md</span> que está en la raíz.")+
+      paso(2, TRABAJOS.length>0, "Cargar las entregas",
+        TRABAJOS.length>0
+          ? TRABAJOS.length+" cargadas."
+          : "Un link y un nombre, varias URLs de una vez, o la carpeta que baja del campus. "+
+            "También abre archivos <span class=\'mono\'>.zip</span>.")+
+      '<div class="row" style="justify-content:center;margin-top:18px">'+
+      '<button class="act" onclick="irA(\'vCargar\')">Ir a Cargar</button></div>'+
+      '<p class="muted" style="text-align:center;margin:18px 0 0">Si los botones para elegir archivos '+
+      'no te abren nada, es porque el archivo se está viendo dentro de otra aplicación. '+
+      '<strong>Abrilo con doble click desde la carpeta</strong>, en Chrome o Edge.</p>'+
+      '</div></div>';
     return;
   }
   var tabs=[["prompt","Prompt"],["respuesta","Respuesta"],["informe","Informe"],["archivos","Entregable"]];
