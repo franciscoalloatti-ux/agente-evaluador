@@ -7,7 +7,7 @@
 
 Deliberadamente **no es 100**. Un caso "excelente" que saca el máximo no prueba nada: no permite
 ver si el evaluador sabe dónde falta algo en un trabajo bueno. Este trabajo tiene dos huecos
-reales —la proyección económica sin supuesto de volumen y sólo dos modos de falla— y el evaluador
+reales —la ausencia de proyección económica y sólo dos modos de falla— y el evaluador
 tiene que encontrarlos.
 
 ---
@@ -50,7 +50,7 @@ aparece en la salida). Entradas distintas entre sí y fechadas en orden.
 |-----|----------|---------|
 | R4.1 | SI | 11.250 tokens de entrada y 1.100 de salida, discriminados |
 | R4.2 | SI | Precio con fecha de consulta (3/9/2026) y la cuenta escrita. **El evaluador debe rehacerla**: 11.250/1M × 1,00 + 1.100/1M × 5,00 = 0,0168. Cierra |
-| R4.3 | **NO** | "En un año son unos 3 dólares" — sin decir cuántas corridas por semana. Sin supuesto de volumen no hay proyección |
+| R4.3 | **NO** | **No hay proyección a escala.** El trabajo calcula el costo por corrida y se detiene ahí: no dice qué costaría por semana ni por año, ni declara un volumen. *(Hasta el 8/9 el caso traía una proyección de "unos 3 dólares" que no reconciliaba con la cadencia declarada en "Qué construí" — era un error accidental nuestro, no una imperfección plantada, y se quitó al cerrar D-13.)* |
 | R4.4 | **NO** | "Usé el modelo liviano porque alcanza y sobra": no compara con ningún otro modelo |
 
 ### D5 · Gobierno y riesgo — nivel **3** · 11,25 pts
@@ -94,6 +94,7 @@ final              89     nota 8,9
 ## Sugerencia de mejora esperada
 
 Debe apuntar a **D4** (la dimensión con menor proporción de puntos: 50 %) y ser accionable:
-declarar el supuesto de volumen de la proyección (corridas por semana × semanas) y correr la misma
+agregar la proyección a escala con su supuesto de volumen explícito (corridas por semana × semanas,
+tomando la cadencia que el propio README ya declara) y correr la misma
 corrida con un segundo modelo para justificar la elección con una prueba y no con una afirmación.
 Potencial: hasta 7,5 puntos.
