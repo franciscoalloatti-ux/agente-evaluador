@@ -866,13 +866,31 @@ function informeHtml(d){
     ((d.dudas||[]).length?'<h3>Reservas</h3><ul>'+
       d.dudas.map(function(x){ return '<li>'+esc(x)+'</li>'; }).join("")+'</ul>':"");
 }
+function copiarTexto(txt, idMsg, ok){
+  /* El portapapeles moderno pide contexto seguro. Abierto como archivo suelto en la máquina de
+     otro, puede no estar disponible — y un botón de copiar que falla en silencio, en medio de la
+     demo, es peor que no tenerlo. Por eso hay camino de atrás. */
+  var avisar = function(t){
+    var m = $(idMsg);
+    if(m){ m.textContent = t; setTimeout(function(){ m.textContent = ""; }, 3500); }
+  };
+  var aMano = function(){
+    var ta = document.createElement("textarea");
+    ta.value = txt;
+    ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.select();
+    var listo = false;
+    try{ listo = document.execCommand("copy"); }catch(e){}
+    document.body.removeChild(ta);
+    avisar(listo ? ok : "no pude copiar solo: seleccioná el texto de abajo y copialo a mano");
+  };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(function(){ avisar(ok); }, aMano);
+  } else aMano();
+}
 function copiarPrompt(){
   var t=trabajo(); if(!t) return;
-  navigator.clipboard.writeText(armarPrompt(t)).then(function(){
-    var m=$("#msgCopia");
-    if(m){ m.textContent="copiado — pegalo en el modelo que uses";
-      setTimeout(function(){ m.textContent=""; },3500); }
-  });
+  copiarTexto(armarPrompt(t), "#msgCopia", "copiado — pegalo en el modelo que uses");
 }
 
 /* ----------------------------------------------------------------- derecha */
@@ -927,9 +945,7 @@ function pintarDerecha(){
 function marcar(e){ var t=trabajo(); if(!t) return; t.estado=e; guardar(); todo(); }
 function copiarDev(){
   var t=trabajo(); if(!t||!t.informe) return;
-  navigator.clipboard.writeText(cortoDe(t.informe)).then(function(){
-    var m=$("#msgDev"); if(m){ m.textContent="copiado"; setTimeout(function(){m.textContent="";},2500); }
-  });
+  copiarTexto(cortoDe(t.informe), "#msgDev", "copiado");
 }
 
 /* -------------------------------------------------- validación del informe */

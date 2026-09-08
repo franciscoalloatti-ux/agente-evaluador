@@ -271,6 +271,7 @@ agente/           system_prompt · user_prompt · config · esquema_salida · pl
 casos/            excelente/ · flojo/ · tramposo/ — cada uno con su ESPERADO.md
 calibracion.md    protocolo, los diez desacuerdos y su arbitraje, y lo que falta
 front/            consola.html — la forma de ejecución. NO evalúa: arma el prompt y valida
+                  (no se abre desde GitHub: Code → Download ZIP y doble click. Ver front/README.md)
 corridas/         las salidas reales del agente sobre los tres casos
 DECISIONES.md     arquitectura, lo que descartamos, lo que quedó roto y quién tiene qué
 PLAN-DE-TRABAJO.md  el reparto por carriles y la regla de no fabricar la historia de commits

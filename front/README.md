@@ -5,6 +5,36 @@ cuenta, no necesita servidor ni conexión, y no hay paso de compilación.
 
 ---
 
+## Cómo la abre alguien del grupo
+
+**Hacer click en `consola.html` desde GitHub no la abre.** GitHub sirve los `.html` como texto
+plano —a propósito, para que nadie ejecute código alojado en un repositorio ajeno—, así que lo que
+se ve es el código fuente. No está rota: no es una página web, es un archivo.
+
+Y bajar sólo ese archivo tampoco alcanza, porque la consola **no trae la rúbrica adentro: la carga**,
+y esos cuatro archivos están en el repositorio. Así que el camino corto es traerse todo de una:
+
+1. En el repositorio: botón verde **Code** → **Download ZIP**.
+2. Descomprimir.
+3. Doble click en `front/consola.html`. Se abre en el navegador, sin instalar nada.
+4. Pestaña **Cargar** → elegir `agente/system_prompt.md`, `agente/banderas.md`,
+   `agente/esquema_salida.json` y `rubrica.md`. El indicador de arriba pasa a verde.
+
+Quien ya tenga el repositorio clonado, sólo abre el archivo: ya tiene todo lo demás.
+
+> **Chrome o Edge.** Firefox no permite elegir una carpeta entera, que es como entra la exportación
+> del campus. Todo lo demás funciona igual.
+>
+> Y no la abras dentro de otra aplicación —un visor, una vista previa, un panel—: ahí se ve la
+> página pero los botones de elegir archivo no abren nada. Doble click desde la carpeta.
+
+**No hace falta ponerla en internet.** Podríamos publicarla como página de GitHub y tendría un link,
+pero no ahorraría un paso: los cuatro archivos del contrato hay que elegirlos desde la máquina de
+todos modos, porque la consola no descarga nada — no hace una sola llamada de red. El `.zip` del
+repositorio resuelve las dos cosas juntas.
+
+---
+
 ## Por qué existe, si el 2/9 la habíamos descartado
 
 En `DECISIONES.md`, decisión 6, descartamos hacer una interfaz web: *"no aporta a ninguna de las
