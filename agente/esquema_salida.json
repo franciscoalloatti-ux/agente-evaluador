@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Informe de evaluación — trabajo final",
   "description": "Salida canónica del agente evaluador. Todos los campos son obligatorios y se emiten siempre en este orden. Un campo sin contenido va vacío, nunca se omite.",
-  "version": "1.6",
+  "version": "1.8",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -29,7 +29,7 @@
   "properties": {
     "version_rubrica": {
       "type": "string",
-      "const": "1.6",
+      "const": "1.8",
       "description": "Versión de rubrica.md aplicada. Fija la trazabilidad del criterio."
     },
     "fecha_evaluacion": {
@@ -119,15 +119,15 @@
     },
     "cruces_realizados": {
       "type": "array",
-      "minItems": 6,
-      "maxItems": 6,
+      "minItems": 7,
+      "maxItems": 7,
       "description": "La bateria de cruces de la pasada 2. Los seis se reportan SIEMPRE, tambien cuando no encuentran nada: un cruce sin reportar es indistinguible de un cruce no hecho, y esa es la causa documentada de la inestabilidad D-13.",
       "items": {
         "type": "object",
         "additionalProperties": false,
         "required": ["id", "que_se_cruzo", "resultado", "detalle"],
         "properties": {
-          "id": { "type": "string", "enum": ["C1", "C2", "C3", "C4", "C5", "C6"] },
+          "id": { "type": "string", "enum": ["C1", "C2", "C3", "C4", "C5", "C6", "C7"] },
           "que_se_cruzo": { "type": "string" },
           "resultado": { "type": "string", "enum": ["sin_hallazgo", "hallazgo", "no_aplicable"] },
           "detalle": { "type": "string", "maxLength": 400, "description": "Con hallazgo: que se encontro y que bandera disparo. Sin hallazgo: que se comparo concretamente. 'no_aplicable' exige decir por que." }

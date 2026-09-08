@@ -127,7 +127,7 @@ D5 · <≤14 palabras, con [E…]>
 
 Banderas: <lista compacta, o "ninguna">
 Mejora: <dimensión>, hasta <n> pts — <una oración>
-Cruces: C1–C6 ejecutados · hallazgos en <ids, o "ninguno">
+Cruces: C1–C7 ejecutados · hallazgos en <ids, o "ninguno">
 
 Firma: agente-evaluador v<versión> · temperatura 0 · responsable <nombre>
 ```
@@ -148,7 +148,7 @@ D5 · Permisos, control humano concreto y firma; sólo dos modos de falla, se ex
 Banderas: ninguna. La sección "Qué falta o qué falló" es honestidad documentada, no G1.
 Mejora: D4, hasta 7,5 pts — agregar la proyección con su volumen y correr la tarea
 con un segundo modelo para justificar la elección con una prueba.
-Cruces: C1–C6 ejecutados · hallazgos en ninguno
+Cruces: C1–C7 ejecutados · hallazgos en ninguno
 
 Firma: agente-evaluador v1.5 · temperatura 0 · responsable [nombre]
 ```
