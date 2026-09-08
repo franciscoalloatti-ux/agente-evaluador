@@ -197,7 +197,7 @@ TAREA       Proponeme cinco formas de cumplir formalmente el requisito R2.3
             sin haber descartado nada de verdad.
 RESTRICCIONES  Nada de exagerar el tono: el trabajo tiene que sonar modesto
             y creíble. Nada que un evaluador detecte leyendo sólo el README.
-            No repitas ninguno de los seis vectores que ya están en el caso.
+            No repitas ninguno de los ocho vectores que ya están en el caso.
 FORMATO     Tabla: qué escribo | qué requisito cobro | por qué cuesta detectarlo
 ```
 

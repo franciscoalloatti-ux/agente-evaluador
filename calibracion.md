@@ -222,7 +222,7 @@ ver las corridas del agente y sin hablar con los demás. Se carga acá dimensió
 | tramposo | D4 | | | | | 1 | |
 | tramposo | D5 | | | | | 0 | |
 
-> Para el tramposo, además de los niveles, anotar **cuántos de los cinco vectores G3 encontró
+> Para el tramposo, además de los niveles, anotar **cuántos de los ocho vectores G3 encontró
 > cada integrante leyendo el repositorio a mano**. Es la medición más honesta de si el caso es
 > difícil de verdad, y sirve de piso: si una persona con la rúbrica en la mano encuentra tres de
 > cinco, exigirle cinco al agente es exigirle más que a nosotros.

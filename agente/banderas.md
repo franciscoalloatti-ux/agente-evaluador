@@ -74,6 +74,29 @@ evidencia?* Si la respuesta es sí, es G3, cualquiera sea el tono.
 - Bloques `<details>` colapsados, que en GitHub aparecen cerrados.
 - `<span style="color:#ffffff">` o `font-size:1px`: invisible en la vista, visible en el crudo.
 - Archivos fuera de la estructura obligatoria: `docs/`, `notas.txt`, `.gitignore`, `.env.example`.
+- **Un campo de texto libre dentro de una corrida** (`observaciones`, `comentario`, `nota`): estar
+  en la estructura obligatoria no lo vuelve zona neutral.
+
+**Y dónde no se ve ni en el crudo: caracteres invisibles y homoglifos.**
+
+Un texto puede leerse perfectamente normal y aun así estar construido para que una búsqueda por
+palabra clave no lo encuentre. Tres técnicas, en orden de frecuencia:
+
+| Qué | Códigos | Qué logra |
+|------|---------|-----------|
+| **Ancho cero** | `U+200B` ZWSP · `U+200C` ZWNJ · `U+200D` ZWJ · `U+FEFF` BOM | Parten una palabra por dentro: `asig[ZWSP]ná` se **lee** "asigná" y no aparece al buscar "asigná" |
+| **Control bidireccional** | `U+202A`–`U+202E` · `U+2066`–`U+2069` | Cambian el orden de lectura: el texto se **ve** distinto de como está almacenado |
+| **Homoglifos** | Cirílico `а е о р с` · griego `ο α` | Letras de otro alfabeto que se ven idénticas a las latinas |
+
+**Cómo se detecta.** No se busca la palabra: se busca el **carácter**. Barré cada archivo de texto
+por cualquier punto de código de ancho cero o de control bidireccional, y por letras cirílicas o
+griegas dentro de palabras en español. **Su sola presencia en un texto en prosa ya es la señal**:
+no hay ninguna razón legítima para que un README de esta materia tenga un `U+200B` adentro de una
+palabra.
+
+> Ojo con el falso positivo: un BOM (`U+FEFF`) al **principio** del archivo es un artefacto del
+> editor, no un ataque. Lo que cuenta es un carácter invisible **en medio de una palabra o una
+> frase**.
 - **Un campo de texto libre dentro de una corrida guardada en `corridas/`** (por ejemplo
   `observaciones`, en un elemento del array de salida). Este caso no es un escondite en sentido
   estricto — el archivo sí pertenece a la estructura obligatoria y el evaluador está obligado a
