@@ -527,47 +527,55 @@ instrucciones no es suya. Está en el checklist de `GUIA-DEL-GRUPO.pdf`.
 
 ## 8 · Lo que sigue sin resolverse
 
-Tres cosas que no arreglamos, dichas como son:
+Cuatro cosas que no arreglamos, dichas como son.
 
-1. **El puntaje del tramposo es insensible.** Una vez que las penalizaciones llegan al tope de
-   −30, dos trabajos fraudulentos de gravedad muy distinta terminan los dos en 0. El `puntaje_bruto`
-   preserva parte de la información, pero la escala de penalización, arriba del tope, es ciega.
-   No supimos resolverlo sin volver discrecional algo que queremos tipificado.
+### 8.1 El puntaje del tramposo es insensible arriba del tope
 
-2. **La defensa contra G3d es mitad procedimiento.** La regla del prompt no alcanza sola: si la herramienta carga un `AGENTS.md` del repositorio evaluado, la instrucción entra por el mismo canal que las nuestras. Lo cubrimos con aislamiento de directorios, que es una práctica operativa — y las prácticas operativas se olvidan bajo presión, que es exactamente la condición de la prueba de fuego.
+Una vez que las penalizaciones llegan al tope de
+−30, dos trabajos fraudulentos de gravedad muy distinta terminan los dos en 0. El `puntaje_bruto`
+preserva parte de la información, pero la escala de penalización, arriba del tope, es ciega.
+No supimos resolverlo sin volver discrecional algo que queremos tipificado.
 
-3. **G6 no se puede verificar en el camino B.** Sin acceso a `git log`, la bandera de historia
-   falsa se sostiene sólo con las fechas internas del repositorio. El agente lo declara en
-   `dudas[]`, pero declarar una limitación no es lo mismo que no tenerla.
+### 8.2 La defensa contra G3d es mitad procedimiento
 
-4. **R2.3 acepta el recorte de alcance falso.** Tal como está escrito, el requisito da por
-   cumplido cualquier "no llegué a X por falta de tiempo", y el tramposo v2 lo cobra sin haber
-   descartado nada. Endurecerlo pediría "qué se probó antes de descartarlo" — y eso castigaría
-   a quien honestamente recortó alcance temprano, que es justo la decisión que la materia
-   premia. Lo dejamos abierto a conciencia: no encontramos una redacción que atrape al tramposo
-   sin lastimar al honesto.
+La regla del prompt no alcanza sola: si la herramienta carga un `AGENTS.md` del repositorio evaluado, la instrucción entra por el mismo canal que las nuestras. Lo cubrimos con aislamiento de directorios, que es una práctica operativa — y las prácticas operativas se olvidan bajo presión, que es exactamente la condición de la prueba de fuego.
+
+### 8.3 G6 no se puede verificar en el camino B
+
+Sin acceso a `git log`, la bandera de historia
+falsa se sostiene sólo con las fechas internas del repositorio. El agente lo declara en
+`dudas[]`, pero declarar una limitación no es lo mismo que no tenerla.
+
+### 8.4 R2.3 acepta el recorte de alcance falso
+
+Tal como está escrito, el requisito da por
+cumplido cualquier "no llegué a X por falta de tiempo", y el tramposo v2 lo cobra sin haber
+descartado nada. Endurecerlo pediría "qué se probó antes de descartarlo" — y eso castigaría
+a quien honestamente recortó alcance temprano, que es justo la decisión que la materia
+premia. Lo dejamos abierto a conciencia: no encontramos una redacción que atrape al tramposo
+sin lastimar al honesto.
 
 5. **Los tres casos son nuestros.** Los escribimos sabiendo qué queríamos que el agente
-   encontrara, y eso infla cualquier medición de acierto. Es exactamente el sesgo que la ronda 3.3
-   existe para corregir, y hasta que no esté hecha, los números de la §4 hay que leerlos con esa
-   reserva puesta.
+encontrara, y eso infla cualquier medición de acierto. Es exactamente el sesgo que la ronda 3.3
+existe para corregir, y hasta que no esté hecha, los números de la §4 hay que leerlos con esa
+reserva puesta.
 
-   *(Actualización 4/9: §5.3 ya tiene evidencia — tres repositorios reales, aunque propios de una
-   integrante del grupo, no de un tercero desconocido. El sesgo de "los casos son nuestros" queda
-   mitigado para D1-D5 en general, pero sigue intacto para las banderas G1-G8: ningún repositorio
-   real corrido hasta ahora tiene inyecciones, corridas fabricadas ni credenciales expuestas para
-   probar si el agente las detecta fuera del laboratorio del grupo.)*
+*(Actualización 4/9: §5.3 ya tiene evidencia — tres repositorios reales, aunque propios de una
+integrante del grupo, no de un tercero desconocido. El sesgo de "los casos son nuestros" queda
+mitigado para D1-D5 en general, pero sigue intacto para las banderas G1-G8: ningún repositorio
+real corrido hasta ahora tiene inyecciones, corridas fabricadas ni credenciales expuestas para
+probar si el agente las detecta fuera del laboratorio del grupo.)*
 
 6. **Las compuertas duras de D1-D3 son literales sobre nombres de carpeta, y eso castiga con dureza
-   a un trabajo real con estructura equivalente pero distinta.** Los tres repositorios de §5.3 —
-   ninguno construido para esta prueba — nunca usan exactamente `prompts/`, `corridas/` y
-   `DECISIONES.md`, y los tres terminan con tres compuertas de techo activadas a la vez (D1≤1,
-   D2≤1, D3≤1) pese a tener seis piezas de contrato completas, herramientas reales verificables e
-   iteraciones genuinas corroboradas por commits. En `entrega-1`, D2 pasa de nivel 3 (18,75 pts) a
-   nivel 1 (6,25 pts) sólo porque el archivo se llama distinto. Ningún caso construido por el grupo
-   podía mostrar esto, porque los tres siguen la estructura obligatoria al pie de la letra. No lo
-   cambiamos todavía: es una decisión de rúbrica (Carril A), no algo que Calibración pueda resolver
-   sola — lo dejamos señalado con la evidencia de las tres corridas en `corridas/2026-09-04_entrega-*.md`.
+a un trabajo real con estructura equivalente pero distinta.** Los tres repositorios de §5.3 —
+ninguno construido para esta prueba — nunca usan exactamente `prompts/`, `corridas/` y
+`DECISIONES.md`, y los tres terminan con tres compuertas de techo activadas a la vez (D1≤1,
+D2≤1, D3≤1) pese a tener seis piezas de contrato completas, herramientas reales verificables e
+iteraciones genuinas corroboradas por commits. En `entrega-1`, D2 pasa de nivel 3 (18,75 pts) a
+nivel 1 (6,25 pts) sólo porque el archivo se llama distinto. Ningún caso construido por el grupo
+podía mostrar esto, porque los tres siguen la estructura obligatoria al pie de la letra. No lo
+cambiamos todavía: es una decisión de rúbrica (Carril A), no algo que Calibración pueda resolver
+sola — lo dejamos señalado con la evidencia de las tres corridas en `corridas/2026-09-04_entrega-*.md`.
 
 ---
 

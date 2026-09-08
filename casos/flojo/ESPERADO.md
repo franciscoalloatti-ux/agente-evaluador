@@ -104,11 +104,13 @@ D1  1/4 x 30 =  7,50
 D2  1/4 x 25 =  6,25
 D3  1/4 x 15 =  3,75
 D4  0/4 x 15 =  0,00
-D5  1/4 x 15 =  3,75   (0,00 si R5.3 = NO -> bruto 17,50 -> final 18)
+D5  0/4 x 15 =  0,00   <- rama severa: R5.3 = NO
              --------
-bruto          21,25
+bruto          17,50
 penalizaciones  0,00
-final              21     nota 2,1
+final              18     nota 1,8
+
+rama indulgente (R5.3 = SI): D5 1/4 x 15 = 3,75 -> bruto 21,25 -> final 21
 ```
 
 ## Sugerencia de mejora esperada

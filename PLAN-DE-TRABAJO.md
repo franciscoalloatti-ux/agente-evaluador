@@ -29,10 +29,10 @@ Cuatro carriles que casi no se pisan, así se puede trabajar en paralelo sin con
 
 | Carril | Dueño | Archivos | Qué implica |
 |--------|-------|----------|-------------|
-| **A · Rúbrica** | *(integrante 1)* | `rubrica.md` | Es la pieza de mayor peso (25 del parcial). Cada requisito tiene que poder responderse sí/no citando evidencia. Si un requisito necesita interpretación, está mal escrito |
-| **B · Agente** | *(integrante 2)* | `agente/*` | El contrato, el esquema de salida, la plantilla y las banderas. Dueño también del determinismo: si dos corridas difieren, es de este carril |
-| **C · Casos** | *(integrante 3)* | `casos/*` | Los tres mini-repos y sus `ESPERADO.md`. El carril más divertido y el más importante: sin un tramposo difícil, el evaluador no se prueba |
-| **D · Calibración** | *(integrante 4)* | `calibracion.md`, `corridas/` | Corre el agente, compara contra `ESPERADO.md`, documenta los desacuerdos. **No cambia la rúbrica: la discute.** Quien la cambia es el carril A |
+| **A · Rúbrica** | **Francisco** | `rubrica.md` | Es la pieza de mayor peso (25 del parcial). Cada requisito tiene que poder responderse sí/no citando evidencia. Si un requisito necesita interpretación, está mal escrito |
+| **B · Agente** | **Martín** | `agente/*` | El contrato, el esquema de salida, la plantilla y las banderas. Dueño también del determinismo: si dos corridas difieren, es de este carril |
+| **C · Casos** | **Federico** | `casos/*` | Los tres mini-repos y sus `ESPERADO.md`. El carril más divertido y el más importante: sin un tramposo difícil, el evaluador no se prueba |
+| **D · Calibración** | **Verónica** | `calibracion.md`, `corridas/` | Corre el agente, compara contra `ESPERADO.md`, documenta los desacuerdos. **No cambia la rúbrica: la discute.** Quien la cambia es el carril A |
 
 **Regla de conflicto:** nadie edita el archivo de otro carril. Si el carril D encuentra un problema
 en la rúbrica, abre un issue o lo comenta en `calibracion.md`; lo cambia el carril A. Así el

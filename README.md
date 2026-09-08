@@ -272,5 +272,7 @@ casos/            excelente/ · flojo/ · tramposo/ — cada uno con su ESPERADO
 calibracion.md    protocolo, los diez desacuerdos y su arbitraje, y lo que falta
 front/            consola.html — la forma de ejecución. NO evalúa: arma el prompt y valida
 corridas/         las salidas reales del agente sobre los tres casos
-DECISIONES.md     arquitectura, lo que descartamos y lo que quedó roto
+DECISIONES.md     arquitectura, lo que descartamos, lo que quedó roto y quién tiene qué
+PLAN-DE-TRABAJO.md  el reparto por carriles y la regla de no fabricar la historia de commits
+auditar.py        audita este repositorio con el mismo criterio con el que corregimos
 ```
