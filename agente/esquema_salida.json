@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Informe de evaluación — trabajo final",
   "description": "Salida canónica del agente evaluador. Todos los campos son obligatorios y se emiten siempre en este orden. Un campo sin contenido va vacío, nunca se omite.",
-  "version": "1.8",
+  "version": "1.9",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -21,6 +21,7 @@
     "puntaje_final",
     "nota_10",
     "sugerencia_mejora",
+    "nota_al_margen",
     "dudas",
     "auditoria",
     "revision_humana_requerida",
@@ -29,7 +30,7 @@
   "properties": {
     "version_rubrica": {
       "type": "string",
-      "const": "1.8",
+      "const": "1.9",
       "description": "Versión de rubrica.md aplicada. Fija la trazabilidad del criterio."
     },
     "fecha_evaluacion": {
@@ -213,6 +214,11 @@
         "accion": { "type": "string", "maxLength": 600, "description": "Una sola, concreta, accionable en una semana: qué archivo, qué contenido, qué evidencia falta." },
         "puntos_potenciales": { "type": "number", "minimum": 0 }
       }
+    },
+    "nota_al_margen": {
+      "type": "string",
+      "maxLength": 300,
+      "description": "Vacio normalmente. Se llena cuando el puntaje es extremo (menor a 40 o mayor a 90) o el estado no es 'evaluado'. Es una anotacion INTERNA para quien corrige, no para el alumno: nunca entra en la devolucion de Moodle."
     },
     "dudas": {
       "type": "array",
