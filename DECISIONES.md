@@ -314,6 +314,31 @@ persona distinta. Está acá y no en un chat porque un pendiente que vive en un 
 | 3 | **Cuadro de costos** de `agente/config.md` §4: precios por millón de tokens **con fecha de consulta** | Quien tenga acceso a la lista de precios vigente | Los tokens ya están medidos. Falta el precio, y un precio sin fecha es la G7 que penalizamos | Es nuestra propia D4 |
 | 4 | **Guion de la prueba de fuego**: qué se muestra, en qué orden, quién habla | Los cuatro, media hora juntos | El agente puede estar impecable y la demo puede salir mal | La prueba de fuego es pública |
 
+### El lote de 50, pendiente y con su diseño ya definido
+
+Falta la prueba que ningún otro ensayo reemplaza: **un lote grande**. Seis trabajos no son cincuenta,
+y los dos problemas que tenemos declarados —la deriva de la vara y **E-4**, la escala que se
+apelmaza— sólo aparecen con volumen.
+
+El plan, con la decisión que lo hace válido escrita de antemano:
+
+| | |
+|---|---|
+| **Qué se genera** | 50 trabajos con un generador parametrizado, no a mano: por cada uno se fija qué requisitos cumple, qué banderas lleva plantadas y dónde. La verdad de referencia **sale de los parámetros**, no de una opinión posterior |
+| **Cómo se reparten** | ~12 buenos, ~20 medios, ~10 flojos, ~8 con trampa. Las trampas, repartidas por los ocho vectores que ya conocemos y por los canales donde se esconden |
+| **Cuántas corridas** | Los 50 una vez (la vara a lo largo del lote, con el testigo intercalado) + **10 elegidos × 5 corridas** (que el mismo trabajo dé el mismo número cinco veces). Son 90 evaluaciones, no 250: la estabilidad se mide bien en una muestra, la deriva necesita el lote entero |
+| **La decisión que lo hace válido** | **El generador corre en una sesión y la evaluación en otra, con el manifiesto de respuestas sellado.** Si quien evalúa vio dónde se plantaron las trampas, el número que salga no mide nada |
+
+**Lo que va a probar:** que el trabajo 50 se mide con la misma vara que el 1; que el mismo trabajo da
+el mismo número cinco veces seguidas; y cuánto se apelmaza la escala de verdad — el desvío real del
+lote, que hoy es una sospecha declarada y no un número.
+
+**Lo que no va a probar, y hay que decirlo cuando se muestre:** los 50 trabajos los generamos
+nosotros. Mide **consistencia** y **discriminación**; no mide acierto contra un criterio
+independiente. Para eso están los cuatro repositorios reales y ajenos de `corridas/`, y la
+puntuación a ciegas de las cuatro personas — que sigue siendo lo primero.
+
+
 ### Lo que ya no depende de nadie
 
 Rúbrica ejecutable (v1.10, veinte requisitos verificables, once banderas, cinco estados), agente
