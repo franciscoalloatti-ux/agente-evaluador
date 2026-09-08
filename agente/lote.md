@@ -27,6 +27,11 @@ sirva en cada momento.
 | **Grupal / carpeta** | Corregir un subconjunto: una comisión, los que faltan, los que hay que rehacer | Una carpeta con varios repositorios o `.zip`, sin índice |
 | **Formato Moodle** | La corrección real de la cursada | El árbol de "Descargar todas las entregas", con el índice nombre → URL adentro |
 
+Las tres formas están implementadas en `front/consola.html`, que además **abre los `.zip` sin
+subirlos a ningún lado**: del entregable pasa al prompt el árbol completo más el texto de los
+archivos legibles, y lista aparte lo que no pudo leer. La herramienta no evalúa; sólo prepara lo que
+el contrato después corrige.
+
 Los tres terminan en el mismo procedimiento (§2). Lo único que cambia es **de dónde sale el índice**:
 en el modo Moodle se lee de los `Texto en línea.html`; en el grupal se deduce del nombre de cada
 carpeta o `.zip`; en el individual no hace falta.
@@ -214,7 +219,10 @@ cambia el número de verdad. Medirlo sigue pendiente y está declarado.
 
 - **No tenemos el CSV real de la hoja de calificaciones**, sólo el árbol de "Descargar todas las
   entregas". Las columnas de arriba son las que Moodle usa, pero conviene pedirle al profesor una
-  exportación de muestra antes de darlo por cerrado.
+  exportación de muestra antes de darlo por cerrado. `front/consola.html` reduce el riesgo sin
+  cerrarlo: **no asume las columnas, las busca** en la cabecera que le den, y devuelve el archivo
+  con esa misma cabecera y esos mismos identificadores. Si el formato real es otro, se adapta; si
+  no encuentra ni nombre ni calificación, lo dice y no inventa nada.
 - **El lote se ensayó una vez, con seis trabajos** (`corridas/2026-09-08_ensayo-de-lote.md`): los
   tres testigos dieron **89 · 89 · 89** con los mismos cinco niveles, después de leer en el medio un
   trabajo flojo, uno con ocho intentos de manipulación y un repositorio real ajeno. **Falta un lote
