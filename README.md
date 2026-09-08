@@ -74,7 +74,7 @@ El contrato completo está en `agente/`. Las instrucciones principales, en orden
 
 ## Qué funciona
 
-- **Corre y devuelve el formato completo.** Dieciséis informes y ensayos guardados en `corridas/`. Los del caso
+- **Corre y devuelve el formato completo.** Diecisiete informes y ensayos guardados en `corridas/`. Los del caso
   tramposo traen el JSON canónico entero más el informe legible, y conservan **las cuatro
   corridas**: las tres que fallaron (v1.1 y v1.2, dos veces) y la que acertó con el v1.3. Los
   otros dos usan la variante corta, que es la que se muestra en vivo.
@@ -130,7 +130,7 @@ El contrato completo está en `agente/`. Las instrucciones principales, en orden
   `dudas[]`. En el caso flojo hay una duda asentada sobre R5.3 que vale 3 puntos y está a la vista
   para que se pueda discutir.
 
-- **Distingue cuatro situaciones, no una.** `evaluado` · `evaluado_con_reservas` ·
+- **Distingue cinco situaciones, no una.** `evaluado` · `evaluado_con_reservas` ·
   `integridad_comprometida` (el trabajo intentó manipular al evaluador: la nota se **suspende**, no
   se baja) · `fuera_de_alcance` (abre perfecto pero **no es un trabajo final**: sin puntaje, va al
   profesor) · `no_evaluable`. Un evaluador que produce un número confiable sobre la cosa equivocada

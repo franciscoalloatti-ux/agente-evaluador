@@ -201,7 +201,7 @@ print()
 print("  afirmaciones numericas en README.md:")
 rd = leer("README.md")
 for frase, n in [("veinte requisitos", 20), ("once banderas", 11), ("ocho vectores", 8),
-                 ("los ocho", 8), ("Dieciséis informes", 16), ("cinco dimensiones", 5)]:
+                 ("los ocho", 8), ("Diecisiete informes", 17), ("cinco dimensiones", 5)]:
     if frase.lower() in rd.lower():
         print("     dice '" + frase + "'")
 
