@@ -65,7 +65,7 @@ que hoy topea la dimensión.
 > **Duda registrada — R5.3.** El README dice que las descripciones *"las puedo pegar directo en la
 > plantilla de RRHH"*. Eso describe el destino de la salida, no un control previo. El requisito
 > exige *qué revisa la persona antes de confiar, en concreto*, y eso no está escrito en ninguna
-> parte. Aplicando `rubrica.md` §0.4 —duda hacia el nivel menor— se resolvió **R5.3 = NO**, con lo
+> parte. Aplicando `rubrica.md` §0.5 —duda hacia el nivel menor— se resolvió **R5.3 = NO**, con lo
 > que D5 queda en nivel 0.
 >
 > Con R5.3 = SI el total sería 21 en lugar de 18. Ambos caen dentro de la banda esperada; la
