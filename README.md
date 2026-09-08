@@ -215,7 +215,7 @@ repositorio. Temperatura 0. Detalle de herramientas, permisos y los dos caminos 
 ```
 README.md         este archivo — README estándar + integrantes
 rubrica.md        la rúbrica ejecutable (v1.1)
-agente/           system_prompt · user_prompt · config · esquema_salida · plantilla_informe · banderas
+agente/           system_prompt · user_prompt · config · esquema_salida · plantilla_informe · banderas · lote
 casos/            excelente/ · flojo/ · tramposo/ — cada uno con su ESPERADO.md
 calibracion.md    protocolo, los diez desacuerdos y su arbitraje, y lo que falta
 corridas/         las salidas reales del agente sobre los tres casos
