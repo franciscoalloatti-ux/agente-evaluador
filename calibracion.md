@@ -204,6 +204,26 @@ Lo que falta, con el protocolo ya definido. **Esto no está hecho y no lo damos 
 Cada integrante puntúa los tres casos con `rubrica.md` **v1.10** en la mano, sin ver `ESPERADO.md`, sin
 ver las corridas del agente y sin hablar con los demás. Se carga acá dimensión por dimensión.
 
+**El procedimiento, paso por paso.** Toma unos 20 minutos por persona:
+
+1. Abrir `rubrica.md` y tenerla al lado. Se puntúa con ella, no de memoria.
+2. Leer **sólo el trabajo**: `casos/excelente/`, `casos/flojo/` y `casos/tramposo/`.
+3. **No abrir `ESPERADO.md` ni `corridas/`.** Ahí está la respuesta. Quien los vea queda contaminado
+   y su columna no sirve — y esto ya pasó: dos corridas de esta misma ronda rozaron `ESPERADO.md` y
+   hubo que descartarlas (ver §5.2 y el commit `3aa5c5d`).
+4. Un nivel de **0 a 4 por dimensión**, quince números en total, en la tabla de acá abajo. Cada uno
+   tiene su columna con su nombre.
+5. **No hablarlo entre nosotros hasta que estén las cuatro columnas.** Una conversación previa
+   convierte cuatro mediciones independientes en una sola repetida.
+6. En el tramposo, anotar además **cuántos de los ocho vectores encontró cada uno leyendo a mano**.
+
+> **Por qué a ciegas, y por qué en paralelo.** El valor de esta ronda no es que coincidamos: es
+> encontrar dónde **no** coincidimos. Un desacuerdo entre dos integrantes en la misma dimensión es
+> un defecto de la rúbrica —la escala no está lo bastante anclada— y arreglarlo mejora todas las
+> correcciones futuras. Por eso nadie debe ajustar su número para que "quede bien": un número
+> acomodado destruye exactamente el dato que estamos buscando.
+
+
 | Caso | Dim | Francisco | Martín | Federico | Verónica | Agente | Desacuerdo |
 |------|-----|:---:|:---:|:---:|:---:|:------:|:----------:|
 | excelente | D1 | | | | 3 | 4 | |
