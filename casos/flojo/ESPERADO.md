@@ -70,7 +70,7 @@ que es exactamente el ancla de nivel 1 de la rúbrica sin siquiera el número.
 > "reviso X antes de confiar"; dice que las descripciones "las puede pegar directo". Un evaluador
 > estricto lee eso como ausencia de control y marca **NO** (D5 cae a nivel 0 y el total a **18**).
 >
-> **La respuesta correcta según `rubrica.md` §0.4 es la más severa: R5.3 = NO**, porque la regla de
+> **La respuesta correcta según `rubrica.md` §0.5 es la más severa: R5.3 = NO**, porque la regla de
 > desempate manda al nivel menor y la evidencia exigida es *"qué revisa la persona antes de confiar
 > en la salida, en concreto"*, que acá no está.
 >

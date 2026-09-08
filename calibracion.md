@@ -124,7 +124,7 @@ Un evaluador que devuelve dos notas para el mismo trabajo no es estricto ni indu
 inservible. Y el problema no era la temperatura: era que la rúbrica no decía qué hacer con la duda.
 
 **Qué cambiamos (tres cosas):**
-1. **Regla de desempate** (`rubrica.md` §0.4): ante duda entre dos niveles, se asigna **el menor**.
+1. **Regla de desempate** (`rubrica.md` §0.5): ante duda entre dos niveles, se asigna **el menor**.
    El sesgo de indecisión queda fijado en una dirección, no librado a la corrida.
 2. **Obligación de registrar**: toda duda resuelta así va textualmente a `dudas[]`. Un evaluador
    que no muestra dónde dudó no es auditable.
@@ -256,6 +256,16 @@ sólo contra su propia entrada) — pero aplicado esta vez a cruzar `DECISIONES.
 Detalle completo, con el argumento exacto de cada corrida y una advertencia de proceso sobre la
 primera (un `grep` amplio rozó accidentalmente `ESPERADO.md`, corregido para la corrida 3), en
 `corridas/2026-09-04_caso-tramposo-estabilidad.md`.
+
+> **RESUELTO el 8/9 — contrato v1.5.** D-12 y D-13 tenían la misma raíz: el cruce que hacía falta
+> no estaba nombrado con la precisión suficiente. La v1.4 agregó **C5** (`DECISIONES.md` contra las
+> fechas de `corridas/`); la v1.5 lo lleva a **granularidad de campo**, que es exactamente donde
+> estaba la variación: *por cada iteración, qué campo o regla concreta dice haber agregado, y en
+> qué corrida aparece ese elemento por primera vez.* Comparar rangos de fechas en general no
+> alcanza — era la diferencia entre bruto 38,75 y 51,25 sobre el mismo repositorio.
+>
+> **Pendiente de verificar:** re-correr las tres corridas de estabilidad del tramposo con el v1.5 y
+> confirmar que el bruto ahora coincide en las tres.
 
 **Excelente — inestable de verdad, y esta vez en la nota final (D-13).** Dos corridas completas,
 resultados distintos: una dio 80 (D1-D5: 4·4·4·1·3, bruto 85, G7 por la proyección anual "unos 3
