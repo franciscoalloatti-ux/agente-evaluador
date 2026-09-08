@@ -304,6 +304,22 @@ costado. Lo encontramos el 8/9 y por eso está acá abajo.
 > problema es de la rúbrica, no de la persona — la escala no está lo bastante anclada. Ese hallazgo
 > vale más que una coincidencia perfecta.
 
+### 5.1 bis · Hallazgos de la ronda, en caliente
+
+Lo que la puntuación a ciegas encontró **de la rúbrica**, mientras se hacía. Se anotan acá y
+**no se corrigen todavía**: cambiar la rúbrica mientras alguien puntúa con ella invalida la ronda.
+Se arreglan cuando estén las cuatro columnas.
+
+**H-4 · R1.3 da por sentado que hay tres corridas.** Dice *"las **tres** corridas lo respetan con el
+mismo esquema"*. El caso flojo tiene **dos**. Tal como está escrito, el requisito no se puede
+verificar: no dice si con dos corridas iguales entre sí se cumple, o si la falta de la tercera ya lo
+tumba. La §0.3 lo resuelve por descarte —la duda va hacia `NO`— pero por descarte, no porque el
+requisito lo diga.
+
+Es un hueco chico y real, y aparecio en el primer trabajo con menos de tres corridas que alguien
+puntúo a mano. **D3 sí lo previó** (`R3.3` exige tres y hay compuerta si faltan); **D1 no**.
+Encontrado el 8/9, en la columna de Francisco.
+
 ### 5.2 Prueba de estabilidad
 
 Tres corridas de cada caso, en sesiones limpias. Se exige **puntaje idéntico**, no "parecido".
