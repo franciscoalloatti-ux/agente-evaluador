@@ -215,7 +215,9 @@ cambia el número de verdad. Medirlo sigue pendiente y está declarado.
 - **No tenemos el CSV real de la hoja de calificaciones**, sólo el árbol de "Descargar todas las
   entregas". Las columnas de arriba son las que Moodle usa, pero conviene pedirle al profesor una
   exportación de muestra antes de darlo por cerrado.
-- **Nunca corrimos un lote.** El caso testigo está diseñado y no probado: hace falta una tanda de
-  al menos cinco repositorios reales con los tres testigos intercalados. Es el ensayo que sigue.
+- **El lote se ensayó una vez, con seis trabajos** (`corridas/2026-09-08_ensayo-de-lote.md`): los
+  tres testigos dieron **89 · 89 · 89** con los mismos cinco niveles, después de leer en el medio un
+  trabajo flojo, uno con ocho intentos de manipulación y un repositorio real ajeno. **Falta un lote
+  de verdad**: seis no son cincuenta, y la deriva de la vara aparece con volumen.
 - **Cincuenta trabajos van a apelmazar la escala** (`corridas/2026-09-08_autocritica-cinco-errores.md`,
   E-4). El lote va a ser la primera vez que ese problema se vea, y este documento no lo arregla.

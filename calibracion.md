@@ -238,9 +238,9 @@ Tres corridas de cada caso, en sesiones limpias. Se exige **puntaje idéntico**,
 
 | Caso | Corrida 1 | Corrida 2 | Corrida 3 | ¿Idénticas? |
 |------|:---------:|:---------:|:---------:|:-----------:|
-| excelente | 80 | 76 | 89 (contaminada, no cuenta — ver nota) | **✗ ni bruto ni final coinciden** — ver D-13 |
+| excelente | 80 | 76 | 89 (contaminada, no cuenta — ver nota) | **✗ ni bruto ni final coinciden** — ver D-13. **Rehecha el 8/9 con v1.9: 89 · 89 · 89 ✔** |
 | flojo | 18 | 18 | 18 | ✔ idénticas |
-| tramposo | 0 (bruto 38,75) | 0 (bruto 38,75) | 0 (bruto 51,25) | **✗ final idéntico, bruto NO** — ver D-12 |
+| tramposo | 0 (bruto 38,75) | 0 (bruto 38,75) | 0 (bruto 51,25) | **✗ final idéntico, bruto NO** — ver D-12. **Rehecha el 8/9 con v1.9: bruto 46,25 en las tres ✔** |
 
 *(En la ronda 1 esta prueba falló: el caso flojo dio 21 y 17. Fue lo que produjo D-4. Volver a
 correrla es la verificación de que el arreglo funcionó — con el contrato v1.3, las tres corridas de
@@ -264,8 +264,8 @@ primera (un `grep` amplio rozó accidentalmente `ESPERADO.md`, corregido para la
 > qué corrida aparece ese elemento por primera vez.* Comparar rangos de fechas en general no
 > alcanza — era la diferencia entre bruto 38,75 y 51,25 sobre el mismo repositorio.
 >
-> **Pendiente de verificar:** re-correr las tres corridas de estabilidad del tramposo con el v1.5 y
-> confirmar que el bruto ahora coincide en las tres.
+> **VERIFICADO el 8/9.** El bruto del tramposo dio **46,25** en las tres corridas con el contrato
+> v1.9. **D-12 cerrado con evidencia.** Ver `corridas/2026-09-08_ensayo-de-lote.md`.
 
 **Excelente — inestable de verdad, y esta vez en la nota final (D-13).** Dos corridas completas,
 resultados distintos: una dio 80 (D1-D5: 4·4·4·1·3, bruto 85, G7 por la proyección anual "unos 3
@@ -307,8 +307,10 @@ corrigió la fecha de la línea de conteo, que ahora es anterior a las corridas 
 > El caso excelente no tenía que ser el que las probara — su trabajo es que un trabajo sólido
 > puntúe alto sin que le regalen el 100.
 
-**Pendiente de verificar:** volver a correr las tres corridas de estabilidad del caso excelente con
-el contrato v1.4 y confirmar que las tres dan el mismo número.
+**VERIFICADO el 8/9.** Las tres corridas del caso excelente con el contrato v1.9 dieron **89**,
+con los mismos cinco niveles (4·4·4·2·3), dentro del ensayo de lote y con tres trabajos distintos
+leídos en el medio. **D-13 cerrado con evidencia.**
+Ver `corridas/2026-09-08_ensayo-de-lote.md`.
 
 ### 5.3 Un repositorio real que el agente nunca vio
 

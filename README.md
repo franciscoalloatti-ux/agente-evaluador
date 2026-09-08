@@ -81,7 +81,7 @@ El contrato completo está en `agente/`. Las instrucciones principales, en orden
 
 - **Distingue los tres casos, y en el orden correcto:**
 
-  | Caso | Esperado | Agente v1.2 | Bruto | Estado |
+  | Caso | Esperado | Agente v1.9 | Bruto | Estado |
   |------|---------:|------------:|------:|--------|
   | `casos/excelente/` | 89 (banda 82–92) | **89** | 88,75 | `evaluado` |
   | `casos/flojo/` | 18 (banda 15–30) | **18** | 17,50 | `evaluado` |
@@ -128,13 +128,49 @@ El contrato completo está en `agente/`. Las instrucciones principales, en orden
   `dudas[]`. En el caso flojo hay una duda asentada sobre R5.3 que vale 3 puntos y está a la vista
   para que se pueda discutir.
 
+- **Distingue cuatro situaciones, no una.** `evaluado` · `evaluado_con_reservas` ·
+  `integridad_comprometida` (el trabajo intentó manipular al evaluador: la nota se **suspende**, no
+  se baja) · `fuera_de_alcance` (abre perfecto pero **no es un trabajo final**: sin puntaje, va al
+  profesor) · `no_evaluable`. Un evaluador que produce un número confiable sobre la cosa equivocada
+  es peor que uno que se planta.
+
+- **Corrige de a uno o en lote.** `agente/lote.md` describe el recorrido completo desde la
+  exportación de Moodle hasta la hoja lista para importar, con tres modos de carga —individual,
+  carpeta, formato Moodle— y dos de salida. Su control es el **caso testigo**: se intercala un
+  trabajo de resultado conocido (89) al principio, en el medio y al final de la tanda. Si los tres
+  dan 89, la vara no se movió entre el trabajo 1 y el 50. Es la diferencia entre *estabilidad*
+  (el mismo trabajo dos veces) y *consistencia* (cincuenta trabajos distintos con la misma vara).
+
+- **Corre en cualquier plataforma.** No es un artefacto: son seis archivos de texto en un
+  repositorio público, sin sandbox y sin nada que otro no pueda ver. El protocolo para verificarlo
+  —cada integrante en una plataforma distinta— está en `agente/config.md` §2 bis, **y todavía no se
+  ejecutó**.
+
+- **Avisa cuándo desconfiar de sí mismo.** Con un puntaje extremo (< 40 o > 90) el informe emite
+  una `nota_al_margen` interna que dice **contra qué** releerlo: el caso testigo, no la impresión.
+  *"Da 92 y el testigo da 89, ¿qué tiene de más?"* es una pregunta con respuesta; *"el número me
+  llamó la atención"* es una corazonada.
+
 ## Qué falta o qué falló
 
-- **La ronda 3 de calibración no está hecha.** Faltan las puntuaciones humanas a ciegas de los
-  cuatro integrantes, la prueba de estabilidad de tres corridas, y —la más importante— correr el
-  agente sobre **un repositorio real y ajeno**. Los tres casos los escribimos nosotros sabiendo qué
-  queríamos que encontrara: hasta que no corra sobre algo que no armamos, los números de arriba hay
-  que leerlos con esa reserva puesta. Protocolo y tablas vacías en `calibracion.md` §5.
+- **La puntuación humana a ciegas está a un cuarto.** La consigna pide *"qué notas puso el agente,
+  qué notas hubieran puesto ustedes, dónde no coincidían"*, y en `calibracion.md` §5.1 hay **una
+  sola columna cargada** —la de Verónica, y sólo del caso excelente—. Faltan tres personas por tres
+  casos. Es el incumplimiento más directo que tiene hoy este repositorio y no lo puede resolver una
+  persona sola.
+
+- **El lote se probó con seis trabajos, no con cincuenta.** El caso testigo funcionó —89 · 89 · 89
+  con tres trabajos distintos leídos en el medio— pero la deriva de la vara aparece con volumen, y
+  con cincuenta aparece además el problema de discriminación anotado como E-4. Y nunca procesamos
+  el árbol de Moodle de punta a punta: el formato está verificado, el recorrido completo no.
+
+- **La prueba de portabilidad no se ejecutó.** Afirmamos que el contrato corre en cualquier modelo;
+  el profesor pidió explícitamente testearlo con otros del grupo. Está el protocolo, no la
+  evidencia.
+
+- **Los tres casos son nuestros.** Los escribimos sabiendo qué queríamos que el agente encontrara,
+  lo que infla cualquier medición de acierto. Lo compensamos parcialmente corriéndolo sobre cuatro
+  repositorios reales y ajenos (`corridas/`), donde perdimos uno contra el criterio del profesor.
 
 - **El cuadro de costos de `agente/config.md` §4 está sin números.** Tenemos los tokens medidos
   (≈16.500 el contrato, ≈3.500 la salida); faltan los precios con fecha de consulta. Publicar un
@@ -214,7 +250,7 @@ repositorio. Temperatura 0. Detalle de herramientas, permisos y los dos caminos 
 
 ```
 README.md         este archivo — README estándar + integrantes
-rubrica.md        la rúbrica ejecutable (v1.1)
+rubrica.md        la rúbrica ejecutable (v1.9)
 agente/           system_prompt · user_prompt · config · esquema_salida · plantilla_informe · banderas · lote
 casos/            excelente/ · flojo/ · tramposo/ — cada uno con su ESPERADO.md
 calibracion.md    protocolo, los diez desacuerdos y su arbitraje, y lo que falta
