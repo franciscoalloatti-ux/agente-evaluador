@@ -200,25 +200,31 @@ Medición sobre los tres casos de `casos/` (v1.1 del contrato):
 costo_corrida = (entrada / 1.000.000) x precio_entrada
               + (salida  / 1.000.000) x precio_salida
 ```
-
-**Cuadro a completar con precios verificados el día de la entrega:**
-
-| Modelo | Precio entrada (USD/MTok) | Precio salida (USD/MTok) | Costo por corrida | Fuente y fecha |
-|--------|---------------------------|--------------------------|-------------------|----------------|
-| Gama media (producción) | *a verificar* | *a verificar* | *a calcular* | *a completar* |
-| Frontier (prueba de fuego) | *a verificar* | *a verificar* | *a calcular* | *a completar* |
-| Liviano (descartado, ver §2) | *a verificar* | *a verificar* | *a calcular* | *a completar* |
-
 **Proyección — supuesto de volumen explícito:** una cursada con **50 trabajos finales**, corregidos
 **tres veces cada uno** (prueba de estabilidad de `rubrica.md` §3) = **150 corridas por cursada**.
 
-```
-costo_cursada = 150 x costo_corrida
-```
+**Cuadro completado con precios verificados el 9/9/2026:**
 
-> Este cuadro está deliberadamente sin llenar con números inventados. Publicar un costo que no se
-> puede rehacer es la bandera G7, y la rúbrica que escribimos la penaliza. Se completa con precios
-> consultados, con fecha, antes del 10/9.
+| Modelo | Precio entrada (USD/MTok) | Precio salida (USD/MTok) | Costo por corrida | Fuente y fecha |
+|--------|---------------------------|--------------------------|-------------------|----------------|
+| Gama media (producción) — Claude Sonnet 5 | $2 | $10 | **USD 0,085 – 0,095** (≈0,090) | [Anthropic, precios oficiales](https://platform.claude.com/docs/en/about-claude/pricing) · consultado 9/9/2026 |
+| Frontier (prueba de fuego) — Claude Opus 5 | $5 | $25 | **USD 0,213 – 0,238** (≈0,225) | [Anthropic, precios oficiales](https://platform.claude.com/docs/en/about-claude/pricing) · consultado 9/9/2026 |
+| Liviano (descartado, ver §2) — Claude Haiku 4.5 | $1 | $5 | **USD 0,043 – 0,048** (≈0,045) | [Anthropic, precios oficiales](https://platform.claude.com/docs/en/about-claude/pricing) · consultado 9/9/2026 |
+
+**Costo por cursada (150 corridas), con el modelo de gama media:**
+
+costo_cursada = 150 x 0,090 ≈ USD 13,50 por cursada
+
+
+Con el frontier: 150 x 0,225 ≈ USD 33,75 por cursada. Con el liviano: 150 x 0,045 ≈ USD 6,75 por
+cursada — pero descartado por las razones de §2 (no por costo).
+
+**Por qué gama media y no el liviano, en plata:** la diferencia entre gama media y liviano es de
+apenas ≈USD 6,75 por cursada completa (150 corridas). Es un ahorro marginal frente al riesgo de
+perder precisión en la puntuación — no justifica bajar de modelo.
+
+> Nota: estos números no incluyen el ahorro por caché de prompt del contrato repetido (ver más
+> abajo, "Palanca de ahorro identificada") — son el costo sin optimizar, el peor caso.
 
 **Palanca de ahorro identificada:** el contrato (16.500 tokens) se repite idéntico en las 150
 corridas. Con caché de prompt, esos tokens se cobran una vez por ventana en lugar de 150 veces —
