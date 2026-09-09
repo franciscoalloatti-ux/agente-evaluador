@@ -11,21 +11,6 @@
 | Federico Böfer | federicobofer | Casos de prueba: excelente, flojo y tramposo |
 | Verónica Pugliese | Veropugliese | Calibración: puntuación a ciegas, estabilidad, arbitraje |
 
-### Nota sobre la autoría en el `git log`
-
-**Diez de los commits figuran a nombre de `Claude <noreply@anthropic.com>`. Son de Verónica
-Pugliese.** Trabajó a través de la integración de Claude en GitHub, que firma los commits con la
-identidad de la herramienta y no con la de la persona que la dirige.
-
-Es todo el trabajo de la ronda 3 de calibración: la verificación del séptimo vector, la puntuación
-a ciegas, las tres corridas sobre repositorios reales de compañeros y la prueba de estabilidad que
-produjo los hallazgos **D-12** y **D-13**. Queda probado por la rama `claude/calibracion-ronda-3-czu3i9`
-y el **PR #1**, que sí llevan su usuario.
-
-**No reescribimos la historia para corregirlo.** Un `rebase` con cambio de autor haría que el `git
-log` dijera algo que no pasó, y es exactamente lo que penalizamos con la bandera G6 en los trabajos
-que corregimos. Preferimos dejar el rastro como fue y explicarlo acá.
-
 ---
 
 ## Qué construí
