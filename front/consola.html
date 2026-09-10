@@ -444,7 +444,7 @@ function pintarContrato(){
     'distintas no es defendible. Revisá cuál quedó atrás antes de corregir.</div>';
   $("#listaContrato").innerHTML=html;
   var c=$("#chipContrato");
-  c.textContent=contratoCompleto()?"contrato v"+vs[0]:"contrato incompleto";
+  c.textContent=contratoCompleto()?"contrato v"+vs[0]:"falta elegir la rúbrica";
   c.className="chip "+(contratoCompleto()&&vs.length===1?"on":"off");
 }
 
@@ -774,15 +774,18 @@ function pintarCentro(){
         '<div class="muted" style="margin-top:2px">'+detalle+'</div></div></div>';
     };
     $("#centro").innerHTML='<div class="vacio"><div class="drop" style="text-align:left">'+
-      '<h4 style="text-align:center">Está vacía porque todavía no cargaste nada</h4>'+
-      '<p style="text-align:center;margin:0 0 4px">La consola no trae la rúbrica adentro: la carga. '+
-      'Son dos pasos.</p>'+
-      paso(1, falta.length===0, "Cargar el contrato",
+      '<h4 style="text-align:center">Falta un paso para empezar a corregir</h4>'+
+      '<p style="text-align:center;margin:0 0 4px">La consola no trae la rúbrica adentro: la carga, '+
+      'para que el criterio viva en un solo lado.</p>'+
+      paso(1, falta.length===0, "Elegí los cuatro archivos de la rúbrica",
         falta.length===0
-          ? "Los cuatro archivos están cargados."
-          : "Faltan <span class=\'mono\'>"+falta.map(esc).join("</span>, <span class=\'mono\'>")+
-            "</span>. Están en la carpeta <span class=\'mono\'>agente/</span> del repositorio, "+
-            "salvo <span class=\'mono\'>rubrica.md</span> que está en la raíz.")+
+          ? "Los cuatro están cargados."
+          : "Son los que ustedes escribieron: <span class='mono'>system_prompt.md</span>, "+
+            "<span class='mono'>banderas.md</span> y <span class='mono'>esquema_salida.json</span> "+
+            "en la carpeta <span class='mono'>agente/</span>, y <span class='mono'>rubrica.md</span> "+
+            "en la raíz.<br><br><strong>Un navegador no puede leer tu disco solo</strong>, así que hay "+
+            "que señalárselos una vez. Es la otra cara de que nada salga de tu máquina: nada entra "+
+            "sin que vos lo elijas.")+
       paso(2, TRABAJOS.length>0, "Cargar las entregas",
         TRABAJOS.length>0
           ? TRABAJOS.length+" cargadas."
