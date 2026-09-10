@@ -30,7 +30,7 @@ Quien ya tenga el repositorio clonado, sólo abre el archivo: ya tiene todo lo d
 
 **No hace falta ponerla en internet.** Podríamos publicarla como página de GitHub y tendría un link,
 pero no ahorraría un paso: los cuatro archivos del contrato hay que elegirlos desde la máquina de
-todos modos, porque la consola no descarga nada — no hace una sola llamada de red. El `.zip` del
+todos modos si la abrís como archivo suelto. El `.zip` del
 repositorio resuelve las dos cosas juntas.
 
 ---
@@ -200,6 +200,8 @@ uno saboteado en seis lugares. Los seis los encuentra.
 
 ## Nada sale de tu máquina
 
-No hay una sola llamada de red en todo el archivo. Los archivos —incluidos los `.zip`— se abren en
+**No le manda nada a nadie**: no hay servidor propio, ni cuenta, ni telemetría. Lo único que lee de afuera del navegador son los cuatro archivos del contrato, y sólo cuando la abrís **servida desde tu propia carpeta**: los toma de ahí en vez de hacerte elegirlos. Abierta como archivo suelto el navegador no se lo permite, y los elegíis a mano una vez.
+
+Los archivos —incluidos los `.zip`— se abren en
 el navegador, los resultados se arman ahí y el `.csv` se genera ahí. Lo corregido se guarda en este
 navegador y en ningún otro lado. La consola nunca ve una credencial porque nunca necesita ninguna.

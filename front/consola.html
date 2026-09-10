@@ -243,6 +243,7 @@
      pantalla no queda vieja &mdash; y no hay dos versiones del criterio dando vueltas.</p>
   <div class="card">
     <div class="row">
+      <button class="act" id="btnAuto" onclick="contratoDeLaCarpeta()" style="display:none">Cargar desde la carpeta</button>
       <input type="file" id="fContrato" multiple accept=".md,.json">
       <span class="muted">Están en dos carpetas, así que van en dos tandas — la segunda se suma a la
         primera: los tres de <code>agente/</code> (con Ctrl para elegirlos juntos), y después
@@ -328,7 +329,7 @@ https://github.com/otro/repo"></textarea>
     el profesor señaló como problema.</div>
   <div class="card"><strong>No es un artefacto.</strong> Es un archivo HTML suelto: doble click, sin
     instalar, sin cuenta, sin servidor y sin conexión. Cualquiera lee su código entero.</div>
-  <div class="card"><strong>Nada sale de tu máquina.</strong> No hay una sola llamada de red. Los
+  <div class="card"><strong>Nada sale de tu máquina.</strong> No le manda nada a nadie: no hay servidor propio, ni cuenta, ni telemetría. Lo único que lee de afuera del navegador son los cuatro archivos del contrato, y sólo cuando la abrís servida <em>desde tu propia carpeta</em>: los toma de ahí para no hacerte elegirlos. Como archivo suelto no puede, y los elegíis vos. Los
     archivos &mdash;incluidos los <code>.zip</code>&mdash; se abren en el navegador y el
     <code>.csv</code> se arma ahí. La consola nunca ve una credencial porque nunca necesita ninguna.
     Lo corregido queda guardado en este navegador.</div>
@@ -418,6 +419,46 @@ $("#fContrato").onchange=async function(e){
   }
   guardar(); pintarContrato(); pintarCentro();
 };
+/* ---------------------------------------------- contrato, sin elegir nada
+   Si la consola se abre servida desde la carpeta del repositorio, los cuatro
+   archivos están al lado: los lee de ahí y no hay que elegir nada.
+   Abierta como archivo suelto (file://) el navegador no lo permite, y ahí sí
+   hay que señalárselos una vez.
+   El criterio sigue viviendo en un solo lado: los archivos del repositorio.
+   No hay rúbrica embebida acá adentro, y no se consulta nada de afuera. */
+var SERVIDA = location.protocol === "http:" || location.protocol === "https:";
+var RUTAS = { "system_prompt.md":"../agente/system_prompt.md",
+              "banderas.md":"../agente/banderas.md",
+              "esquema_salida.json":"../agente/esquema_salida.json",
+              "rubrica.md":"../rubrica.md" };
+
+async function contratoDeLaCarpeta(silencioso){
+  if(!SERVIDA){
+    if(!silencioso) alert("Esto funciona cuando la consola se abre servida desde la carpeta del "+
+      "repositorio. Abierta como archivo suelto, el navegador no la deja leer los archivos de al "+
+      "lado — hay que elegirlos a mano, una sola vez.");
+    return false;
+  }
+  var traidos = 0, fallo = null;
+  for(var nombre in RUTAS){
+    try{
+      var r = await fetch(RUTAS[nombre], {cache:"no-store"});
+      if(!r.ok) throw new Error("HTTP " + r.status);
+      CONTRATO[nombre] = await r.text(); traidos++;
+    }catch(e){ fallo = nombre + ": " + e.message; }
+  }
+  if(CONTRATO["esquema_salida.json"]){
+    try{ ESQUEMA = JSON.parse(CONTRATO["esquema_salida.json"]); }catch(e){ ESQUEMA = null; }
+  }
+  guardar(); pintarContrato(); pintarCentro();
+  if(!silencioso){
+    alert(traidos === 4
+      ? "Contrato cargado desde la carpeta del repositorio. No hay que elegir nada."
+      : "Traje " + traidos + " de 4. Lo que falló: " + fallo);
+  }
+  return traidos === 4;
+}
+
 function contratoCompleto(){ return REQUERIDOS.every(function(r){ return CONTRATO[r]; }); }
 function versionDe(t){
   var m=t.match(/Versi[oó]n\s+(\d+\.\d+)/i)||t.match(/"version"\s*:\s*"([\d.]+)"/);
@@ -1319,6 +1360,10 @@ function verRapida(){
 /* -------------------------------------------------------------------- init */
 function todo(){ pintarLista(); pintarCentro(); pintarDerecha(); pintarContrato(); pintarHoja(); }
 restaurar(); todo();
+if(SERVIDA){
+  var b_=$("#btnAuto"); if(b_) b_.style.display="";
+  if(!contratoCompleto()) contratoDeLaCarpeta(true);   // silencioso: no molesta si no puede
+}
 </script>
 </body>
 </html>

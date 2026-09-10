@@ -30,6 +30,10 @@ const g = {
   localStorage:{ getItem:k=>k in memoria?memoria[k]:null, setItem:(k,v)=>{memoria[k]=v;},
                  removeItem:k=>{delete memoria[k];} },
   alert:()=>{}, confirm:()=>true,
+  // la consola se comporta distinto servida que como archivo suelto; el banco prueba
+  // el camino de archivo suelto, que es el que no puede leer nada de al lado
+  location:{ protocol:"file:", href:"file:///consola.html" },
+  fetch:async()=>{ throw new Error("sin red en el banco de pruebas"); },
   navigator:{ clipboard:{ writeText:async()=>{} } },
   URL, Blob, Response, DecompressionStream, TextDecoder, TextEncoder, console,
 };
