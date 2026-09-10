@@ -1071,12 +1071,33 @@ function pintarDerecha(){
        '<span id="msgDev" class="muted"></span></div>':"")+'</div>'+
     '<div class="campo"><div class="lbl"><span>Estado del trabajo</span></div>'+
     '<div class="estados">'+ests+'</div></div>'+
-    (t.sinIdentidad?'<div class="card warn" style="margin-top:16px"><strong>Sin alumno atado.</strong> '+
-      'Esta entrega llegó sin nombre reconocible. Se corrige igual, pero la fila de Moodle no sale '+
-      'sola: la ata una persona.</div>':"")+
+    '<div class="campo"><div class="lbl"><span>De quién es esta entrega</span>'+
+      (t.sinIdentidad?'<span class="warnc">sin atar</span>':'')+'</div>'+
+      '<input type="text" id="edNombre" placeholder="Nombre y apellido del alumno" value="'+
+        esc(t.nombre)+'" style="margin-bottom:5px">'+
+      '<input type="text" id="edIdent" placeholder="Identificador de Moodle (opcional)" value="'+
+        esc(t.identificador||"")+'">'+
+      '<div class="row"><button class="act sec mini" onclick="atarAlumno()">Guardar</button>'+
+      '<span id="msgAtar" class="muted"></span></div>'+
+      (t.sinIdentidad?'<div class="muted">Llegó sin nombre reconocible — en el modo <span class="mono">'+
+        '.zip</span> el único vínculo es el nombre del archivo. Escribilo acá y la fila sale bien en la '+
+        'hoja de calificaciones. <strong>No se adivina de quién es un trabajo.</strong></div>':"")+
+      '</div>'+
     '</div>';
 }
 function marcar(e){ var t=trabajo(); if(!t) return; t.estado=e; guardar(); todo(); }
+
+function atarAlumno(){
+  /* La consola dice que la fila la ata una persona; esto es donde la persona la ata. */
+  var t=trabajo(); if(!t) return;
+  var n=($("#edNombre")||{}).value, i=($("#edIdent")||{}).value;
+  n=String(n||"").trim(); i=String(i||"").trim();
+  if(!n){ alert("El nombre no puede quedar vacío: es lo que identifica la fila en la hoja."); return; }
+  t.nombre=n; t.identificador=i||null;
+  t.sinIdentidad=false;                    // lo ato una persona, que es lo que pedía
+  guardar(); todo();
+  var m=$("#msgAtar"); if(m){ m.textContent="guardado"; setTimeout(function(){m.textContent="";},2500); }
+}
 function copiarDev(){
   var t=trabajo(); if(!t||!t.informe) return;
   copiarTexto(cortoDe(t.informe), "#msgDev", "copiado");
