@@ -480,8 +480,20 @@ async function evaluarAca(){
   if(!contratoCompleto()){ alert("Falta el contrato."); return; }
   var b = $("#btnEval"), m = $("#msgEval");
   if(b){ b.disabled = true; b.textContent = "corriendo…"; }
-  if(m) m.textContent = "puede tardar un minuto: el contrato son 95.000 caracteres";
   try{
+    // Si la entrega es un link, el contenido tiene que viajar en el pedido: el modelo
+    // detras de la API no navega. El relay lo baja.
+    if(t.url && !t.zip){
+      if(m) m.textContent = "bajando el repositorio…";
+      var rr = await fetch("/api/repo", {method:"POST",
+        headers:{"content-type":"application/json"}, body: JSON.stringify({url: t.url})});
+      var dd = await rr.json();
+      if(!rr.ok) throw new Error(dd.error || ("no pude bajar el repositorio (HTTP "+rr.status+")"));
+      t.zip = { nombreArchivo: t.url, archivos: [], omitidos: dd.omitidos || [], texto: dd.texto };
+      t.arbolCrudo = dd.arbol; t.nArchivos = dd.archivos;
+      guardar();
+      if(m) m.textContent = dd.archivos + " archivos leídos · evaluando…";
+    } else if(m) m.textContent = "evaluando… puede tardar un minuto";
     var r = await fetch("/api/evaluar", {
       method: "POST",
       headers: {"content-type": "application/json"},
@@ -824,9 +836,10 @@ function armarPrompt(t){
     "ALUMNO: "+t.nombre+(t.identificador?"  ("+t.identificador+")":""),
     "FECHA:  "+new Date().toISOString().slice(0,10)];
   if(t.zip){
-    L.push("ENTREGA: archivo "+t.zip.nombreArchivo+" ("+t.zip.archivos.length+" archivos)","",
+    L.push("ENTREGA: "+t.zip.nombreArchivo+" ("+(t.nArchivos||t.zip.archivos.length)+" archivos)","",
       "ÁRBOL COMPLETO DEL ENTREGABLE:");
-    t.zip.archivos.forEach(function(a){
+    if(t.arbolCrudo) L.push(t.arbolCrudo);
+    else t.zip.archivos.forEach(function(a){
       L.push("  "+a.ruta+"   ("+a.bytes.toLocaleString("es")+" bytes)"); });
     if(t.zip.omitidos.length){
       L.push("","NO PUDE LEER EL CONTENIDO DE:");
