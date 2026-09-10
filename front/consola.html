@@ -864,6 +864,20 @@ function pintarCentro(){
   var t=trabajo();
   if(!t){
     var falta = REQUERIDOS.filter(function(r){ return !CONTRATO[r]; });
+
+    // Si ya esta todo cargado, lo que falta no es cargar: es elegir a quien corregir.
+    // Decir "falta un paso" con los dos pasos hechos es mentirle al que mira.
+    if(!falta.length && TRABAJOS.length){
+      $("#centro").innerHTML='<div class="vacio"><div style="max-width:420px">'+
+        '<div style="font-size:34px;margin-bottom:10px">←</div>'+
+        '<h4 style="color:var(--ink);font-size:16px;margin:0 0 8px;font-weight:600">'+
+        'Elegí a quién corregir</h4>'+
+        '<p style="margin:0">Está todo listo: el contrato cargado y '+TRABAJOS.length+
+        (TRABAJOS.length===1?' entrega' : ' entregas')+' en la lista de la izquierda. '+
+        'Hacé click en una y aparece acá.</p></div></div>';
+      return;
+    }
+
     var paso = function(n, hecho, titulo, detalle){
       return '<div style="display:flex;gap:11px;align-items:flex-start;text-align:left;margin:14px 0">'+
         '<div style="width:23px;height:23px;border-radius:99px;flex:none;display:grid;place-items:center;'+
