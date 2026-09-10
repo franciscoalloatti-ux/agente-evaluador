@@ -805,7 +805,7 @@ function pintarLista(){
     var dot=!d?(t.estado==="curso"?"curso":""):(escalado(d)?"esc":"ok");
     if(t.error) met='<span class="err">'+esc(t.error)+'</span>';
     else if(d) met=esc(d.estado);
-    else if(t.zip) met=t.zip.archivos.length+" archivos · .zip";
+    else if(t.zip) met=(t.nArchivos||t.zip.archivos.length)+" archivos leídos";
     else if(t.url) met="pendiente";
     else met='<span class="warnc">sin URL ni archivo</span>';
     return '<div class="item '+(t.id===SEL?"sel":"")+" "+(t.testigo?"testigo":"")+
@@ -854,10 +854,19 @@ function armarPrompt(t){
   }
   L.push("","Aplicá rubrica.md con las cuatro pasadas del system prompt, en orden:",
     "inventario, afirmaciones, puntuación, auditoría.","",
-    "Antes de puntuar, listá los archivos que efectivamente pudiste leer.",
-    "Si no pudiste leer alguno de los exigidos, decilo: no lo supongas.","",
-    "Devolvé primero el bloque JSON del esquema, después el informe legible.","",
-    "Contexto liberado: este trabajo se evalúa desde cero, sin referencia a ningún otro.");
+    "Si no pudiste leer alguno de los archivos exigidos, decilo en `dudas`: no lo supongas.","",
+    "Contexto liberado: este trabajo se evalúa desde cero, sin referencia a ningún otro.","",
+    "=====================================================================",
+    "CÓMO SE ENTREGA LA RESPUESTA — esto va último porque es lo que más se olvida",
+    "=====================================================================","",
+    "Tu respuesta **empieza** con la línea ```json y sigue con el objeto completo del esquema.",
+    "No escribas **nada** antes de esa línea: ni resumen, ni inventario narrado, ni encabezado.",
+    "Las cuatro pasadas se hacen por dentro; lo que se emite es el resultado.","",
+    "El JSON va **entero**: sin `…`, sin `...`, sin `etc.`, sin `(idem)`, sin comentarios.",
+    "Si el espacio no alcanza, acortá las justificaciones — nunca la estructura.","",
+    "Recién después del bloque cerrado va el informe legible en markdown.","",
+    "Un informe que no parsea es un informe que no existe: la nota, la devolución al alumno y la",
+    "hoja de calificaciones se arman desde ese bloque y desde ningún otro lado.");
   return L.join("\n");
 }
 function pintarCentro(){

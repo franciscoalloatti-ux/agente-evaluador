@@ -5,33 +5,73 @@ cuenta, no necesita servidor ni conexión, y no hay paso de compilación.
 
 ---
 
-## Cómo la abre alguien del grupo
+## Cómo lo corre cada uno
 
-**Hacer click en `consola.html` desde GitHub no la abre.** GitHub sirve los `.html` como texto
-plano —a propósito, para que nadie ejecute código alojado en un repositorio ajeno—, así que lo que
-se ve es el código fuente. No está rota: no es una página web, es un archivo.
+Hay **dos modos**, y el primero no necesita nada.
 
-Y bajar sólo ese archivo tampoco alcanza, porque la consola **no trae la rúbrica adentro: la carga**,
-y esos cuatro archivos están en el repositorio. Así que el camino corto es traerse todo de una:
+### Modo 1 · Copiar y pegar — sin instalar, sin credencial, sin costo
 
-1. En el repositorio: botón verde **Code** → **Download ZIP**.
-2. Descomprimir.
-3. Doble click en `front/consola.html`. Se abre en el navegador, sin instalar nada.
-4. Pestaña **Cargar** → elegir `agente/system_prompt.md`, `agente/banderas.md`,
-   `agente/esquema_salida.json` y `rubrica.md`. El indicador de arriba pasa a verde.
+1. En el repositorio: **Code → Download ZIP**, y descomprimir.
+2. Doble click en `front/consola.html`.
+3. Pestaña **Cargar** → elegir los cuatro archivos del contrato: los tres de `agente/` y
+   `rubrica.md`, que está en la raíz.
+4. Cargar las entregas, elegir una, **Copiar el prompt**, correrlo en el modelo que uses, y volver
+   con el JSON a la pestaña **Respuesta**.
 
-Quien ya tenga el repositorio clonado, sólo abre el archivo: ya tiene todo lo demás.
+Es el que anda en cualquier máquina y el que no puede fallar en vivo.
 
-> **Chrome o Edge.** Firefox no permite elegir una carpeta entera, que es como entra la exportación
-> del campus. Todo lo demás funciona igual.
+### Modo 2 · Que la consola corra el evaluador sola
+
+Necesita **una API key de Anthropic** —que no es la cuenta de Claude: se saca en
+`console.anthropic.com` y se paga por uso— y Python, que Windows suele traer.
+
+1. Guardar la key en un archivo llamado **`.anthropic-key`**, en tu carpeta personal
+   (`C:\Users\TUNOMBRE\.anthropic-key`). Sólo la key adentro, sin comillas ni espacios.
+   *(Si lo guardás desde el Bloc de notas, poné **Tipo: Todos los archivos**, o te agrega `.txt`.
+   El relay igual acepta las dos formas, porque esto ya nos hizo perder una vuelta.)*
+2. Abrir una terminal (`cmd`) y correr:
+
+   ```
+   python "RUTA\DEL\REPO\front\relay.py"
+   ```
+
+3. Tiene que imprimir `Evaluar: si, hay credencial` con el largo y el prefijo de la key —nunca la
+   key entera—. Si dice que no la encuentra, el archivo está en otro lado o con otro nombre.
+4. Abrir **http://localhost:8731/front/consola.html**. El contrato se carga solo, y aparece un
+   botón **Evaluar acá** en la pestaña *Prompt*.
+
+Cada uno levanta el suyo: **`localhost` es tu propia máquina**, así que nadie depende de que otro
+tenga la computadora prendida. Y por eso mismo, no hay un servidor común donde algo pueda filtrarse.
+
+> **La key nunca entra al navegador.** Vive en el proceso local, se lee de la variable de entorno o
+> de ese archivo, y el archivo está **fuera del repositorio** a propósito: así no se puede subir por
+> accidente. Es la bandera **G8** que esta misma rúbrica penaliza, aplicada a nosotros.
 >
-> Y no la abras dentro de otra aplicación —un visor, una vista previa, un panel—: ahí se ve la
-> página pero los botones de elegir archivo no abren nada. Doble click desde la carpeta.
+> Sin credencial el relay funciona igual: sirve los archivos, avisa que no puede evaluar, y el
+> modo 1 sigue intacto.
 
-**No hace falta ponerla en internet.** Podríamos publicarla como página de GitHub y tendría un link,
-pero no ahorraría un paso: los cuatro archivos del contrato hay que elegirlos desde la máquina de
-todos modos si la abrís como archivo suelto. El `.zip` del
-repositorio resuelve las dos cosas juntas.
+### Qué cuesta el modo 2
+
+Medido sobre una corrida real del 10/9, con Sonnet 5:
+
+| | |
+|---|---|
+| Entrada | ~61.000 tokens (el contrato completo más el trabajo) |
+| Salida | ~12.000 tokens |
+| **Por trabajo** | **≈ USD 0,25** |
+| Los 50 de la cursada | **≈ USD 12** |
+
+Un trabajo con muchos archivos cuesta más, porque su contenido viaja en el pedido.
+
+### Dos cosas que el relay hace y conviene saber
+
+- **Baja el repositorio de una entrega que llegó como link.** El modelo detrás de la API no navega:
+  si la entrega es una URL, el contenido tiene que viajar en el pedido. El relay lo trae, arma el
+  árbol completo y **declara aparte lo que no pudo leer** —binarios, lo que pasó el tope—, que es la
+  misma regla que el contrato le exige al evaluador en la pasada 1.
+- **Apaga el razonamiento extendido.** No es una optimización: con él prendido el modelo gastaba el
+  presupuesto de salida deliberando y cortaba el informe a la mitad. Y deliberar distinto en cada
+  corrida es exactamente lo que `rubrica.md` §3 prohíbe.
 
 ---
 
