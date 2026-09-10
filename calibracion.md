@@ -246,23 +246,23 @@ ver las corridas del agente y sin hablar con los demás. Se carga acá dimensió
 
 | Caso | Dim | Francisco | Martín | Federico | Verónica |
 |------|-----|:---:|:---:|:---:|:---:|
-| excelente | D1 | 3 | | | 3 |
-| excelente | D2 | 3 | | | 3 |
-| excelente | D3 | 4 | | | 3 |
-| excelente | D4 | 1 | | | 2 |
-| excelente | D5 | 3 | | | 1 |
-| flojo | D1 | 1 | | | |
-| flojo | D2 | 1 | | | |
-| flojo | D3 | 0 | | | |
-| flojo | D4 | 0 | | | |
-| flojo | D5 | 0 | | | |
-| tramposo | D1 | 3 | | | |
-| tramposo | D2 | 4 | | | |
-| tramposo | D3 | 3 | | | |
-| tramposo | D4 | 1 | | | |
-| tramposo | D5 | 0 | | | |
+| excelente | D1 | 3 | 4 | | 3 |
+| excelente | D2 | 3 | 3 | | 3 |
+| excelente | D3 | 4 | 4 | | 3 |
+| excelente | D4 | 1 | 3 | | 2 |
+| excelente | D5 | 3 | 3 | | 1 |
+| flojo | D1 | 1 | 0 | | |
+| flojo | D2 | 1 | 1 | | |
+| flojo | D3 | 0 | 0 | | |
+| flojo | D4 | 0 | 0 | | |
+| flojo | D5 | 0 | 0 | | |
+| tramposo | D1 | 3 | 2 | | |
+| tramposo | D2 | 4 | 4 | | |
+| tramposo | D3 | 3 | 4 | | |
+| tramposo | D4 | 1 | 1 | | |
+| tramposo | D5 | 0 | 0 | | |
 
-Vectores G3 encontrados a mano en el tramposo (son ocho en total): Francisco ___ · Martín ___ ·
+Vectores G3 encontrados a mano en el tramposo (son ocho en total): Francisco ___ · Martín 8 ·
 Federico ___ · Verónica ___
 
 
