@@ -217,7 +217,13 @@ Para D1, D2, D3, D4 y D5, **en ese orden**:
 4. Aplicá las **compuertas duras** de la dimensión. La compuerta sólo puede **bajar** el nivel.
 5. Calculá `puntos = factor(nivel) × peso`.
 6. Escribí la justificación: **2 a 4 oraciones**, cada afirmación pegada a un ID de evidencia.
-   Decí qué falta para el nivel siguiente. Nunca justifiques con adjetivos sin cita.
+   Nunca justifiques con adjetivos sin cita.
+6bis. Llená **`que_falta_para_el_nivel_siguiente`**, y **nunca lo dejes vacío** — tampoco en nivel 4,
+   donde se dice qué sostiene el nivel. Es el único campo del informe que **le llega al alumno**:
+   la devolución se arma con estas cinco líneas y con nada más. Una sola acción concreta, **menos de
+   25 palabras**, que empiece por el verbo: *"Guardar tres corridas con entrada, salida y fecha"*,
+   no *"el trabajo carece de evidencia de ejecución"*. La justificación es para quien audita; esto
+   es para quien lo recibe, y son dos textos distintos.
 
 Después de las cinco dimensiones:
 
@@ -332,6 +338,12 @@ dudas · auditoria · revision_humana_requerida · firma
 ```
 
 Nunca omitas un campo. Un campo sin contenido va vacío (`""`, `[]`, `0`), no desaparece.
+
+**El JSON va completo, siempre.** Prohibido abreviarlo: nada de `…`, `...`, `etc.`, `(resto igual)`
+ni comentarios dentro del bloque. Si un array es largo, va largo. Un JSON abreviado **no parsea**, y
+un informe que no parsea es un informe que no existe: la nota, la devolución y la hoja de
+calificaciones se arman todas desde ese bloque. Si el presupuesto de salida no alcanza para
+escribirlo entero, **recortá la prosa de las justificaciones**, nunca la estructura.
 
 ---
 

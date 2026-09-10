@@ -172,11 +172,14 @@ const sano = { estado:"evaluado", puntaje_final:44, puntaje_bruto:43.75, nota_al
   cruces_realizados:["C1","C2","C3","C4","C5","C6","C7"],
   inventario:{ evidencia:[{ id:"E1" }] }, banderas:[],
   dimensiones:[
-    { id:"D1", nivel:1, peso:30, puntos:7.5,  requisitos:[{cumple:true,evidencia:ev}] },
-    { id:"D2", nivel:1, peso:25, puntos:6.25, requisitos:[{cumple:true,evidencia:ev}] },
-    { id:"D3", nivel:4, peso:15, puntos:15,   requisitos:Array(4).fill({cumple:true,evidencia:ev}) },
-    { id:"D4", nivel:4, peso:15, puntos:15,   requisitos:Array(4).fill({cumple:true,evidencia:ev}) },
-    { id:"D5", nivel:0, peso:15, puntos:0,    requisitos:[] }]};
+    { id:"D1", nivel:1, peso:30, puntos:7.5,  requisitos:[{cumple:true,evidencia:ev}], qf:1 },
+    { id:"D2", nivel:1, peso:25, puntos:6.25, requisitos:[{cumple:true,evidencia:ev}], qf:1 },
+    { id:"D3", nivel:4, peso:15, puntos:15,   requisitos:Array(4).fill({cumple:true,evidencia:ev}), qf:1 },
+    { id:"D4", nivel:4, peso:15, puntos:15,   requisitos:Array(4).fill({cumple:true,evidencia:ev}), qf:1 },
+    { id:"D5", nivel:0, peso:15, puntos:0,    requisitos:[], qf:1 }]};
+// el campo que le llega al alumno: nunca vacio, ni en nivel 4
+sano.dimensiones.forEach(d => { delete d.qf;
+  d.que_falta_para_el_nivel_siguiente = "Guardar tres corridas con entrada, salida y fecha."; });
 let r = validar(sano);
 check(r.falla.length===0,
   "sobre un informe coherente no inventa problemas" + (r.falla.length ? ": "+r.falla.join(" | ") : ""));
@@ -197,6 +200,11 @@ check(dice("A9"), "A9 · faltan cruces reportados");
 check(dice("A2"), "A2 · cita a evidencia que no está en el inventario");
 check(dice("G3"), "una G3 con estado que no es integridad_comprometida");
 check(dice("nota_al_margen"), "puntaje extremo sin nota al margen");
+
+const sinTexto = JSON.parse(JSON.stringify(sano));
+sinTexto.dimensiones[2].que_falta_para_el_nivel_siguiente = "";
+check(validar(sinTexto).falla.some(f => f.includes("A7") && f.includes("D3")),
+  "A7 · detecta la dimensión que vino sin el texto que le llega al alumno");
 
 /* ---------------------------------------------------- 6 · el comentario */
 console.log("\n6 · el comentario que le llega al alumno");

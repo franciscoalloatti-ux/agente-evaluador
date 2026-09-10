@@ -1092,6 +1092,9 @@ function validar(d){
       if(reqs.some(function(r){ return r.cumple&&!(r.evidencia||[]).length; }))
         f.push("A1 · "+x.id+": requisito en SI sin evidencia citada");
       if(Number(x.nivel)>si) f.push("A4 · "+x.id+": nivel "+x.nivel+" con "+si+" requisitos cumplidos");
+      if(!String(x.que_falta_para_el_nivel_siguiente||"").trim())
+        f.push("A7 · "+x.id+": 'que_falta_para_el_nivel_siguiente' vino vacío. Es el único campo que "+
+               "le llega al alumno: sin él la devolución queda sin contenido");
     });
     if(mal.length) f.push("A5 · puntos mal calculados en "+mal.join(", "));
     else p.push("A5 · nivel × peso cierra en las cinco");
@@ -1123,13 +1126,31 @@ function validar(d){
 }
 function recibirJson(){
   var t=trabajo(); if(!t) return;
-  var txt=$("#txtJson").value.trim();
-  var m=txt.match(/```json\s*([\s\S]*?)```/); if(m) txt=m[1];
-  var d;
-  try{ d=JSON.parse(txt); }
-  catch(e){
-    $("#valid").innerHTML='<div class="card bad"><strong>No es JSON válido.</strong>'+
-      '<div class="mono muted">'+esc(e.message)+'</div></div>';
+  var crudo=$("#txtJson").value.trim();
+  var d=null, comoSalio="";
+  // 1) el bloque marcado como json  2) el objeto mas largo que haya  3) el texto pelado
+  var intentos=[];
+  var m=crudo.match(/```json\s*([\s\S]*?)```/); if(m) intentos.push([m[1],"del bloque json"]);
+  var i0=crudo.indexOf("{"), i1=crudo.lastIndexOf("}");
+  if(i0>=0 && i1>i0) intentos.push([crudo.slice(i0,i1+1),"desde la primera llave hasta la ultima"]);
+  intentos.push([crudo,"el texto tal cual"]);
+  var err=null;
+  for(var k=0;k<intentos.length;k++){
+    try{ d=JSON.parse(intentos[k][0]); comoSalio=intentos[k][1]; break; }
+    catch(e){ if(!err) err=e; }
+  }
+  if(!d){
+    var pos=(String(err.message).match(/position (\d+)/)||[])[1];
+    var cerca = pos ? crudo.slice(Math.max(0,pos-120), Number(pos)+120) : "";
+    var abrevia = /(…|\.\.\.|etc\.)/.test(crudo);
+    $("#valid").innerHTML='<div class="card bad"><strong>El informe no se pudo leer.</strong>'+
+      '<div class="mono muted" style="margin:6px 0">'+esc(err.message)+'</div>'+
+      (abrevia?'<p style="margin:6px 0"><strong>El modelo abrevió el JSON</strong> con puntos '+
+        'suspensivos o «etc.». El contrato lo prohíbe: el bloque tiene que venir entero. '+
+        'Volvé a apretar <em>Evaluar acá</em> — con el mismo trabajo suele salir bien a la segunda.</p>':"")+
+      (cerca?'<div class="muted" style="margin-top:6px">Alrededor del error:</div>'+
+        '<pre class="mono" style="white-space:pre-wrap;color:var(--ink2);margin:4px 0 0">'+
+        esc(cerca)+'</pre>':"")+'</div>';
     return;
   }
   var r=validar(d); t.informe=d; t.estado="corregido"; guardar();

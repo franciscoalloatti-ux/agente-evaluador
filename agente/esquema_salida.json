@@ -172,8 +172,8 @@
           "compuerta_aplicada": { "type": "string", "description": "Vacío si ninguna. Si aplicó, se nombra: 'R1.2 = NO -> D1 <= 2'." },
           "nivel": { "type": "integer", "minimum": 0, "maximum": 4 },
           "puntos": { "type": "number", "minimum": 0, "maximum": 30 },
-          "justificacion": { "type": "string", "maxLength": 800, "description": "2 a 4 oraciones, cada afirmación pegada a un id de evidencia." },
-          "que_falta_para_el_nivel_siguiente": { "type": "string", "maxLength": 400 }
+          "justificacion": { "type": "string", "minLength": 40, "maxLength": 800, "description": "2 a 4 oraciones, cada afirmación pegada a un id de evidencia." },
+          "que_falta_para_el_nivel_siguiente": { "type": "string", "minLength": 15, "maxLength": 400, "description": "NUNCA vacio, ni siquiera en nivel 4. Es lo unico del informe que le llega al alumno: una sola accion concreta, en menos de 25 palabras. En nivel 4 se dice que sostiene el nivel." }
         }
       }
     },

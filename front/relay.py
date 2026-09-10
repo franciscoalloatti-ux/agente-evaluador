@@ -46,8 +46,55 @@ TOPE_TOTAL = 320000
 NL = chr(10)
 
 
+ARCHIVO_KEY = os.path.join(os.path.expanduser("~"), ".anthropic-key")
+
+
+def leer_key():
+    """La credencial, de la variable de entorno o de un archivo en tu carpeta personal.
+
+    El archivo vive FUERA del repositorio a proposito: en la carpeta del usuario. Asi no se
+    puede subir por accidente, que es exactamente la bandera G8 que esta rubrica penaliza.
+    Sigue sin entrar al navegador: la lee este proceso y nadie mas.
+    """
+    k = os.environ.get("ANTHROPIC_API_KEY", "").strip()
+    if k:
+        return k
+    # Windows le agrega .txt cuando se guarda desde el Bloc de notas sin cambiar el tipo,
+    # y eso ya nos costo una vuelta entera. Se aceptan las dos formas.
+    for ruta in (ARCHIVO_KEY, ARCHIVO_KEY + ".txt"):
+        try:
+            with open(ruta, encoding="utf-8") as f:
+                k = f.read().strip().strip('"').strip("'")
+            if k:
+                return k
+        except Exception:
+            pass
+    return ""
+
+
 def hay_key():
-    return bool(os.environ.get("ANTHROPIC_API_KEY", "").strip())
+    return bool(leer_key())
+
+
+def forma_de_la_key():
+    """Describe la credencial SIN revelarla: largo, prefijo y si trae espacios.
+
+    Un 401 puede ser una key vencida o una key bien pegada con un espacio al final. Lo
+    segundo se diagnostica mirando la forma, y la forma no es secreta: el prefijo publico
+    y la cantidad de caracteres no sirven para autenticarse.
+    """
+    k = leer_key()
+    if not k:
+        return {"presente": False}
+    return {
+        "presente": True,
+        "largo": len(k),
+        "largo_sin_espacios": len(k.strip()),
+        "prefijo": k.strip()[:7],
+        "tiene_espacios_alrededor": k != k.strip(),
+        "tiene_comillas": k.strip()[:1] in ("'", chr(34)) or k.strip()[-1:] in ("'", chr(34)),
+        "tiene_saltos": (chr(10) in k) or (chr(13) in k),
+    }
 
 
 def es_texto(ruta):
@@ -115,25 +162,66 @@ def bajar_repo(url):
             "omitidos": omitidos}
 
 
-def evaluar(prompt):
-    """Una llamada al modelo, con los parametros que fija el contrato: temperatura 0."""
-    cuerpo = json.dumps({
-        "model": MODELO,
-        "max_tokens": 16000,
-        "temperature": 0,
-        "messages": [{"role": "user", "content": prompt}],
-    }).encode("utf-8")
-
-    pedido = urllib.request.Request(API, data=cuerpo, method="POST", headers={
+def _llamar(cuerpo):
+    pedido = urllib.request.Request(API, data=json.dumps(cuerpo).encode("utf-8"),
+                                    method="POST", headers={
         "content-type": "application/json",
         "anthropic-version": "2023-06-01",
-        "x-api-key": os.environ["ANTHROPIC_API_KEY"],   # sale de aca y no vuelve a aparecer
+        "x-api-key": leer_key(),                        # sale de aca y no vuelve a aparecer
     })
     with urllib.request.urlopen(pedido, timeout=900) as r:
-        d = json.loads(r.read().decode("utf-8"))
+        return json.loads(r.read().decode("utf-8"))
+
+
+def evaluar(prompt):
+    """Una llamada al modelo.
+
+    El contrato fija temperatura 0 como primera condicion de determinismo (rubrica.md, 3).
+    Los modelos mas nuevos dejaron de aceptar ese parametro: responden 400 diciendo que esta
+    deprecado. Se manda igual, y si lo rechazan se reintenta sin el y se declara en la
+    respuesta. Preferimos que quede registrado que no se pudo fijar, antes que sacarlo en
+    silencio y seguir afirmando temperatura 0 en la firma del informe.
+    """
+    # Razonamiento extendido APAGADO, y es una decision del contrato, no una optimizacion.
+    # Con el prendido, el modelo gasta el presupuesto de salida deliberando y corta el informe
+    # a la mitad: 32.000 tokens de salida para 5.259 caracteres de texto, stop_reason max_tokens.
+    # Ademas, deliberar distinto en cada corrida es exactamente lo que rubrica.md 3 prohibe.
+    base = {"model": MODELO, "max_tokens": int(os.environ.get("MAX_TOKENS", "16000")),
+            "thinking": {"type": "disabled"},
+            "messages": [{"role": "user", "content": prompt}]}
+    temperatura = 0
+    intentos = [dict(base, temperature=0), base, {k: v for k, v in base.items() if k != "thinking"}]
+    d = None
+    ultimo = None
+    for i, cuerpo in enumerate(intentos):
+        try:
+            d = _llamar(cuerpo)
+            if i >= 1:
+                temperatura = None            # el modelo no acepto fijarla
+            break
+        except urllib.error.HTTPError as e:
+            ultimo = (e, e.read().decode("utf-8", "replace"))
+            if e.code != 400:
+                break
+    if d is None:
+        e, detalle = ultimo
+        raise urllib.error.HTTPError(e.url, e.code, detalle, e.headers, None)
     partes = [b.get("text", "") for b in d.get("content", []) if b.get("type") == "text"]
-    return {"texto": "".join(partes),
+    texto = "".join(partes)
+    if not texto.strip():
+        # El modelo respondio sin texto. Pasa cuando se agota max_tokens antes de escribir,
+        # o cuando toda la salida fue de otro tipo de bloque. Hay que decirlo, no devolver
+        # una cadena vacia que aguas abajo parece "JSON invalido".
+        raise ValueError(
+            "el modelo respondio sin texto (stop_reason=%s, bloques=%s, tokens de salida=%s). "
+            "Si stop_reason es max_tokens, el informe no entro en el limite." % (
+                d.get("stop_reason"),
+                [b.get("type") for b in d.get("content", [])],
+                d.get("usage", {}).get("output_tokens")))
+    return {"texto": texto,
             "modelo": d.get("model", MODELO),
+            "temperatura": temperatura,
+            "stop_reason": d.get("stop_reason"),
             "tokens": d.get("usage", {})}
 
 
@@ -154,11 +242,12 @@ class Manejador(http.server.SimpleHTTPRequestHandler):
 
     def _pedido(self):
         largo = int(self.headers.get("content-length", "0"))
-        return json.loads(self.rfile.read(largo).decode("utf-8"))
+        return json.loads(self.rfile.read(largo).decode("utf-8", "replace"))
 
     def do_GET(self):
         if self.path == "/api/estado":
-            return self._json(200, {"relay": True, "puede_evaluar": hay_key(), "modelo": MODELO})
+            return self._json(200, {"relay": True, "puede_evaluar": hay_key(),
+                                    "modelo": MODELO, "key": forma_de_la_key()})
         return super().do_GET()
 
     def do_POST(self):
@@ -173,8 +262,8 @@ class Manejador(http.server.SimpleHTTPRequestHandler):
 
         if not hay_key():
             return self._json(503, {"error":
-                "No hay ANTHROPIC_API_KEY en el entorno de este servidor. Ponela en la terminal "
-                "antes de arrancarlo, o segui por copiar y pegar: la consola funciona igual."})
+                "No encontre la credencial. Poner la key en " + ARCHIVO_KEY + ", o en la "
+                "variable ANTHROPIC_API_KEY antes de arrancar. Sin ella, copiar y pegar funciona igual."})
         try:
             prompt = self._pedido().get("prompt", "")
         except Exception as e:
@@ -198,8 +287,10 @@ class Servidor(socketserver.ThreadingTCPServer):
 if __name__ == "__main__":
     print("Consola:  http://localhost:%d/front/consola.html" % PUERTO)
     print("Modelo:   %s" % MODELO)
-    print("Evaluar:  %s" % ("si, hay key en el entorno" if hay_key()
-                            else "no (sin ANTHROPIC_API_KEY). Copiar y pegar sigue andando."))
+    print("Evaluar:  %s" % ("si, hay credencial" if hay_key()
+                            else "NO. Pegar la key en: " + ARCHIVO_KEY))
+    if hay_key():
+        print("Key:      %d caracteres, empieza con %r" % (len(leer_key()), leer_key()[:7]))
     try:
         Servidor(("127.0.0.1", PUERTO), Manejador).serve_forever()
     except KeyboardInterrupt:
