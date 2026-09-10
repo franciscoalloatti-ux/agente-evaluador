@@ -59,7 +59,7 @@ El contrato completo está en `agente/`. Las instrucciones principales, en orden
 
 ## Qué funciona
 
-- **Corre y devuelve el formato completo.** Diecinueve informes y ensayos guardados en `corridas/`. Los del caso
+- **Corre y devuelve el formato completo.** Veinte informes y ensayos guardados en `corridas/`. Los del caso
   tramposo traen el JSON canónico entero más el informe legible, y conservan **las cuatro
   corridas**: las tres que fallaron (v1.1 y v1.2, dos veces) y la que acertó con el v1.3. Los
   otros dos usan la variante corta, que es la que se muestra en vivo.
