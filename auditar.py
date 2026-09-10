@@ -76,6 +76,7 @@ ESPERADOS = {
  "docs/seguridad.md": "esta dentro de caso-06.zip (el trabajo ajeno), no en este repo",
  "datos/correo_02.json": "idem", "datos/correo_03.json": "idem",
  "proceso/ajuste_citas.md": "idem",
+ "src/main.py": "idem: el codigo de caso-02.zip, citado por la regla de G2",
 }
 GENERICOS = {"system_prompt.md", "user_prompt.md", "DECISIONES.md", "README.md",
              "esquema_salida.json", "rubrica.md", "banderas.md", "config.md",
@@ -231,7 +232,8 @@ if len(dias) < 3:
 # El conteo de corridas quedo viejo tres veces (16 -> 17 -> 19). Que lo controle la maquina.
 NUM = {"cinco":5,"seis":6,"siete":7,"ocho":8,"nueve":9,"diez":10,"once":11,"doce":12,"trece":13,
        "catorce":14,"quince":15,"dieciseis":16,"diecisiete":17,"dieciocho":18,"diecinueve":19,
-       "veinte":20,"veintiuno":21,"veintiun":21,"veintidos":22,"veintidos":22,"veintitres":23,"veintidos":22,"veintitres":23,"veinticuatro":24,"veinticinco":25}
+       "veinte":20,"veintiuno":21,"veintiun":21,"veintidos":22,"veintidos":22,"veintitres":23,"veintidos":22,"veintitres":23,"veinticuatro":24,"veinticinco":25,"veintiseis":26,"veintisiete":27,"veintiocho":28,
+       "veintinueve":29,"treinta":30}
 rd_ = leer("README.md")
 m_ = re.search(r"(\w+) informes y ensayos guardados en `corridas/`", rd_)
 real_ = len(os.listdir("corridas"))
