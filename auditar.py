@@ -223,6 +223,25 @@ if len(dias) < 3:
 
 print()
 print("=" * 72)
+print("I · COMMITS CITADOS EN LOS DOCUMENTOS")
+print("=" * 72)
+citados = set()
+for p_, t in TEXTOS.items():
+    if not p_.endswith(".md"): continue
+    for m in re.findall(r"`([0-9a-f]{7,10})`", t):
+        citados.add((m, p_))
+if not citados:
+    print("  ningún documento cita un commit")
+for h_, donde in sorted(citados):
+    vivo = subprocess.run(["git","merge-base","--is-ancestor",h_,"HEAD"],
+                          capture_output=True).returncode == 0
+    print(("  ok     " if vivo else "  ROTA   ") + h_ + "   " + donde)
+    if not vivo:
+        h("ALTO", "referencia", "el commit " + h_ + " citado en " + donde + " no existe en esta "
+          "historia (¿se reescribió con un force-push?)")
+
+print()
+print("=" * 72)
 print("RESUMEN")
 print("=" * 72)
 if not HALLAZGOS:

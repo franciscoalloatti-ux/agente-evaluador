@@ -215,7 +215,7 @@ ver las corridas del agente y sin hablar con los demás. Se carga acá dimensió
    **de la raíz** (trae la tabla con los puntajes de los tres casos). Los tres publican el
    resultado. Quien los vea queda contaminado
    y su columna no sirve — y esto ya pasó: dos corridas de esta misma ronda rozaron `ESPERADO.md` y
-   hubo que descartarlas (ver §5.2 y el commit `3aa5c5d`).
+   hubo que descartarlas (ver §5.2 y el commit `450e85a`).
 4. Un nivel de **0 a 4 por dimensión**, quince números en total, en la tabla de acá abajo. Cada uno
    tiene su columna con su nombre.
 5. **No hablarlo entre nosotros hasta que estén las cuatro columnas.** Una conversación previa
