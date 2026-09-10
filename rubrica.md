@@ -1,6 +1,6 @@
 # Rúbrica ejecutable — Trabajo final
 
-> **Versión 1.11** · Programación de y con Agentes de IA · MBA UCEMA · 2026 2T
+> **Versión 1.12** · Programación de y con Agentes de IA · MBA UCEMA · 2026 2T
 > Historia de versiones al final. Los cambios entre versiones se justifican en `calibracion.md`.
 
 Esta rúbrica traduce la rúbrica oficial del trabajo final (dimensiones y pesos fijados por la
@@ -38,6 +38,18 @@ de cuántos requisitos verificables (R) están cumplidos, más las compuertas du
 | 2 | Suficiente | 0.50 | 2 de 4 requisitos con evidencia |
 | 1 | Insuficiente | 0.25 | 1 de 4 requisitos con evidencia |
 | 0 | Ausente | 0.00 | 0 requisitos, o la dimensión no está abordada |
+
+> **La cuenta manda en las dos direcciones.** El nivel sale del array de requisitos, no del texto
+> que lo acompaña. Si el nivel es **mayor** que la cuenta de `SI`, está inflado y se corrige. Si es
+> **menor**, sólo puede ser porque una compuerta lo bajó — y entonces **la compuerta se nombra en la
+> justificación, con su texto**. Un nivel más bajo que la cuenta sin compuerta nombrada es un
+> descuento a ojo, y vale lo mismo que un aumento a ojo: nada.
+>
+> Se agregó en la v1.12 después de encontrar el caso al revés: dos informes sobre el mismo
+> repositorio declararon D3 en nivel 1 con **cero** requisitos cumplidos, y la justificación decía
+> *"R3.2 se corrige: es SI"* mientras el campo `cumple` seguía en `false`. El modelo cambió de
+> opinión escribiendo y no volvió a tocar el array. Ver
+> `corridas/2026-09-10_el-nivel-que-salio-de-la-prosa.md`.
 
 ```
 puntos_dimension = factor(nivel) x peso            (2 decimales)
@@ -439,6 +451,7 @@ veces** y verificar puntaje idéntico. Resultado registrado en `calibracion.md`.
 | Versión | Qué cambió | Por qué |
 |---------|-----------|---------|
 | 1.0 | Primera rúbrica ejecutable: 5 dimensiones, escala 0–4, requisitos verificables, regla de evidencia | Punto de partida |
+| 1.12 | **§0.2 · la cuenta manda en las dos direcciones.** Un nivel **por debajo** de la cuenta de `SI` sólo puede venir de una compuerta, y la compuerta **se nombra en la justificación con su texto**. El contrato agrega los pasos 6ter y 6quater; la consola agrega el chequeo **A4 bis** | Revisando los informes guardados de la prueba de estabilidad aparecieron **dos** con D3 en nivel 1 y **cero** requisitos cumplidos. La justificación decía *"R3.2 se corrige: es SI"* y el campo `cumple` seguía en `false`: el modelo cambió de opinión escribiendo y no volvió a tocar el array. El nivel salió de la prosa, no de la cuenta. Ver `corridas/2026-09-10_el-nivel-que-salio-de-la-prosa.md` |
 | 1.11 | **§3 declara que el determinismo es condicional**: la temperatura 0 ya no siempre se puede fijar, y se documenta la dispersión medida (16 · 18 · 25 · 25 · 29 sobre el mismo trabajo), dónde se concentra (D1 y D5) y qué la arregla (anclar esos requisitos, no cambiar de modelo) | Primera prueba de estabilidad corrida contra la API en vez de a mano. Sonnet 5 responde `400 · temperature is deprecated`. La regla seguía escrita y correcta; lo que dejó de existir es la perilla que la hacía cumplible. Ver `corridas/2026-09-10_estabilidad-con-la-api.md` |
 | 1.10 | (a) **Compuerta de objetivo declarado** en D1: sin poder citar qué problema resuelve y para quién, **D1 ≤ 2**; (b) **regla de la vara única**: el puntaje de un trabajo no depende de los otros del lote, y el orden del lote es una vista y no una segunda nota | El cruce de la rúbrica contra los **seis requisitos** del documento del trabajo final encontró que *“objetivo claro”* —el primer elemento del requisito 1— no lo verificaba **ningún** requisito nuestro. La segunda regla cierra por escrito la pregunta de si se puede poner una nota relativa a la calidad del lote: no se puede, porque la consigna dice *“todos son evaluados por la misma vara”*. Ver `corridas/2026-09-08_cobertura-de-la-consigna.md` |
 | 1.9 | Campo **`nota_al_margen`**: cuando el puntaje es extremo (<40 o >90) o el estado no es `evaluado`, el informe lleva una anotación **interna para quien corrige** que dice contra qué releerlo — el caso testigo, no la impresión. Nunca entra en la devolución al alumno | El taller de corrección del profesor marca las notas extremas con una nota al margen: *"releerlo en frío al día siguiente, contra las anclas del lote"*. El umbral ya estaba en `agente/config.md` §5 pero no se emitía en el informe, así que dependía de que alguien mirara la tabla |

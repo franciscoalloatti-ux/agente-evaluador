@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "Informe de evaluación — trabajo final",
   "description": "Salida canónica del agente evaluador. Todos los campos son obligatorios y se emiten siempre en este orden. Un campo sin contenido va vacío, nunca se omite.",
-  "version": "1.11",
+  "version": "1.12",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -30,7 +30,7 @@
   "properties": {
     "version_rubrica": {
       "type": "string",
-      "const": "1.11",
+      "const": "1.12",
       "description": "Versión de rubrica.md aplicada. Fija la trazabilidad del criterio."
     },
     "fecha_evaluacion": {

@@ -206,6 +206,19 @@ sinTexto.dimensiones[2].que_falta_para_el_nivel_siguiente = "";
 check(validar(sinTexto).falla.some(f => f.includes("A7") && f.includes("D3")),
   "A7 · detecta la dimensión que vino sin el texto que le llega al alumno");
 
+// A4 bis: el nivel tambien puede estar por DEBAJO de la cuenta, y eso solo lo puede hacer una compuerta
+const bajado = JSON.parse(JSON.stringify(sano));
+bajado.dimensiones[2].nivel = 2;                       // 4 requisitos en SI, nivel 2, sin explicacion
+bajado.dimensiones[2].puntos = 7.5;
+check(validar(bajado).falla.some(f => f.includes("A4 bis") && f.includes("D3")),
+  "A4 bis · nivel por debajo de la cuenta, sin compuerta nombrada");
+
+const bajadoConRegla = JSON.parse(JSON.stringify(bajado));
+bajadoConRegla.dimensiones[2].justificacion =
+  "Los 4 requisitos en SI darían nivel 4, pero la compuerta de menos de 3 corridas fija D3 <= 2.";
+check(!validar(bajadoConRegla).falla.some(f => f.includes("A4 bis")),
+  "A4 bis · no protesta cuando la compuerta está nombrada");
+
 /* ---------------------------------------------------- 6 · el comentario */
 console.log("\n6 · el comentario que le llega al alumno");
 const corto = cortoDe(informe);

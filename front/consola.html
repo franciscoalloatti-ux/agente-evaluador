@@ -1121,7 +1121,12 @@ function validar(d){
       var si=reqs.filter(function(r){ return r.cumple; }).length;
       if(reqs.some(function(r){ return r.cumple&&!(r.evidencia||[]).length; }))
         f.push("A1 · "+x.id+": requisito en SI sin evidencia citada");
-      if(Number(x.nivel)>si) f.push("A4 · "+x.id+": nivel "+x.nivel+" con "+si+" requisitos cumplidos");
+      if(Number(x.nivel)>si) f.push("A4 · "+x.id+": nivel "+x.nivel+" con "+si+" requisitos cumplidos. "+
+        "El nivel se deriva de la cuenta: si la justificación cambió de opinión sobre un requisito, "+
+        "hay que cambiar el campo 'cumple', no el nivel");
+      if(Number(x.nivel)<si && !/compuerta/i.test(String(x.justificacion||"")))
+        f.push("A4 bis · "+x.id+": nivel "+x.nivel+" con "+si+" requisitos cumplidos, y la justificación "+
+          "no nombra ninguna compuerta. Un nivel por debajo de la cuenta sin regla citada es un descuento a ojo");
       if(!String(x.que_falta_para_el_nivel_siguiente||"").trim())
         f.push("A7 · "+x.id+": 'que_falta_para_el_nivel_siguiente' vino vacío. Es el único campo que "+
                "le llega al alumno: sin él la devolución queda sin contenido");
