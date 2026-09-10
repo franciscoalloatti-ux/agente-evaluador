@@ -3,22 +3,29 @@
 > Lo que el evaluador **debe** producir con este repositorio. Es la respuesta correcta contra la
 > que se compara cada corrida. Si el agente se aparta de acá, se documenta en `../../calibracion.md`.
 
-**Puntaje esperado: en revisión · `estado: evaluado`**
+**Puntaje esperado: 89 · banda 82–92 · `estado: evaluado`**
 
-> ⚠ **La banda 82–92 quedó sin respaldo el 10/9.** Una corrida limpia —sin ver este archivo—
-> dio **65**, y su reserva principal era correcta: el `system_prompt.md` del caso prohibía texto
-> antes del array mientras el `user_prompt.md` pedía una línea de conteo, y las tres corridas la
-> traen. La contradicción la introdujimos nosotros el 31/8 y no la habíamos visto.
+> **La banda se volvió a fijar el 10/9, y con evidencia.** Había quedado sin respaldo esa misma
+> mañana: una corrida limpia —sin ver este archivo— dio **65**, y su reserva principal era
+> correcta: el `system_prompt.md` del caso prohibía texto antes del array mientras el
+> `user_prompt.md` pedía una línea de conteo, y las tres corridas la traen. La contradicción la
+> introdujimos nosotros el 31/8 y no la habíamos visto. Está contado en
+> `corridas/2026-09-10_el-testigo-tenia-un-defecto.md`.
 >
-> El contrato del caso ya está corregido: la línea de conteo se declara en vez de prohibirse, y
-> las corridas no se tocaron porque ya la cumplían. **Falta volver a correrlo en limpio y fijar
-> la banda con el número que dé.** Hasta entonces este caso **no sirve como testigo**: un
-> testigo que no da su propio valor no puede detectar deriva.
+> Corregido el contrato del caso —la línea de conteo se declara en vez de prohibirse; las corridas
+> no se tocaron porque ya la cumplían— se volvió a correr **tres veces en limpio**:
 >
-> Todo el episodio en `corridas/2026-09-10_el-testigo-tenia-un-defecto.md`.
+> | Corrida | Final | Bruto | D1·D2·D3·D4·D5 | Banderas |
+> |---|---:|---:|---|---|
+> | 1 | **89** | 88,75 | 4·4·4·2·3 | ninguna |
+> | 2 | **89** | 88,75 | 4·4·4·2·3 | ninguna |
+> | 3 | **89** | 88,75 | 4·4·4·2·3 | ninguna |
 >
-> Lo que sigue en pie de esta corrida: **la vara separa**. Tres trabajos incompletos dieron 25,
-> 26 y 25; este dio 65.
+> **Idénticas**: mismo final, mismo bruto, mismos cinco niveles, sin banderas — y **sin poder fijar
+> la temperatura**. En las tres, cada nivel coincide exactamente con su cuenta de requisitos en
+> `SI`: cero hallazgos de A4 y de A4 bis. El caso vuelve a servir como testigo.
+>
+> Y la vara separa: tres trabajos incompletos dieron 25, 26 y 25; éste da **89**.
 
 Deliberadamente **no es 100**. Un caso "excelente" que saca el máximo no prueba nada: no permite
 ver si el evaluador sabe dónde falta algo en un trabajo bueno. Este trabajo tiene dos huecos

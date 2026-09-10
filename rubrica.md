@@ -1,6 +1,6 @@
 # Rúbrica ejecutable — Trabajo final
 
-> **Versión 1.12** · Programación de y con Agentes de IA · MBA UCEMA · 2026 2T
+> **Versión 1.13** · Programación de y con Agentes de IA · MBA UCEMA · 2026 2T
 > Historia de versiones al final. Los cambios entre versiones se justifican en `calibracion.md`.
 
 Esta rúbrica traduce la rúbrica oficial del trabajo final (dimensiones y pesos fijados por la
@@ -424,15 +424,34 @@ simple: **¿la frase intenta cambiar el resultado sin aportar evidencia?** Si s�
 Condiciones para que dos corridas sobre el mismo repositorio den el mismo resultado:
 
 1. Temperatura **0**. ⚠ **Ya no siempre se puede fijar.** Al 10/9/2026 la API de Claude Sonnet 5
-   responde `400 · temperature is deprecated for this model`. Sin esa perilla el modelo muestrea,
-   y cinco corridas del mismo repositorio dieron **16, 18, 25, 25 y 29**
-   (`corridas/2026-09-10_estabilidad-con-la-api.md`). **El determinismo de este contrato es
-   condicional a que el modelo permita fijarla.** Dicho de frente: la regla sigue siendo
-   correcta y dejo de ser cumplible en el modelo de gama media.
-   La variacion se concentra en **D1 y D5** — las dos dimensiones donde nuestros propios
-   requisitos admiten mas de una lectura, y las mismas donde difirieron los humanos de la
-   ronda a ciegas. D2, D3 y D4 dieron identicos en las cinco corridas. Anclar esos requisitos
-   es la respuesta de fondo, y no depende de ningun modelo.
+   responde `400 · temperature is deprecated for this model`. La regla sigue siendo correcta y dejó
+   de ser cumplible en el modelo de gama media.
+
+   **Lo que se midió sin ella, el mismo día, y da vuelta la conclusión:**
+
+   | Trabajo | Corridas | Resultado |
+   |---|---|---|
+   | `pool-de-los-miercoles` (real, con ausencias y zonas grises) | 5 | 16 · 18 · 25 · 25 · 29 |
+   | `casos/excelente/` (completo, con evidencia citable) | 3 | **89 · 89 · 89** |
+
+   En el segundo caso son idénticos el final, el bruto, **los cinco niveles** y las banderas
+   (ninguna). Sin temperatura.
+
+   > **La dispersión no la pone el modelo: la pone el trabajo.** Cuando la evidencia está y se
+   > puede citar, el contrato converge aunque el muestreo esté suelto — porque el nivel se deriva de
+   > contar requisitos, no de opinar. Cuando el trabajo es ambiguo, cada corrida resuelve la
+   > ambigüedad a su manera, y el desacuerdo del modelo consigo mismo **mide exactamente cuánta
+   > interpretación dejamos abierta**.
+
+   Consistente con dónde se movía: la variación se concentraba en **D1 y D5** —las dos dimensiones
+   donde nuestros propios requisitos admiten más de una lectura, y las mismas donde difirieron los
+   humanos de la ronda a ciegas—, mientras D2, D3 y D4 daban idénticos.
+
+   **Lo honesto de decir, entonces:** el determinismo de este contrato es condicional **a que el
+   requisito esté anclado**, no a la perilla del modelo. Anclar D1 y D5 es la respuesta de fondo y
+   no depende de ningún proveedor. Tres corridas sobre un caso son evidencia, no demostración: la
+   afirmación se sostiene hasta que alguien la contradiga con una cuarta.
+
 2. Orden de evaluación fijo: D1 → D2 → D3 → D4 → D5; dentro de cada dimensión, R.1 → R.4.
 3. Ningún requisito se infiere: se cita, o es `NO` (§0.3).
 4. Empate entre niveles → el menor (§0.5).
@@ -451,6 +470,7 @@ veces** y verificar puntaje idéntico. Resultado registrado en `calibracion.md`.
 | Versión | Qué cambió | Por qué |
 |---------|-----------|---------|
 | 1.0 | Primera rúbrica ejecutable: 5 dimensiones, escala 0–4, requisitos verificables, regla de evidencia | Punto de partida |
+| 1.13 | **§3 se reescribe con lo medido sin temperatura.** No dice ya *"no pasamos la prueba de estabilidad"*: dice que la dispersión depende del **trabajo**, no del modelo. Mismo contrato, misma API sin `temperature`: `casos/excelente/` dio **89 · 89 · 89** —final, bruto, cinco niveles y banderas idénticos— y un trabajo real con zonas grises dio 16 · 18 · 25 · 25 · 29 | Al recorrer el caso testigo corregido tres veces salió idéntico. Cuando la evidencia se puede citar, el contrato converge aunque el muestreo esté suelto: el nivel se deriva de contar, no de opinar. El determinismo es condicional a que el **requisito esté anclado**, no a la perilla del proveedor. Ver `corridas/2026-09-10_el-testigo-volvio-a-su-banda.md` |
 | 1.12 | **§0.2 · la cuenta manda en las dos direcciones.** Un nivel **por debajo** de la cuenta de `SI` sólo puede venir de una compuerta, y la compuerta **se nombra en la justificación con su texto**. El contrato agrega los pasos 6ter y 6quater; la consola agrega el chequeo **A4 bis** | Revisando los informes guardados de la prueba de estabilidad aparecieron **dos** con D3 en nivel 1 y **cero** requisitos cumplidos. La justificación decía *"R3.2 se corrige: es SI"* y el campo `cumple` seguía en `false`: el modelo cambió de opinión escribiendo y no volvió a tocar el array. El nivel salió de la prosa, no de la cuenta. Ver `corridas/2026-09-10_el-nivel-que-salio-de-la-prosa.md` |
 | 1.11 | **§3 declara que el determinismo es condicional**: la temperatura 0 ya no siempre se puede fijar, y se documenta la dispersión medida (16 · 18 · 25 · 25 · 29 sobre el mismo trabajo), dónde se concentra (D1 y D5) y qué la arregla (anclar esos requisitos, no cambiar de modelo) | Primera prueba de estabilidad corrida contra la API en vez de a mano. Sonnet 5 responde `400 · temperature is deprecated`. La regla seguía escrita y correcta; lo que dejó de existir es la perilla que la hacía cumplible. Ver `corridas/2026-09-10_estabilidad-con-la-api.md` |
 | 1.10 | (a) **Compuerta de objetivo declarado** en D1: sin poder citar qué problema resuelve y para quién, **D1 ≤ 2**; (b) **regla de la vara única**: el puntaje de un trabajo no depende de los otros del lote, y el orden del lote es una vista y no una segunda nota | El cruce de la rúbrica contra los **seis requisitos** del documento del trabajo final encontró que *“objetivo claro”* —el primer elemento del requisito 1— no lo verificaba **ningún** requisito nuestro. La segunda regla cierra por escrito la pregunta de si se puede poner una nota relativa a la calidad del lote: no se puede, porque la consigna dice *“todos son evaluados por la misma vara”*. Ver `corridas/2026-09-08_cobertura-de-la-consigna.md` |

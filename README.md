@@ -59,29 +59,32 @@ El contrato completo está en `agente/`. Las instrucciones principales, en orden
 
 ## Qué funciona
 
-- **Corre y devuelve el formato completo.** Veintitres informes y ensayos guardados en `corridas/`. Los del caso
+- **Corre y devuelve el formato completo.** Veinticuatro informes y ensayos guardados en `corridas/`. Los del caso
   tramposo traen el JSON canónico entero más el informe legible, y conservan **las cuatro
   corridas**: las tres que fallaron (v1.1 y v1.2, dos veces) y la que acertó con el v1.3. Los
   otros dos usan la variante corta, que es la que se muestra en vivo.
 
 - **Distingue los tres casos, y en el orden correcto:**
 
-  | Caso | Esperado | Agente v1.12 | Bruto | Estado |
+  | Caso | Esperado | Agente v1.13 | Bruto | Estado |
   |------|---------:|------------:|------:|--------|
-  | `casos/excelente/` | *en revisión* | **65** | 70,00 | `evaluado_con_reservas` |
+  | `casos/excelente/` | 89 (banda 82–92) | **89** ×3 | 88,75 | `evaluado` |
   | `casos/flojo/` | 18 (banda 15–30) | **18** | 17,50 | `evaluado` |
   | `casos/tramposo/` | nota suspendida | **0** por regla | **46,25** | `integridad_comprometida` |
 
-> **Sobre el caso excelente, el 10/9.** Daba 89 estable, y el 10/9 una corrida limpia —en una
-> sesión que nunca vio su `ESPERADO.md`— dio **65**. Tenía razón: encontró que el `system_prompt`
-> del caso prohibía texto antes del array mientras el `user_prompt` pedía una línea de conteo.
-> **La contradicción la introdujimos nosotros el 31/8 y nunca la vimos**, porque todas las corridas
-> anteriores las hicimos sabiendo qué esperábamos de él. El contrato del caso ya está corregido y
-> falta volver a correrlo para fijar la banda. Hasta entonces **este caso no sirve como testigo**.
-> Ver `corridas/2026-09-10_el-testigo-tenia-un-defecto.md`.
+> **Sobre el caso excelente, el 10/9 — el día entero.** A la mañana una corrida limpia, en una
+> sesión que nunca vio su `ESPERADO.md`, dio **65** en vez de los 89 de siempre. **Tenía razón:**
+> el `system_prompt` del caso prohibía texto antes del array mientras el `user_prompt` pedía una
+> línea de conteo. La contradicción la introdujimos nosotros el 31/8 y nunca la vimos, porque todas
+> las corridas anteriores las hicimos sabiendo qué esperábamos de él.
 >
-> Lo que sí quedó probado en esa corrida: **la vara separa.** Tres trabajos incompletos dieron
-> 25, 26 y 25; este dio 65 — dos veces y media.
+> Corregido el caso, se volvió a correr **tres veces en limpio: 89, 89 y 89** — mismo bruto, mismos
+> cinco niveles, sin banderas, y **sin poder fijar la temperatura**. El testigo vuelve a ser un
+> testigo. Ver `corridas/2026-09-10_el-testigo-tenia-un-defecto.md` y
+> `corridas/2026-09-10_el-testigo-volvio-a-su-banda.md`.
+>
+> Y **la vara separa**: tres trabajos incompletos dieron 25, 26 y 25; éste da 89 — tres veces y
+> media.
 
 - **Detecta al tramposo entero.** El caso tramposo va por su segunda versión, deliberadamente
   difícil: modesto en el tono, con una corrida genuina entre tres, un error aritmético de 2x en vez
@@ -262,7 +265,7 @@ repositorio. Temperatura 0. Detalle de herramientas, permisos y los dos caminos 
 
 ```
 README.md         este archivo — README estándar + integrantes
-rubrica.md        la rúbrica ejecutable (v1.12)
+rubrica.md        la rúbrica ejecutable (v1.13)
 agente/           system_prompt · user_prompt · config · esquema_salida · plantilla_informe · banderas · lote
 casos/            excelente/ · flojo/ · tramposo/ — cada uno con su ESPERADO.md
 calibracion.md    protocolo, los diez desacuerdos y su arbitraje, y lo que falta
