@@ -436,6 +436,20 @@ var RUTAS = { "system_prompt.md":"../agente/system_prompt.md",
               "esquema_salida.json":"../agente/esquema_salida.json",
               "rubrica.md":"../rubrica.md" };
 
+/* Cambiar de contrato en el medio no es un detalle de version: los informes que ya estan en
+   pantalla salieron con otras reglas. Se dice, con los dos numeros y que hacer. */
+function avisoDeVersion(antes, ahora){
+  var corregidos = TRABAJOS.filter(function(t){ return t.informe; }).length;
+  var c = $("#centro");
+  var html = '<div class="card warn"><strong>El contrato de la carpeta está en v'+esc(ahora)+
+    ' y la consola tenía v'+esc(antes)+'. Se actualizó solo.</strong><br>'+
+    'De acá en adelante se corrige con v'+esc(ahora)+'.';
+  if(corregidos) html += ' Los <strong>'+corregidos+'</strong> informes que ya están en pantalla '+
+    'salieron con v'+esc(antes)+': si los vas a comparar entre sí, o contra una referencia, '+
+    'hay que volver a correrlos. Una tanda con criterios de dos versiones no es defendible.';
+  html += '</div>';
+  if(c) c.innerHTML = html + c.innerHTML;
+}
 async function contratoDeLaCarpeta(silencioso){
   if(!SERVIDA){
     if(!silencioso) alert("Esto funciona cuando la consola se abre servida desde la carpeta del "+
@@ -1541,7 +1555,17 @@ function todo(){ pintarLista(); pintarCentro(); pintarDerecha(); pintarContrato(
 restaurar(); todo();
 if(SERVIDA){
   var b_=$("#btnAuto"); if(b_) b_.style.display="";
-  if(!contratoCompleto()) contratoDeLaCarpeta(true);   // silencioso: no molesta si no puede
+  /* Servida desde la carpeta, el contrato del disco MANDA sobre el que quedo guardado.
+     Antes solo se leia si no habia ninguno, y eso dejaba corregir con una version vieja sin
+     que nada lo dijera: paso el 10/9, con la consola clavada en v1.10 mientras el repositorio
+     iba por v1.14. Una correccion con criterios de ayer no es defendible, y el error era
+     silencioso, que es lo peor que puede ser. */
+  (async function(){
+    var antes = versionDe(CONTRATO["rubrica.md"]||"");
+    var ok = await contratoDeLaCarpeta(true);
+    var ahora = versionDe(CONTRATO["rubrica.md"]||"");
+    if(ok && antes && ahora && antes !== ahora) avisoDeVersion(antes, ahora);
+  })();
   verRelay();
 }
 </script>
