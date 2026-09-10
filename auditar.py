@@ -71,6 +71,11 @@ ESPERADOS = {
  "feedback-catedra.md": "idem, ejemplo de G3c",
  "notas.txt": "idem", "prompts/notas.txt": "idem",
  "corridas/log_api.txt": "archivo del caso tramposo v1, archivado",
+ # archivos que viven DENTRO de caso-06.zip, el trabajo ajeno que mando el profesor el 10/9.
+ # Los citamos porque de ahi salio la regla de la mencion; no son archivos nuestros.
+ "docs/seguridad.md": "esta dentro de caso-06.zip (el trabajo ajeno), no en este repo",
+ "datos/correo_02.json": "idem", "datos/correo_03.json": "idem",
+ "proceso/ajuste_citas.md": "idem",
 }
 GENERICOS = {"system_prompt.md", "user_prompt.md", "DECISIONES.md", "README.md",
              "esquema_salida.json", "rubrica.md", "banderas.md", "config.md",

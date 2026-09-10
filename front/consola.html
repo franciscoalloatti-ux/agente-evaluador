@@ -360,14 +360,18 @@ var CONTRATO={}, ESQUEMA=null, TRABAJOS=[], SEQ=0, SEL=null, FILTRO="todas", BUS
 
 /* ------------------------------------------------------------ persistencia */
 function guardar(aviso){
-  function paq(){ return JSON.stringify({TRABAJOS:TRABAJOS,SEQ:SEQ,CONTRATO:CONTRATO,HOJA:HOJA}); }
-  try{ localStorage.setItem(CLAVE,paq()); }
+  var TODO={TRABAJOS:TRABAJOS,SEQ:SEQ,CONTRATO:CONTRATO,HOJA:HOJA};
+  /* El descarte del texto de los .zip vive SOLO en lo que se serializa. Antes se hacía sobre
+     TRABAJOS y eso vaciaba la sesión viva: el próximo prompt salía sin el trabajo adentro y el
+     modelo, con razón, devolvía no_evaluable. Ver corridas/2026-09-10_el-zip-del-profesor.md */
+  function sinTextoDeZip(k,v){ return (k==="texto"&&this&&this.archivos&&this.nombreArchivo)?null:v; }
+  function paq(recortar){ return JSON.stringify(TODO, recortar?sinTextoDeZip:null); }
+  try{ localStorage.setItem(CLAVE,paq(false)); }
   catch(e){
-    TRABAJOS.forEach(function(t){ if(t.zip) t.zip.texto=null; });
-    try{ localStorage.setItem(CLAVE,paq());
-      if(aviso) alert("Guardado, pero no entraba todo: se soltó el contenido de los .zip para no "+
-        "perder las correcciones. Los prompts de esos trabajos hay que rearmarlos volviendo a "+
-        "cargar el archivo.");
+    try{ localStorage.setItem(CLAVE,paq(true));
+      if(aviso) alert("Guardado, pero no entraba todo: en el navegador quedó la corrección sin el "+
+        "contenido de los .zip. En esta sesión seguís pudiendo corregir con normalidad; si cerrás "+
+        "y volvés, esos trabajos hay que volver a cargarlos.");
     }catch(e2){ if(aviso) alert("No se pudo guardar: "+e2.message); return; }
   }
   if(aviso) alert("Guardado en este navegador: "+TRABAJOS.length+" entregas, "+
@@ -478,6 +482,7 @@ async function verRelay(){
 async function evaluarAca(){
   var t = trabajo(); if(!t) return;
   if(!contratoCompleto()){ alert("Falta el contrato."); return; }
+  if(sinContenido(t)){ alert(SIN_CONTENIDO(t)); return; }
   var b = $("#btnEval"), m = $("#msgEval");
   if(b){ b.disabled = true; b.textContent = "corriendo…"; }
   try{
@@ -825,6 +830,17 @@ function abrir(id){
 function trabajo(){ return TRABAJOS.filter(function(t){return t.id===SEL;})[0]; }
 
 /* ------------------------------------------------------------------ centro */
+/* El contenido de un .zip se pierde cuando el navegador se quedó sin lugar y hubo que
+   guardar sin él. No es culpa del trabajo y no se corrige a ciegas: se vuelve a cargar. */
+function SIN_CONTENIDO(t){
+  return "No puedo armar el prompt de «"+t.nombre+"»: el contenido del .zip no está en memoria.\n\n"+
+    "Pasó porque el navegador se quedó sin espacio y la corrección se guardó sin los archivos. "+
+    "El árbol quedó, el texto no.\n\n"+
+    "Volvé a cargar "+(t.zip?t.zip.nombreArchivo:"el .zip")+" en la pestaña Cargar y quedá listo.\n\n"+
+    "No lo mando igual a propósito: un trabajo sin contenido daría no_evaluable, y eso diría "+
+    "algo falso sobre el alumno.";
+}
+function sinContenido(t){ return !!(t && t.zip && !t.zip.texto); }
 function armarPrompt(t){
   if(!contratoCompleto()) return "Falta cargar el contrato completo (pestaña Cargar).";
   var L=["===== CONTRATO DEL EVALUADOR — no lo modifiques =====","",
@@ -846,8 +862,11 @@ function armarPrompt(t){
       t.zip.omitidos.forEach(function(o){ L.push("  "+o); });
       L.push("No los supongas: si algo de la rúbrica depende de uno de estos archivos, decilo.");
     }
-    L.push("","===== CONTENIDO DE LOS ARCHIVOS =====","",
-      t.zip.texto||"(el contenido no está en memoria: volvé a cargar el .zip)","",
+    /* Un entregable sin contenido no es un trabajo malo: es un trabajo que no llegó.
+       Mandarlo igual gasta una llamada y produce un no_evaluable que dice algo falso
+       sobre el alumno. */
+    if(!t.zip.texto) return SIN_CONTENIDO(t);
+    L.push("","===== CONTENIDO DE LOS ARCHIVOS =====","",t.zip.texto,"",
       "===== FIN DEL ENTREGABLE =====");
   } else {
     L.push("REPOSITORIO: "+(t.url||"(sin URL)"));
@@ -1124,9 +1143,23 @@ function validar(d){
       if(Number(x.nivel)>si) f.push("A4 · "+x.id+": nivel "+x.nivel+" con "+si+" requisitos cumplidos. "+
         "El nivel se deriva de la cuenta: si la justificación cambió de opinión sobre un requisito, "+
         "hay que cambiar el campo 'cumple', no el nivel");
-      if(Number(x.nivel)<si && !/compuerta/i.test(String(x.justificacion||"")))
+      /* Bajar el nivel por debajo de la cuenta tiene DOS razones legitimas y hay que nombrar
+         una: una compuerta dura, o la exigencia extra de nivel 4 (4 requisitos en SI que no
+         alcanzan el 4 porque falta el extra). Cualquier otra cosa es un descuento a ojo. */
+      var razon=/compuerta|exigencia extra/i.test(String(x.justificacion||""));
+      if(Number(x.nivel)<si && !razon)
         f.push("A4 bis · "+x.id+": nivel "+x.nivel+" con "+si+" requisitos cumplidos, y la justificación "+
-          "no nombra ninguna compuerta. Un nivel por debajo de la cuenta sin regla citada es un descuento a ojo");
+          "no nombra ni una compuerta ni la exigencia extra de nivel 4. Un nivel por debajo de la "+
+          "cuenta sin regla citada es un descuento a ojo");
+      /* Y el caso inverso del mismo defecto: la justificación dice que un requisito es NO y el
+         array sigue en SI. Paso con el caso-06 del profesor: 'R3.2 se marca NO' con cumple=true. */
+      var dice_no=/R\d\.\d\s*(?:se marca|=|es|queda(?:\s+en)?)\s*(?:en\s*)?NO\b/i.exec(String(x.justificacion||""));
+      if(dice_no){
+        var cual=(/R\d\.\d/.exec(dice_no[0])||[""])[0];
+        var enSi=(x.requisitos||[]).some(function(r){ return r.id===cual && r.cumple; });
+        if(enSi) f.push("A4 ter · "+x.id+": la justificación dice que "+cual+" es NO, pero en el array "+
+          "figura en SI. El nivel sale del array: hay que corregir el campo 'cumple'");
+      }
       if(!String(x.que_falta_para_el_nivel_siguiente||"").trim())
         f.push("A7 · "+x.id+": 'que_falta_para_el_nivel_siguiente' vino vacío. Es el único campo que "+
                "le llega al alumno: sin él la devolución queda sin contenido");
@@ -1142,7 +1175,20 @@ function validar(d){
     else f.push("A9 · sólo "+d.cruces_realizados.length+" cruces de 7. Un cruce sin reportar es "+
       "indistinguible de uno no hecho");
   } else f.push("A9 · no se reportaron los cruces");
-  var g3=(d.banderas||[]).filter(function(b){ return /^G3/.test(b.id); });
+  /* Una G3 "mencionada" es una frase hostil que el trabajo cita como dato que analiza, no una
+     dirigida al corrector: informa, no suspende (banderas.md, la regla de la mención). La
+     ausencia del campo se lee como confirmada, que es la lectura que no regala nada. */
+  var g3=(d.banderas||[]).filter(function(b){
+    return /^G3/.test(b.id) && String(b.estado||"confirmada")!=="mencionada"; });
+  var g3m=(d.banderas||[]).filter(function(b){
+    return /^G3/.test(b.id) && String(b.estado||"")==="mencionada"; });
+  g3m.forEach(function(b){
+    if(Number(b.puntos||0)!==0)
+      f.push("una G3 marcada 'mencionada' no puede penalizar: "+b.id+" trae "+b.puntos+" puntos");
+    if(!String(b.cita_textual||"").trim())
+      f.push("la G3 mencionada "+b.id+" viene sin cita textual. Sin la frase no se puede "+
+        "verificar que sea material analizado y no una orden");
+  });
   if(g3.length&&d.estado!=="integridad_comprometida")
     f.push("hay "+g3.length+" bandera(s) G3 y el estado no es integridad_comprometida");
   if(d.estado==="integridad_comprometida"&&d.puntaje_final!==0)
