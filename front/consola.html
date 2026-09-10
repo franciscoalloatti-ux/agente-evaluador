@@ -244,7 +244,9 @@
   <div class="card">
     <div class="row">
       <input type="file" id="fContrato" multiple accept=".md,.json">
-      <span class="muted">Los cuatro archivos de <code>agente/</code> y <code>rubrica.md</code></span>
+      <span class="muted">Están en dos carpetas, así que van en dos tandas — la segunda se suma a la
+        primera: los tres de <code>agente/</code> (con Ctrl para elegirlos juntos), y después
+        <code>rubrica.md</code>, que está en la raíz.</span>
     </div>
     <div id="listaContrato"></div>
   </div>
@@ -424,12 +426,14 @@ function versionDe(t){
 function pintarContrato(){
   var filas=REQUERIDOS.map(function(r){
     return '<tr><td class="mono">'+esc(r)+'</td><td>'+
-      (CONTRATO[r]?'<span class="good">cargado</span>':'<span class="err">falta</span>')+
+      (CONTRATO[r]?'<span class="good">✓ cargado</span>'
+                   :'<span class="muted">aún no lo elegiste</span>')+
       '</td><td class="mono">'+(CONTRATO[r]?"v"+esc(versionDe(CONTRATO[r])):"")+
       '</td><td class="muted">'+(CONTRATO[r]?CONTRATO[r].length.toLocaleString("es")+" caracteres":"")+
       '</td></tr>';
   }).join("");
-  var html='<table><tr><th>Archivo</th><th></th><th>Versión</th><th></th></tr>'+filas+'</table>';
+  var html='<table><tr><th>Archivo del contrato</th><th>Estado</th><th>Versión</th><th>Tamaño</th></tr>'+
+    filas+'</table>';
   var vs=[]; REQUERIDOS.forEach(function(r){
     if(!CONTRATO[r]) return;
     var v=versionDe(CONTRATO[r]);
