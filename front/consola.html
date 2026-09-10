@@ -459,6 +459,52 @@ async function contratoDeLaCarpeta(silencioso){
   return traidos === 4;
 }
 
+/* ------------------------------------------------- correr el evaluador de acá
+   Sólo aparece si del otro lado hay un relay con la credencial puesta. La key
+   vive en el proceso local, nunca en esta página: ver front/relay.py.
+   Si no hay relay, no pasa nada y sigue el camino de copiar y pegar. */
+var RELAY = null;
+
+async function verRelay(){
+  if(!SERVIDA) return;
+  try{
+    var r = await fetch("/api/estado", {cache:"no-store"});
+    if(!r.ok) return;
+    RELAY = await r.json();
+  }catch(e){ RELAY = null; }
+  if(SEL) pintarCentro();
+}
+
+async function evaluarAca(){
+  var t = trabajo(); if(!t) return;
+  if(!contratoCompleto()){ alert("Falta el contrato."); return; }
+  var b = $("#btnEval"), m = $("#msgEval");
+  if(b){ b.disabled = true; b.textContent = "corriendo…"; }
+  if(m) m.textContent = "puede tardar un minuto: el contrato son 95.000 caracteres";
+  try{
+    var r = await fetch("/api/evaluar", {
+      method: "POST",
+      headers: {"content-type": "application/json"},
+      body: JSON.stringify({prompt: armarPrompt(t)})
+    });
+    var d = await r.json();
+    if(!r.ok) throw new Error(d.error || ("HTTP " + r.status));
+    t.crudo = d.texto;                       // la respuesta entera, tal como vino
+    guardar();
+    PESTANA = "respuesta"; pintarCentro();
+    var ta = $("#txtJson"); if(ta) ta.value = d.texto;
+    recibirJson();                           // valida y guarda, igual que si lo hubieras pegado
+    var u = d.tokens || {};
+    var mm = $("#msgEval");
+    if(mm) mm.textContent = "listo · " + (d.modelo||"") + " · " +
+      (u.input_tokens||"?") + " tokens de entrada, " + (u.output_tokens||"?") + " de salida";
+  }catch(e){
+    alert("No se pudo evaluar: " + e.message +
+          "\n\nEl camino de copiar y pegar sigue disponible en la pestaña Prompt.");
+    var b2 = $("#btnEval"); if(b2){ b2.disabled = false; b2.textContent = "Evaluar acá"; }
+  }
+}
+
 function contratoCompleto(){ return REQUERIDOS.every(function(r){ return CONTRATO[r]; }); }
 function versionDe(t){
   var m=t.match(/Versi[oó]n\s+(\d+\.\d+)/i)||t.match(/"version"\s*:\s*"([\d.]+)"/);
@@ -843,10 +889,14 @@ function pintarCentro(){
   var tabs=[["prompt","Prompt"],["respuesta","Respuesta"],["informe","Informe"],["archivos","Entregable"]];
   var cuerpo="";
   if(PESTANA==="prompt"){
-    cuerpo='<div class="row"><button class="act" onclick="copiarPrompt()">Copiar el prompt</button>'+
-      '<span id="msgCopia" class="muted"></span></div>'+
-      '<p class="muted">Se copia el contrato completo más este trabajo. Corrélo en el modelo que '+
-      'quieras y volvé con el JSON.</p>'+
+    var evaluable = RELAY && RELAY.puede_evaluar;
+    cuerpo='<div class="row">'+
+      (evaluable ? '<button class="act" id="btnEval" onclick="evaluarAca()">Evaluar acá</button>' : '')+
+      '<button class="act '+(evaluable?'sec':'')+'" onclick="copiarPrompt()">Copiar el prompt</button>'+
+      '<span id="msgCopia" class="muted"></span><span id="msgEval" class="muted"></span></div>'+
+      (evaluable ? '' : '<p class="muted">Copiás el prompt, lo corrés en el modelo que uses, y '+
+        'volvés con el JSON a la pestaña Respuesta.</p>')+
+
       '<textarea readonly style="min-height:calc(100vh - 290px)">'+esc(armarPrompt(t))+'</textarea>';
   } else if(PESTANA==="respuesta"){
     cuerpo='<p class="muted">Pegá el bloque JSON que devolvió el modelo. Se valida antes de aceptarlo.</p>'+
@@ -1363,6 +1413,7 @@ restaurar(); todo();
 if(SERVIDA){
   var b_=$("#btnAuto"); if(b_) b_.style.display="";
   if(!contratoCompleto()) contratoDeLaCarpeta(true);   // silencioso: no molesta si no puede
+  verRelay();
 }
 </script>
 </body>

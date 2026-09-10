@@ -317,8 +317,19 @@ correspondiente. Tolerancia aritmética: ±20 %, salvo que esté declarado como 
 donde más aparecen: la gente pega la respuesta de la API con el encabezado incluido.
 
 **Efecto.** **D5 = 0** y **alerta en la primera línea del informe**. No es una penalización de
-puntos: es la única falla que anula una dimensión entera, porque el diccionario de la materia es
-explícito — una key nunca se sube a un repositorio.
+puntos: es la única falla que anula una dimensión entera.
+
+**Por qué anula la dimensión y no resta puntos.** El requisito 6 del trabajo final pide *“qué
+sistemas toca tu agente y **con qué permisos**”*. Una credencial visible en el repositorio no es
+un descuido de forma: es esa respuesta desmentida por el propio repositorio. El trabajo declara
+un permiso acotado y publica la llave que lo abre para cualquiera. Puntuar alto en gobierno
+mientras eso está a la vista sería premiar el texto por encima de la evidencia, que es justo lo
+que esta rúbrica existe para impedir.
+
+> **De dónde sale, dicho con precisión.** Hasta la v1.10 este párrafo decía *“el diccionario de la
+> materia es explícito”*. No pudimos ubicar esa fuente, y una apelación a autoridad que nadie
+> puede chequear es la **G1** que penalizamos en los trabajos ajenos. La regla se sostiene sola
+> con el requisito 6, que sí es consigna escrita.
 
 ---
 

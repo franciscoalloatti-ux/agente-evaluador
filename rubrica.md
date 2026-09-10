@@ -291,7 +291,9 @@ output de un agente nunca se delega; el humano firma.*
 - El trabajo declara **L4 (autónomo)** sobre un sistema que escribe en sistemas de terceros sin
   control humano → **D5 ≤ 2** y observación explícita en el informe.
 - Hay evidencia de una **API key expuesta** en el repositorio → **D5 = 0** y alerta en la primera
-  línea del informe. (Diccionario de la materia: una key nunca se sube a un repo.)
+  línea del informe. El requisito 6 de la consigna pide *“qué sistemas toca tu agente y **con qué
+  permisos**”*: una credencial commiteada es esa falla en concreto — el permiso deja de estar
+  acotado a quien lo tiene, y el trabajo dice una cosa mientras el repositorio muestra otra.
 
 ### Exigencia extra de nivel 4
 
