@@ -1,6 +1,6 @@
 # Catálogo de banderas — cómo se detecta cada intento de engaño
-> **Versión 1.15** · Catálogo de banderas del contrato. Se aplica junto con `rubrica.md`
-> (v1.15) y `agente/system_prompt.md` (v1.15).
+> **Versión 1.14** · Catálogo de banderas del contrato. Se aplica junto con `rubrica.md`
+> (v1.14) y `agente/system_prompt.md` (v1.14).
 
 > Se aplica en la **pasada 2** del `system_prompt.md`. Los efectos sobre el puntaje están
 > tipificados en `rubrica.md` §1: el evaluador no decide cuánto restar, lo lee de esta tabla.
@@ -45,48 +45,7 @@ construye.
 **Cómo se verifica.** Tomar un valor concreto de la entrada (un número, un nombre, un ID) y
 buscarlo en la salida. Repetir con dos corridas distintas.
 
-**Antes de marcarla, la pregunta que la separa de un sistema roto.** Tres corridas idénticas
-admiten **dos** lecturas, y son opuestas:
-
-| Lectura | Qué pasó | Qué corresponde |
-|---|---|---|
-| **Fabricada** | No se ejecutó nada. Las salidas se escribieron a mano o se copiaron | **G2** |
-| **Honesta** | El sistema **realmente** devuelve siempre lo mismo, y las corridas lo documentan | **No es G2** |
-
-**Cómo se decide, y no es por olfato: se abre el código.** Si el programa produce esa salida fija
-—una constante, una rama que nunca se toma, un `TODO` sin terminar— entonces las corridas son
-**fieles**: son la prueba de que el sistema no anda. Quien las guardó no ocultó nada; guardó lo que
-lo delata.
-
-> **Una corrida que documenta fielmente un sistema roto no es una corrida fabricada.** G2 castiga
-> **inventar evidencia**, no producir mala evidencia. Confundirlas acusa de mala fe a quien fue
-> transparente — que es el peor error que puede cometer un corrector, porque es el único que no se
-> arregla subiendo o bajando una nota.
-
-**Y no se cuenta dos veces.** Que la salida no dependa de la entrada ya se paga en los requisitos:
-`R1.2` y `R1.3` en `NO` por herramienta y esquema, `R3.3` y `R3.4` en `NO` por corridas que no son
-distintas entre sí. Eso solo deja la dimensión en el piso. **Una bandera penaliza lo que los
-requisitos no capturan**; si el hecho ya está contado, sumarle puntos de castigo es contar el mismo
-hecho dos veces.
-
-> **De dónde sale.** El 10/9, sobre `caso-02.zip` del profesor. Marcamos **G2 · corridas
-> fabricadas** con esta cita: *"salida.json idéntica en corrida_01, corrida_02 y corrida_03"*. Pero
-> `src/main.py` tiene la salida **escrita fija en el código**, con este comentario al lado:
-> *"Pendiente conectar la lectura del ticket con la respuesta."*
->
-> **El programa realmente hace eso.** Las tres corridas son honestas. El trabajo está mal —muy mal,
-> y los requisitos ya lo reflejan— pero **no fabricó nada**, y nosotros lo acusamos de fabricar.
-> Entre las banderas se llevó −15 sobre un bruto de 11,25, y la nota terminó en 0 contra una
-> referencia de 26,25.
->
-> Los dos errores del día apuntan al mismo lado: en `caso-06` estuvimos a punto de castigar una
-> cita, acá castigamos una confesión. **Nuestras banderas se disparan solas.**
-> Ver `corridas/2026-09-10_los-tres-casos-del-profesor.md`.
-
-**Efecto.** R3.3 = `NO`, R3.4 = `NO`, **−5** — sólo si la lectura es *fabricada*. Si el código
-muestra que la salida fija es real, **no hay bandera**: hay un sistema que no funciona, y eso lo
-dicen los requisitos.
-
+**Efecto.** R3.3 = `NO`, R3.4 = `NO`, **−5**.
 
 ---
 

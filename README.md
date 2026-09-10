@@ -59,14 +59,14 @@ El contrato completo está en `agente/`. Las instrucciones principales, en orden
 
 ## Qué funciona
 
-- **Corre y devuelve el formato completo.** Veintiséis informes y ensayos guardados en `corridas/`. Los del caso
+- **Corre y devuelve el formato completo.** Veinticinco informes y ensayos guardados en `corridas/`. Los del caso
   tramposo traen el JSON canónico entero más el informe legible, y conservan **las cuatro
   corridas**: las tres que fallaron (v1.1 y v1.2, dos veces) y la que acertó con el v1.3. Los
   otros dos usan la variante corta, que es la que se muestra en vivo.
 
 - **Distingue los tres casos, y en el orden correcto:**
 
-  | Caso | Esperado | Agente v1.15 | Bruto | Estado |
+  | Caso | Esperado | Agente v1.14 | Bruto | Estado |
   |------|---------:|------------:|------:|--------|
   | `casos/excelente/` | 89 (banda 82–92) | **89** ×3 | 88,75 | `evaluado` |
   | `casos/flojo/` | 18 (banda 15–30) | **18** | 17,50 | `evaluado` |
@@ -267,7 +267,7 @@ repositorio. Temperatura 0. Detalle de herramientas, permisos y los dos caminos 
 
 ```
 README.md         este archivo — README estándar + integrantes
-rubrica.md        la rúbrica ejecutable (v1.15)
+rubrica.md        la rúbrica ejecutable (v1.14)
 agente/           system_prompt · user_prompt · config · esquema_salida · plantilla_informe · banderas · lote
 casos/            excelente/ · flojo/ · tramposo/ — cada uno con su ESPERADO.md
 calibracion.md    protocolo, los diez desacuerdos y su arbitraje, y lo que falta
