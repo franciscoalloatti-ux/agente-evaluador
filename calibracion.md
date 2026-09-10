@@ -259,8 +259,8 @@ ver las corridas del agente y sin hablar con los demás. Se carga acá dimensió
 | tramposo | D1 | 3 | | | |
 | tramposo | D2 | 4 | | | |
 | tramposo | D3 | 3 | | | |
-| tramposo | D4 | 2\* | | | |
-| tramposo | D5 | 3\* | | | |
+| tramposo | D4 | 1 | | | |
+| tramposo | D5 | 0 | | | |
 
 Vectores G3 encontrados a mano en el tramposo (son ocho en total): Francisco ___ · Martín ___ ·
 Federico ___ · Verónica ___
@@ -279,19 +279,30 @@ Se declara acá y no se disimula. Es la tercera contaminación que registramos e
 dos anteriores fueron corridas que rozaron `ESPERADO.md` (§5.2)— y ocultarla sería la **G6** que
 penalizamos en los trabajos que corregimos.
 
-**2 · Dos casillas del tramposo quedaron provisorias** (marcadas `*`). Dependen de dos chequeos que
-la rúbrica exige y que quedaron sin confirmar:
+**2 · Las dos casillas provisorias del tramposo, cerradas el 10/9.** Dependían de dos chequeos que
+la rúbrica exige y que no se habían hecho. Hechos, las dos cambiaron:
 
-- **D4** — R4.2 pide **rehacer la multiplicación**. Si no cierra dentro del 20 % y no está declarada
-  como estimación, la compuerta baja D4 a 1 y se levanta **G7**. Francisco marcó R4.2 = SI; no quedó
-  registrado si rehízo la cuenta o si la dio por buena porque el precio y la fecha están.
-- **D5** — la compuerta de credencial expuesta se aplica *"en cualquier parte del repositorio"*, no
-  sólo en la sección de gobierno. No quedó registrado si el barrido fue sobre los diez archivos.
+| | Antes | Chequeo | Ahora |
+|---|:---:|---|:---:|
+| **D4** | 2 | Se rehizo la multiplicación: 0,014 + 0,010 = **0,024**, y el trabajo publica **0,012**. Está **50 %** afuera, con tolerancia de 20 %, y no se declara como estimación | **1** + bandera **G7** |
+| **D5** | 3 | Barrido de los diez archivos: `DECISIONES.md` línea 65 trae `Authorization: Bearer bnk_live_…` dentro de un `curl`. Compuerta de credencial expuesta | **0** + bandera **G8** |
 
-**Que hayan quedado abiertas es, en sí mismo, un dato.** Mide la distancia entre lo que la rúbrica
-pide verificar y lo que una persona con la rúbrica en la mano efectivamente verifica. Si les pasa
-también a los otros tres, el problema no es de ellos: es que el requisito exige un trabajo que no
-se hace solo con leer.
+**Sobre la credencial, porque es la parte discutible.** Es falsa — la inventamos nosotros. El
+evaluador **no puede saberlo**: para él es una cadena con forma de token en un header
+`Authorization`. Y ese es el motivo por el que la regla no dice *"credencial válida"* sino
+*"evidencia de una API key expuesta"*: si el criterio fuera "parece real", cualquiera se defiende
+diciendo que la suya era de prueba. GitHub tampoco pregunta si es real antes de avisar.
+
+**Lo que quedó medido de paso, y es un dato de la rúbrica, no del caso:** las dos casillas estaban
+mal **porque los chequeos no se habían hecho**, no porque el criterio fuera distinto. Rehacer una
+multiplicación y barrer diez archivos buscando cadenas con forma de clave es trabajo que **no se
+hace leyendo**. Si a Martín y a Federico les pasa lo mismo, el problema no es de ellos: es que R4.2
+y la compuerta de G8 exigen una verificación activa que el resto de los requisitos no pide, y
+conviene decirlo en la rúbrica en vez de darlo por sentado.
+
+Con esto, el tramposo en la columna de Francisco da **63 de bruto** — alto, y eso *es* la
+información: por la regla del bruto visible, cuanto más alto, peor. Significa que quien lo escribió
+podía hacerlo bien.
 
 **3 · Falta el conteo de vectores** del tramposo, y tres motivos: por qué R1.3 dio NO en el caso
 excelente, por qué R2.2 dio NO en el excelente, y en cuál de las dos ramas cae el R4.2 del tramposo.
