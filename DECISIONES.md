@@ -275,6 +275,59 @@ lugares: los encontró todos.
 método de la materia. Y la decisión 1 sigue en pie donde importa — **el agente es un prompt**. La
 consola es el tablero, no el motor.
 
+## Decisión 11 — La autoría del `git log`, y por qué cambiamos de opinión
+
+El 2/9 decidimos **no tocar la historia de commits**. Diez commits de Verónica Pugliese figuraban a
+nombre de `Claude <noreply@anthropic.com>` —los había hecho a través de la integración de Claude en
+GitHub, que firma con su propia identidad— y lo dejamos así, con una nota en el README explicando la
+discrepancia. El argumento era: *reescribir la historia para que se vea mejor es exactamente la G6
+que penalizamos*.
+
+**El 9/9 se revirtió: Verónica corrigió la autoría de sus diez commits y forzó la historia.**
+
+### Por qué la reversión está bien
+
+Porque el argumento original estaba mal aplicado. **G6 es "el relato no se corresponde con el
+rastro"**, y acá pasaba lo contrario: el rastro decía que diez commits los había hecho una
+herramienta, cuando los había hecho una persona. Corregir el autor no maquilló la historia — la
+acercó a lo que efectivamente ocurrió.
+
+La prueba está en lo que **no** cambió: las fechas de autoría siguen intactas, los mensajes son los
+mismos, y ningún commit se agregó, se borró ni se movió de día. La curva de trabajo del repositorio
+es idéntica a la del 8/9. Lo único que cambió es el nombre de quien hizo diez de ellos, y ese nombre
+ahora es el correcto.
+
+Hay una diferencia que vale la pena nombrar, porque es la que define el límite: **fabricar historia
+es inventar trabajo que no ocurrió; corregir la autoría es nombrar bien el trabajo que sí ocurrió.**
+La primera falsifica la evidencia, la segunda la repara.
+
+### Lo que costó, y hay que decirlo
+
+Un `push --force` reescribe **todos** los hashes posteriores al punto tocado. En este caso, los 42
+commits del repositorio cambiaron de identificador. Consecuencias reales, no teóricas:
+
+1. **Dos ramas de Federico quedaron huérfanas.** Se habían creado sobre la historia vieja, así que
+   dejaron de compartir base con `main`. Se incorporaron por *cherry-pick* —no por merge— para no
+   arrastrar una línea paralela entera. Su autoría se preservó.
+2. **Una cita a un commit dejó de resolver.** `calibracion.md` usaba el hash 3aa5c5d (sin comillas a propósito: ya no existe, y el auditor marca como rota
+toda cita viva a un commit muerto) como
+   evidencia de que dos corridas de calibración habían rozado `ESPERADO.md`. Ese hash ya no existe;
+   el equivalente en la historia nueva es `450e85a`. **Es una rotura silenciosa**: nada falla, el
+   documento se lee igual, y la evidencia que sostiene una afirmación deja de ser verificable —
+   precisamente lo que penalizamos como **G1, afirmación no verificable**, en los trabajos ajenos.
+
+De ahí salió el **bloque I de `auditar.py`**: toma cada hash citado en un `.md` y comprueba que sea
+alcanzable desde `HEAD`. Si alguien vuelve a reescribir la historia, salta solo.
+
+### La regla que queda
+
+**Corregir la autoría, sí. Forzar la historia sobre trabajo que otros ya tienen bajado, no** — o al
+menos, no sin avisar antes. El costo no fue la corrección: fue que se hizo sobre un repositorio con
+tres personas trabajando en paralelo y ramas abiertas. La misma corrección, coordinada, no habría
+roto nada.
+
+---
+
 ---
 
 ## Registro de cambios del contrato
@@ -299,6 +352,7 @@ consola es el tablero, no el motor.
 | 2/9 | contrato v1.3 | Bandera **G3d**, regla de la configuración ajena, paso 0 de la pasada 1, campo `config_agentes_hallada`, A6 extendido, aislamiento de directorios | El v1.2 **obedeció** al `AGENTS.md`: detectó trece banderas y reportó cero |
 | 8/9 | `front/consola.html` + `front/probar.mjs` | La consola pasa a escala: lista lateral, se guarda sola, carga incremental, métricas, apertura real de `.zip` y devolución con el identificador de cada alumno. Con banco de 27 pruebas | Decisión 11: no se corrigen cuatro trabajos sino la cursada entera |
 | 8/9 | contrato **v1.10** | (a) compuerta de **objetivo declarado** en D1; (b) **regla de la vara única** y orden del lote como vista, no como nota (`agente/lote.md` §2 bis); (c) `banderas.md` pasa a declarar su versión | Cruzamos la rúbrica contra los **seis requisitos** del documento del trabajo final: *“objetivo claro”* no lo verificaba ningún requisito nuestro. Ver `corridas/2026-09-08_cobertura-de-la-consigna.md` |
+| 9/9 | historia de commits | **Autoría corregida**: diez commits que figuraban como `Claude` pasan a Verónica Pugliese, que es quién los hizo. Se revierte la decisión del 2/9 | G6 es *“el relato no se corresponde con el rastro”*, y acá pasaba lo contrario. Fechas, mensajes y curva de trabajo intactos. Costo: 42 hashes cambiados, dos ramas huérfanas y una cita rota. Ver **Decisión 11** |
 
 ---
 
