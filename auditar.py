@@ -9,7 +9,7 @@ cierra, credenciales, y una historia de commits que no cuente lo que dice contar
 No reemplaza leer: encuentra lo mecanico, que es lo que se nos escapa a nosotros.
 Documentado en corridas/2026-09-08_auditoria-del-repositorio.md
 """
-import io, os, re, json, subprocess, collections
+import io, os, re, json, subprocess, collections, unicodedata
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)) or ".")
 
@@ -44,7 +44,9 @@ print("=" * 72)
 pat = re.compile(r"`([A-Za-z0-9_./-]+\.(?:md|json|html|mjs|py|txt))`")
 faltantes = collections.defaultdict(list)
 for p, t in TEXTOS.items():
-    if p.startswith("casos/"):   # los casos son trabajos ficticios: sus rutas son de mentira
+    # Un documento que describe un repositorio ajeno cita rutas ajenas. Los casos son trabajos
+    # ficticios; las corridas describen el repo que se evaluo, que no es este.
+    if p.startswith("casos/") or p.startswith("corridas/"):
         continue
     for m in set(pat.findall(t)):
         cands = [m, os.path.join(os.path.dirname(p), m).replace("\\", "/")]
@@ -220,6 +222,25 @@ print("  por dia:")
 for d, n in sorted(dias.items()): print("     " + d + "  " + ("#" * n) + " " + str(n))
 if len(dias) < 3:
     h("ALTO", "proceso", "la historia se concentra en menos de 3 dias")
+
+# El conteo de corridas quedo viejo tres veces (16 -> 17 -> 19). Que lo controle la maquina.
+NUM = {"cinco":5,"seis":6,"siete":7,"ocho":8,"nueve":9,"diez":10,"once":11,"doce":12,"trece":13,
+       "catorce":14,"quince":15,"dieciseis":16,"diecisiete":17,"dieciocho":18,"diecinueve":19,
+       "veinte":20,"veintiuno":21,"veintidos":22,"veintitres":23,"veinticuatro":24,"veinticinco":25}
+rd_ = leer("README.md")
+m_ = re.search(r"(\w+) informes y ensayos guardados en `corridas/`", rd_)
+real_ = len(os.listdir("corridas"))
+if m_:
+    sinac_ = ''.join(c for c in unicodedata.normalize('NFD', m_.group(1))
+                     if unicodedata.category(c) != 'Mn').lower()
+    dicho_ = NUM.get(sinac_)
+    if dicho_ == real_:
+        print("  ok     el README dice '" + m_.group(1) + "' y hay " + str(real_) + " corridas")
+    else:
+        print("  ERROR  el README dice '" + m_.group(1) + "' y hay " + str(real_) + " corridas")
+        h("MEDIO", "coherencia", "el README declara " + str(dicho_) + " informes en corridas/ y hay " + str(real_))
+else:
+    print("  aviso  no encontre la frase del conteo de corridas en el README")
 
 print()
 print("=" * 72)
