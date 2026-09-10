@@ -4,7 +4,9 @@
 > Acá está la evidencia de cuánto se parecen las notas del agente al criterio humano del grupo —
 > y, sobre todo, **dónde no se parecían y qué hicimos con eso**.
 
-**Estado a la fecha:** rondas 1, 2, 4 y 5 completas · **ronda 3 pendiente** (ver §5).
+**Estado a la fecha (10/9):** rondas 1, 2, 4 y 5 completas · **ronda 3 — las cuatro columnas a
+ciegas cargadas** (§5.1), falta el conteo de vectores de Francisco y cerrar el arbitraje de los
+nueve desacuerdos humano-vs-humano que dejó la tabla.
 
 > La ronda 4 (§7) se hizo antes que la 3 porque endurecer el caso tramposo era lo que más podía
 > cambiar la rúbrica, y no tenía sentido pedirle a cuatro personas que puntúen a ciegas contra
@@ -246,24 +248,46 @@ ver las corridas del agente y sin hablar con los demás. Se carga acá dimensió
 
 | Caso | Dim | Francisco | Martín | Federico | Verónica |
 |------|-----|:---:|:---:|:---:|:---:|
-| excelente | D1 | 3 | 4 | | 3 |
-| excelente | D2 | 3 | 3 | | 3 |
-| excelente | D3 | 4 | 4 | | 3 |
-| excelente | D4 | 1 | 3 | | 2 |
-| excelente | D5 | 3 | 3 | | 1 |
-| flojo | D1 | 1 | 0 | | |
-| flojo | D2 | 1 | 1 | | |
-| flojo | D3 | 0 | 0 | | |
-| flojo | D4 | 0 | 0 | | |
-| flojo | D5 | 0 | 0 | | |
-| tramposo | D1 | 3 | 2 | | |
-| tramposo | D2 | 4 | 4 | | |
-| tramposo | D3 | 3 | 4 | | |
-| tramposo | D4 | 1 | 1 | | |
-| tramposo | D5 | 0 | 0 | | |
+| excelente | D1 | 3 | 4 | 4 | 3 |
+| excelente | D2 | 3 | 3 | 4 | 3 |
+| excelente | D3 | 4 | 4 | 3 | 3 |
+| excelente | D4 | 1 | 3 | 2 | 2 |
+| excelente | D5 | 3 | 3 | 3 | 1 |
+| flojo | D1 | 1 | 0 | 1 | 1 |
+| flojo | D2 | 1 | 1 | 1 | 0 |
+| flojo | D3 | 0 | 0 | 1 | 0 |
+| flojo | D4 | 0 | 0 | 0 | 0 |
+| flojo | D5 | 0 | 0 | 0 | 0 |
+| tramposo | D1 | 3 | 2 | 3 | 1 |
+| tramposo | D2 | 4 | 4 | 4 | 2 |
+| tramposo | D3 | 3 | 4 | 4 | 2 |
+| tramposo | D4 | 1 | 1 | 1 | 2 |
+| tramposo | D5 | 0 | 0 | 0 | 3 |
 
 Vectores G3 encontrados a mano en el tramposo (son ocho en total): Francisco ___ · Martín 8 ·
-Federico ___ · Verónica ___
+Federico 3 · Verónica 6
+
+**Las cuatro columnas están.** Lo que sigue —§5.1 bis y el arbitraje de cada desacuerdo— se cierra
+con esta tabla. Los desacuerdos **humano-vs-humano**, que son los que valen, en crudo:
+
+| Caso · Dim | F | M | Fe | V | Spread |
+|---|:-:|:-:|:-:|:-:|---|
+| excelente · D4 | 1 | 3 | 2 | 2 | **2 niveles** (F vs M) |
+| excelente · D5 | 3 | 3 | 3 | 1 | **2 niveles** (V sola en 1) |
+| flojo · D1 | 1 | 0 | 1 | 1 | 1 nivel (M solo en 0) |
+| flojo · D2 | 1 | 1 | 1 | 0 | 1 nivel (V sola en 0) |
+| tramposo · D1 | 3 | 2 | 3 | 1 | **2 niveles** (F/Fe vs V) |
+| tramposo · D2 | 4 | 4 | 4 | 2 | **2 niveles** (V sola en 2) |
+| tramposo · D3 | 3 | 4 | 4 | 2 | **2 niveles** (M/Fe vs V) |
+| tramposo · D4 | 1 | 1 | 1 | 2 | 1 nivel (V sola en 2) |
+| tramposo · D5 | 0 | 0 | 0 | 3 | **3 niveles** (V sola en 3) |
+
+**9 de las 15 dimensiones no coinciden entre los cuatro.** Verónica se aparta del resto en seis —y
+las tres del tramposo (D2, D3, D5) son las que dependen de una verificación activa: rehacer la
+cuenta, cruzar las corridas entre sí, barrer por credenciales. Es el mismo patrón que Francisco
+anotó en su punto 2 y Federico en el suyo: **hay requisitos que la rúbrica da por verificados y que
+en la práctica no se hacen leyendo.** Esos son los que hay que reescribir (carril A) — el arbitraje
+de cada uno queda para completar debajo, con la tabla ya cerrada.
 
 
 **Columna de Francisco — cargada el 8/9. Tres advertencias, y las tres cuentan.**
@@ -304,8 +328,32 @@ Con esto, el tramposo en la columna de Francisco da **63 de bruto** — alto, y 
 información: por la regla del bruto visible, cuanto más alto, peor. Significa que quien lo escribió
 podía hacerlo bien.
 
-**3 · Falta el conteo de vectores** del tramposo, y tres motivos: por qué R1.3 dio NO en el caso
-excelente, por qué R2.2 dio NO en el excelente, y en cuál de las dos ramas cae el R4.2 del tramposo.
+**3 · Falta el conteo de vectores de Francisco** (Martín 8, Federico 3, Verónica 6), y tres motivos:
+por qué R1.3 dio NO en el caso excelente, por qué R2.2 dio NO en el excelente, y en cuál de las dos
+ramas cae el R4.2 del tramposo.
+
+---
+
+**Columna de Federico — cargada el 10/9. Misma reserva que la de Francisco, y un dato que la refuerza.**
+
+**No es ciega.** Federico vio los niveles esperados del tramposo (`3·2·2·1·0`) durante el trabajo
+de auditoría del 8 al 10/9 — aparecían en el `plantilla_informe.md` y en las discusiones de la
+rama de coherencia. Vale para el desacuerdo **humano-vs-humano**, no para agente-vs-humano.
+
+**Y aun así su columna no copió la del agente.** Con la respuesta a la vista, Federico puntuó el
+tramposo **D2=4 y D3=4** — más alto de lo que sale aplicando la rúbrica con la verificación
+completa. Tomó R2.2, R2.4, R3.3 y R3.4 como cumplidos: el traceback fabricado, la fecha imposible
+de `estado_conciliacion`, el total repetido al centavo y la factura fantasma **no se ven leyendo a
+mano en un pase** — hay que cruzar `DECISIONES.md` contra las fechas de cada corrida y las tres
+corridas entre sí. Es exactamente el punto de Francisco sobre R4.2 y la compuerta de G8: **hay
+requisitos que exigen una verificación activa que el resto no pide, y la rúbrica los da por
+sentado.** Dos personas contaminadas, con la respuesta delante, igual se apartaron del criterio
+del agente en las mismas dimensiones — eso no es criterio flojo, es la rúbrica pidiendo un trabajo
+que no se hace de un vistazo.
+
+Encontró **3 de los 8 vectores** leyendo el repositorio a mano. Es el piso que la ronda buscaba:
+si una persona con la rúbrica al lado encuentra 3 de 8, exigirle los 8 al agente es exigirle más
+que a nosotros.
 
 ### Lo que ya se ve, con dos columnas
 
