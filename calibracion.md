@@ -251,19 +251,19 @@ ver las corridas del agente y sin hablar con los demás. Se carga acá dimensió
 | excelente | D3 | 4 | 4 | | 3 |
 | excelente | D4 | 1 | 3 | | 2 |
 | excelente | D5 | 3 | 3 | | 1 |
-| flojo | D1 | 1 | 0 | | |
-| flojo | D2 | 1 | 1 | | |
-| flojo | D3 | 0 | 0 | | |
-| flojo | D4 | 0 | 0 | | |
-| flojo | D5 | 0 | 0 | | |
-| tramposo | D1 | 3 | 2 | | |
-| tramposo | D2 | 4 | 4 | | |
-| tramposo | D3 | 3 | 4 | | |
-| tramposo | D4 | 1 | 1 | | |
-| tramposo | D5 | 0 | 0 | | |
+| flojo | D1 | 1 | 0 | | 1 |
+| flojo | D2 | 1 | 1 | | 0 |
+| flojo | D3 | 0 | 0 | | 0 |
+| flojo | D4 | 0 | 0 | | 0 |
+| flojo | D5 | 0 | 0 | | 0 |
+| tramposo | D1 | 3 | 2 | | 1 |
+| tramposo | D2 | 4 | 4 | | 2 |
+| tramposo | D3 | 3 | 4 | | 2 |
+| tramposo | D4 | 1 | 1 | | 2 |
+| tramposo | D5 | 0 | 0 | | 3 |
 
 Vectores G3 encontrados a mano en el tramposo (son ocho en total): Francisco ___ · Martín 8 ·
-Federico ___ · Verónica ___
+Federico ___ · Verónica 6
 
 
 **Columna de Francisco — cargada el 8/9. Tres advertencias, y las tres cuentan.**
