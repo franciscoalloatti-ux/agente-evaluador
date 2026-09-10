@@ -307,25 +307,27 @@ podía hacerlo bien.
 **3 · Falta el conteo de vectores** del tramposo, y tres motivos: por qué R1.3 dio NO en el caso
 excelente, por qué R2.2 dio NO en el excelente, y en cuál de las dos ramas cae el R4.2 del tramposo.
 
-### Lo que ya se ve, con dos columnas
+### Lo que ya se ve, con tres columnas
 
-**Francisco y Verónica puntuaron el mismo caso y difieren en tres de las cinco dimensiones.**
+**Francisco, Martín y Verónica puntuaron el mismo caso (excelente), y sólo coinciden los tres en
+una de las cinco dimensiones.**
 
-| Dim | Francisco | Verónica | |
-|-----|:---:|:---:|---|
-| D1 | 3 | 3 | coinciden |
-| D2 | 3 | 3 | coinciden |
-| D3 | 4 | 3 | **1 nivel** |
-| D4 | 1 | 2 | **1 nivel** |
-| D5 | 3 | 1 | **2 niveles** |
+| Dim | Francisco | Martín | Verónica | |
+|-----|:---:|:---:|:---:|---|
+| D1 | 3 | 4 | 3 | Francisco y Verónica coinciden; Martín, un nivel arriba |
+| D2 | 3 | 3 | 3 | coinciden los tres |
+| D3 | 4 | 4 | 3 | Francisco y Martín coinciden; Verónica, un nivel abajo |
+| D4 | 1 | 3 | 2 | los tres difieren, rango de dos niveles |
+| D5 | 3 | 3 | 1 | Francisco y Martín coinciden; Verónica, dos niveles abajo |
 
-Es el desacuerdo que la ronda busca, y es más grande de lo que esperábamos: **el 60 % de las
-dimensiones no coincide entre dos personas que leyeron el mismo trabajo con la misma rúbrica**.
-D5 se lleva dos niveles enteros — 30 puntos de diferencia sobre 100 en esa dimensión sola.
+Es el desacuerdo que la ronda busca, y con la tercera columna se ve más grande, no más chico:
+**sólo D2 tiene acuerdo total entre los tres**. D4 no tiene ni un par que coincida, y D5 repite la
+brecha de dos niveles que ya había entre Francisco y Verónica, ahora con Martín confirmando el
+extremo alto.
 
-No dice que uno de los dos se equivocó. Dice que **la escala no está lo bastante anclada**: los
-requisitos admiten dos lecturas honestas. Con las cuatro columnas se va a ver en cuáles, y esos
-son los requisitos a reescribir.
+No dice que alguno de los tres se equivocó. Dice que **la escala no está lo bastante anclada**: los
+requisitos admiten más de una lectura honesta. Con la cuarta columna (Federico) se va a terminar de
+ver en cuáles, y esos son los requisitos a reescribir.
 
 > **Ojo con la tentación de cerrarlo rápido.** Lo fácil acá es decidir quién tenía razón y anotar
 > el número "correcto". Eso borra el hallazgo. Lo que hay que hacer es al revés: encontrar qué

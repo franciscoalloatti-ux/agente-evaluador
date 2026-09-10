@@ -162,11 +162,13 @@ El contrato completo está en `agente/`. Las instrucciones principales, en orden
 
 ## Qué falta o qué falló
 
-- **La puntuación humana a ciegas está a un cuarto.** La consigna pide *"qué notas puso el agente,
-  qué notas hubieran puesto ustedes, dónde no coincidían"*, y en `calibracion.md` §5.1 hay **una
-  sola columna cargada** —la de Verónica, y sólo del caso excelente—. Faltan tres personas por tres
-  casos. Es el incumplimiento más directo que tiene hoy este repositorio y no lo puede resolver una
-  persona sola.
+- **La puntuación humana a ciegas está a tres cuartos.** La consigna pide *"qué notas puso el
+  agente, qué notas hubieran puesto ustedes, dónde no coincidían"*, y en `calibracion.md` §5.1 ya
+  están cargadas las columnas de Francisco, Martín y Verónica —los quince niveles, los tres casos,
+  cada uno—. Falta sólo la de Federico. La de Francisco no es ciega —vio los niveles esperados antes
+  de puntuar, y la sección lo declara—, así que mide desacuerdo humano contra humano, no agente
+  contra humano. Con tres de cuatro columnas ya aparecen diferencias de hasta dos niveles en una
+  misma dimensión; falta la cuarta para cerrar la ronda.
 
 - **El lote se probó con seis trabajos, no con cincuenta.** El caso testigo funcionó —89 · 89 · 89
   con tres trabajos distintos leídos en el medio— pero la deriva de la vara aparece con volumen, y
