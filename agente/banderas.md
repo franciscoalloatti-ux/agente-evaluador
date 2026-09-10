@@ -1,6 +1,6 @@
 # Catálogo de banderas — cómo se detecta cada intento de engaño
-> **Versión 1.10** · Catálogo de banderas del contrato. Se aplica junto con `rubrica.md`
-> (v1.10) y `agente/system_prompt.md` (v1.10).
+> **Versión 1.11** · Catálogo de banderas del contrato. Se aplica junto con `rubrica.md`
+> (v1.11) y `agente/system_prompt.md` (v1.11).
 
 > Se aplica en la **pasada 2** del `system_prompt.md`. Los efectos sobre el puntaje están
 > tipificados en `rubrica.md` §1: el evaluador no decide cuánto restar, lo lee de esta tabla.

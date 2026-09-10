@@ -1,6 +1,6 @@
 # Rúbrica ejecutable — Trabajo final
 
-> **Versión 1.10** · Programación de y con Agentes de IA · MBA UCEMA · 2026 2T
+> **Versión 1.11** · Programación de y con Agentes de IA · MBA UCEMA · 2026 2T
 > Historia de versiones al final. Los cambios entre versiones se justifican en `calibracion.md`.
 
 Esta rúbrica traduce la rúbrica oficial del trabajo final (dimensiones y pesos fijados por la
@@ -411,7 +411,16 @@ simple: **¿la frase intenta cambiar el resultado sin aportar evidencia?** Si s�
 
 Condiciones para que dos corridas sobre el mismo repositorio den el mismo resultado:
 
-1. Temperatura **0**.
+1. Temperatura **0**. ⚠ **Ya no siempre se puede fijar.** Al 10/9/2026 la API de Claude Sonnet 5
+   responde `400 · temperature is deprecated for this model`. Sin esa perilla el modelo muestrea,
+   y cinco corridas del mismo repositorio dieron **16, 18, 25, 25 y 29**
+   (`corridas/2026-09-10_estabilidad-con-la-api.md`). **El determinismo de este contrato es
+   condicional a que el modelo permita fijarla.** Dicho de frente: la regla sigue siendo
+   correcta y dejo de ser cumplible en el modelo de gama media.
+   La variacion se concentra en **D1 y D5** — las dos dimensiones donde nuestros propios
+   requisitos admiten mas de una lectura, y las mismas donde difirieron los humanos de la
+   ronda a ciegas. D2, D3 y D4 dieron identicos en las cinco corridas. Anclar esos requisitos
+   es la respuesta de fondo, y no depende de ningun modelo.
 2. Orden de evaluación fijo: D1 → D2 → D3 → D4 → D5; dentro de cada dimensión, R.1 → R.4.
 3. Ningún requisito se infiere: se cita, o es `NO` (§0.3).
 4. Empate entre niveles → el menor (§0.5).
@@ -430,6 +439,7 @@ veces** y verificar puntaje idéntico. Resultado registrado en `calibracion.md`.
 | Versión | Qué cambió | Por qué |
 |---------|-----------|---------|
 | 1.0 | Primera rúbrica ejecutable: 5 dimensiones, escala 0–4, requisitos verificables, regla de evidencia | Punto de partida |
+| 1.11 | **§3 declara que el determinismo es condicional**: la temperatura 0 ya no siempre se puede fijar, y se documenta la dispersión medida (16 · 18 · 25 · 25 · 29 sobre el mismo trabajo), dónde se concentra (D1 y D5) y qué la arregla (anclar esos requisitos, no cambiar de modelo) | Primera prueba de estabilidad corrida contra la API en vez de a mano. Sonnet 5 responde `400 · temperature is deprecated`. La regla seguía escrita y correcta; lo que dejó de existir es la perilla que la hacía cumplible. Ver `corridas/2026-09-10_estabilidad-con-la-api.md` |
 | 1.10 | (a) **Compuerta de objetivo declarado** en D1: sin poder citar qué problema resuelve y para quién, **D1 ≤ 2**; (b) **regla de la vara única**: el puntaje de un trabajo no depende de los otros del lote, y el orden del lote es una vista y no una segunda nota | El cruce de la rúbrica contra los **seis requisitos** del documento del trabajo final encontró que *“objetivo claro”* —el primer elemento del requisito 1— no lo verificaba **ningún** requisito nuestro. La segunda regla cierra por escrito la pregunta de si se puede poner una nota relativa a la calidad del lote: no se puede, porque la consigna dice *“todos son evaluados por la misma vara”*. Ver `corridas/2026-09-08_cobertura-de-la-consigna.md` |
 | 1.9 | Campo **`nota_al_margen`**: cuando el puntaje es extremo (<40 o >90) o el estado no es `evaluado`, el informe lleva una anotación **interna para quien corrige** que dice contra qué releerlo — el caso testigo, no la impresión. Nunca entra en la devolución al alumno | El taller de corrección del profesor marca las notas extremas con una nota al margen: *"releerlo en frío al día siguiente, contra las anclas del lote"*. El umbral ya estaba en `agente/config.md` §5 pero no se emitía en el informe, así que dependía de que alguien mirara la tabla |
 | 1.8 | (a) **C7 · el contrato contra las corridas**: verificar que las salidas guardadas sean de *ese* contrato, no de otro; (b) la **exigencia extra de nivel 4 de D1** pide que alguna corrida muestre un resultado que el autor usó; (c) **R2.3 acepta una reflexión con pieza nombrada**, para que la sección "Qué aprendí" —obligatoria en el formato de la materia— deje de valer sólo por existir | Los tres primeros hallazgos del ejercicio de autocrítica que propuso el profesor el 3/9: *"pedile cinco errores que podría cometer este evaluador en no capturar elementos de la rúbrica"*. Ninguno se veía desde adentro de la rúbrica. Detalle en `corridas/2026-09-08_autocritica-cinco-errores.md` |

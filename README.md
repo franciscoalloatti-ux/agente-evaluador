@@ -66,7 +66,7 @@ El contrato completo está en `agente/`. Las instrucciones principales, en orden
 
 - **Distingue los tres casos, y en el orden correcto:**
 
-  | Caso | Esperado | Agente v1.10 | Bruto | Estado |
+  | Caso | Esperado | Agente v1.11 | Bruto | Estado |
   |------|---------:|------------:|------:|--------|
   | `casos/excelente/` | 89 (banda 82–92) | **89** | 88,75 | `evaluado` |
   | `casos/flojo/` | 18 (banda 15–30) | **18** | 17,50 | `evaluado` |
@@ -167,7 +167,7 @@ El contrato completo está en `agente/`. Las instrucciones principales, en orden
   lo que infla cualquier medición de acierto. Lo compensamos parcialmente corriéndolo sobre cuatro
   repositorios reales y ajenos (`corridas/`), donde perdimos uno contra el criterio del profesor.
 
-- **La compuerta de objetivo está escrita y no probada.** La v1.10 exige poder citar qué
+- **La compuerta de objetivo está escrita y no probada.** La v1.11 exige poder citar qué
   problema resuelve el trabajo y para quién; sin eso, D1 ≤ 2. Los tres casos declaran su objetivo
   en la primera línea —los escribimos nosotros y a nadie se le ocurrió omitirlo— así que **ninguno
   la dispara**. La estructura del parcial fija tres casos y no agregamos un cuarto para probarla:
@@ -251,7 +251,7 @@ repositorio. Temperatura 0. Detalle de herramientas, permisos y los dos caminos 
 
 ```
 README.md         este archivo — README estándar + integrantes
-rubrica.md        la rúbrica ejecutable (v1.10)
+rubrica.md        la rúbrica ejecutable (v1.11)
 agente/           system_prompt · user_prompt · config · esquema_salida · plantilla_informe · banderas · lote
 casos/            excelente/ · flojo/ · tramposo/ — cada uno con su ESPERADO.md
 calibracion.md    protocolo, los diez desacuerdos y su arbitraje, y lo que falta
