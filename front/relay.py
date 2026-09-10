@@ -273,8 +273,16 @@ class Manejador(http.server.SimpleHTTPRequestHandler):
         try:
             return self._json(200, evaluar(prompt))
         except urllib.error.HTTPError as e:
-            detalle = e.read().decode("utf-8", "replace")[:400]
-            return self._json(502, {"error": "el modelo respondio %s: %s" % (e.code, detalle)})
+            # Ojo: si el error viene reenviado desde evaluar(), el cuerpo ya se leyo una vez
+            # y read() devuelve vacio. El detalle viaja en reason. Perder el mensaje del error
+            # es peor que el error: deja al que mira sin nada que hacer.
+            try:
+                detalle = e.read().decode("utf-8", "replace")
+            except Exception:
+                detalle = ""
+            if not detalle.strip():
+                detalle = str(getattr(e, "reason", "") or e)
+            return self._json(502, {"error": "el modelo respondio %s: %s" % (e.code, detalle[:600])})
         except Exception as e:
             return self._json(502, {"error": "no pude llamar al modelo: %s" % e})
 
