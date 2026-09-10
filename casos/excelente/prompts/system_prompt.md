@@ -54,7 +54,12 @@ Un array JSON. Cada elemento tiene exactamente estos 9 campos, en este orden:
 }
 ```
 
-Sin texto antes ni después del array. Si ningún aviso es del rubro, devolvé `[]`.
+Antes del array va **una sola línea** con el conteo de lectura, en este formato exacto:
+`N avisos leídos, M del rubro.` Después del array, nada. Si ningún aviso es del rubro,
+la línea de conteo igual va, y el array es `[]`.
+
+> Esa línea existe para saber si leyó el archivo entero sin tener que abrirlo. Se agregó el
+> 31/8 (ver `DECISIONES.md`) y es la única excepción a la salida limpia.
 
 ## Ejemplos
 

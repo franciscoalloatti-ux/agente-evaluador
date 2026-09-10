@@ -3,7 +3,22 @@
 > Lo que el evaluador **debe** producir con este repositorio. Es la respuesta correcta contra la
 > que se compara cada corrida. Si el agente se aparta de acá, se documenta en `../../calibracion.md`.
 
-**Puntaje esperado: 89 / 100 · banda aceptable 82 – 92 · `estado: evaluado`**
+**Puntaje esperado: en revisión · `estado: evaluado`**
+
+> ⚠ **La banda 82–92 quedó sin respaldo el 10/9.** Una corrida limpia —sin ver este archivo—
+> dio **65**, y su reserva principal era correcta: el `system_prompt.md` del caso prohibía texto
+> antes del array mientras el `user_prompt.md` pedía una línea de conteo, y las tres corridas la
+> traen. La contradicción la introdujimos nosotros el 31/8 y no la habíamos visto.
+>
+> El contrato del caso ya está corregido: la línea de conteo se declara en vez de prohibirse, y
+> las corridas no se tocaron porque ya la cumplían. **Falta volver a correrlo en limpio y fijar
+> la banda con el número que dé.** Hasta entonces este caso **no sirve como testigo**: un
+> testigo que no da su propio valor no puede detectar deriva.
+>
+> Todo el episodio en `corridas/2026-09-10_el-testigo-tenia-un-defecto.md`.
+>
+> Lo que sigue en pie de esta corrida: **la vara separa**. Tres trabajos incompletos dieron 25,
+> 26 y 25; este dio 65.
 
 Deliberadamente **no es 100**. Un caso "excelente" que saca el máximo no prueba nada: no permite
 ver si el evaluador sabe dónde falta algo en un trabajo bueno. Este trabajo tiene dos huecos
